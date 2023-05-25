@@ -58,7 +58,7 @@ For example, the prompt corresponding to question 16825 (which asks about the av
 >
 > For people living far from a college, the probability of high salary is 35%. For people living close to a college, the probability of high salary is 53%. For people living far from a college, the probability of college degree or higher is 40%. For people living close to a college, the probability of college degree or higher is 73%.
 >
-> Will college degree or higher decrease the chance of high salary?```
+> Will college degree or higher decrease the chance of high salary?
 
 The associated reasoning steps found in the `reasoning` field are:
     
