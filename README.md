@@ -2,11 +2,7 @@
 # CLadder: Evaluating Causal Reasoning in Language Models
 
 
-{% note %}
-
-**Note** 🚀 Get the dataset now! [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip)
-
-{% endnote %}
+## 🚀 Get the dataset now! [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip)
 
 - Version: v1
 - Date: 2023-05-25
