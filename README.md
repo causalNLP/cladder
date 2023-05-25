@@ -53,30 +53,29 @@ When evaluating a language model, it is recommended that the prompt includes 3 c
 
 For example, the prompt corresponding to question 16825 (which asks about the average treatment effect for a simple instrumental variable setting) in `cladder-v1-aggregate.json` could be:
 
-```text
 
-Imagine a self-contained, hypothetical world with only the following conditions, and without any unmentioned factors or causal relationships: Unobserved confounders has a direct effect on education level and salary. Proximity to a college has a direct effect on education level. Education level has a direct effect on salary. Unobserved confounders is unobserved.
+> Imagine a self-contained, hypothetical world with only the following conditions, and without any unmentioned factors or causal relationships: Unobserved confounders has a direct effect on education level and salary. Proximity to a college has a direct effect on education level. Education level has a direct effect on salary. Unobserved confounders is unobserved.
+>
+> For people living far from a college, the probability of high salary is 35%. For people living close to a college, the probability of high salary is 53%. For people living far from a college, the probability of college degree or higher is 40%. For people living close to a college, the probability of college degree or higher is 73%.
+>
+> Will college degree or higher decrease the chance of high salary?```
 
-For people living far from a college, the probability of high salary is 35%. For people living close to a college, the probability of high salary is 53%. For people living far from a college, the probability of college degree or higher is 40%. For people living close to a college, the probability of college degree or higher is 73%.
-
-Will college degree or higher decrease the chance of high salary?
-
-```
 The associated reasoning steps found in the `reasoning` field are:
     
-```text
-  Step 0: Let V2 = proximity to a college; V1 = unobserved confounders; X = education level; Y = salary.
-  Step 1: V1->X,V2->X,V1->Y,X->Y
-  Step 2: E[Y | do(X = 1)] - E[Y | do(X = 0)]
-  Step 3: [P(Y=1|V2=1)-P(Y=1|V2=0)]/[P(X=1|V2=1)-P(X=1|V2=0)]
-  Step 4: P(Y=1 | V2=0) = 0.35
-          P(Y=1 | V2=1) = 0.53
-          P(X=1 | V2=0) = 0.40
-          P(X=1 | V2=1) = 0.73
-  Step 5: (0.53 - 0.35) / (0.73 - 0.40) = 0.55
-  Solution: 0.55 > 0
+> Step 0: Let V2 = proximity to a college; V1 = unobserved confounders; X = education level; Y = salary. 
+> 
+> Step 1: V1->X,V2->X,V1->Y,X->Y 
+> 
+> Step 2: E[Y | do(X = 1)] - E[Y | do(X = 0)]
+> 
+> Step 3: [P(Y=1|V2=1)-P(Y=1|V2=0)]/[P(X=1|V2=1)-P(X=1|V2=0)]
+> 
+> Step 4: P(Y=1 | V2=0) = 0.35; P(Y=1 | V2=1) = 0.53; P(X=1 | V2=0) = 0.40; P(X=1 | V2=1) = 0.73
+> 
+> Step 5: (0.53 - 0.35) / (0.73 - 0.40) = 0.55
+> 
+> Solution: 0.55 > 0
 
-```
 
 Note that in addition to the `background` field, the model information found in `cladder-v1-meta-models.json` contains sufficient information to fully reconstruct the underlying causal model used to generate this question (and 59 others).
 
