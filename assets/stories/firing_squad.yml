@@ -1,0 +1,61 @@
+Source: Why p.46 (pdf)
+W0_noun: the private not shooting
+W0_sentence: the private doesn't shoot
+W0_wherepartial: privates who don't shoot
+W0_wheresentence: privates who do not shoot
+W1_noun: the private shooting
+W1_sentence: the private shoots
+W1_wherepartial: privates who shoot
+W1_wheresentence: privates who shoot
+Wname: the private
+X0_noun: the captain's order to release the prisoner
+X0_sentence: the captain orders the release of the prisoner
+X0_sentence_condition: if the captain had ordered the release of the prisoner instead
+  of ordering the execution of the prisoner
+X0_wherepartial: captains who release prisoners
+X0_wheresentence: captains who release prisoners
+X1_noun: the captain's order to execute the prisoner
+X1_sentence: the captain orders the execution of the prisoner
+X1_sentence_condition: if the captain had ordered the execution of the prisoner instead
+  of ordering the release of the prisoner
+X1_wherepartial: captains who execute prisoners
+X1_wheresentence: captains who execute prisoners
+Xname: the captain
+Xsubject: person
+Y0_noun: the prisoner being alive
+Y0_sentence: the prisoner is alive
+Y0_wherepartial: prisoners who are alive
+Y0_wheresentence: prisoners who are alive
+Y1_noun: the prisoner's death
+Y1_sentence: the prisoner is dead
+Y1_wherepartial: prisoners who are dead
+Y1_wheresentence: prisoners who are dead
+Yname: prisoner
+Ysubject: person
+Z0_noun: the corporal not shooting
+Z0_sentence: the corporal doesn't shoot
+Z0_wherepartial: corporals who don't shoot
+Z0_wheresentence: corporals who do not shoot
+Z1_noun: the corporal shooting
+Z1_sentence: the corporal shoots
+Z1_wherepartial: corporals who shoot
+Z1_wheresentence: corporals who shoot
+Zname: the corporal
+causal_graph_type: diamond
+easy:
+  - {X: [0.4, 0.8], Z: {X: 0.4}, W: {X: 0.3}, Y: {Z: 0.3, W: 0.3}}
+  - {X: [0.4, 0.8], Z: {X: 0.1}, W: {X: 0.2}, Y: {Z: 0.2, W: 0.05}}
+hard:
+  - {X: [0., 0.2], Z: {X: -0.4}, W: {X: -0.3}, Y: {Z: -0.3, W: -0.3}}
+  - {X: [0.4, 0.9], Z: {X: -0.4}, W: {X: -0.3}, Y: {Z: -0.3, W: -0.3}}
+params:
+  conjunction: [true, false]
+phenomenon: diamond
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): root_cause->cause1, root_cause->cause2, cause1->effect,
+  cause2->effect
+source: Why p.46 (pdf)
+story_id: firing_squad
+structural_equation: .nan
+variable_correspondence: {W: cause2, X: root_cause, Y: effect, Z: cause1}

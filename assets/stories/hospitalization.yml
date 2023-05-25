@@ -1,0 +1,64 @@
+Source: Why p.184(pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: no respiratory issues
+X0_sentence: the person has no respiratory issues
+X0_sentence_condition: if the person had no respiratory issues instead of having
+  respiratory issues
+X0_wherepartial: with no respiratory issues
+X0_wheresentence: people with no respiratory issues
+X1_noun: respiratory issues
+X1_sentence: the person has respiratory issues
+X1_sentence_condition: if the person had respiratory issues instead of a healthy
+  respiratory system
+X1_wherepartial: with respiratory issues
+X1_wheresentence: people with respiratory issues
+Xname: respiratory issues
+Xsubject: person
+Y0_noun: no broken bones
+Y0_sentence: the person has no broken bones
+Y0_wherepartial: with no broken bones
+Y0_wheresentence: people with no broken bones
+Y1_noun: broken bones
+Y1_sentence: the person has broken bones
+Y1_wherepartial: with broken bones
+Y1_wheresentence: people with broken bones
+Yname: broken bones
+Ysubject: person
+Z0_noun: non-hospitalization
+Z0_sentence: the person isn't hospitalized
+Z0_wherepartial: non-hospitalized individuals
+Z0_wheresentence: non-hospitalized individuals
+Z1_noun: hospitalization
+Z1_sentence: the person is hospitalized
+Z1_wherepartial: hospitalized individuals
+Z1_wheresentence: hospitalized individuals
+Zname: hospitalization status
+Zsubject: person
+causal_graph_type: collision_fork
+params: {}
+easy:
+  - {X: 1, Y: 0, Z: {X: 0, Y: 1}}
+  - {X: 0, Y: 0, Z: {X: 1, Y: 1}}
+  - {X: 1, Y: 0, Z: {X: 1, Y: 1}}
+hard:
+  - {X: 2, Y: 2, Z: {X: -1, Y: -1}}
+  - {X: 2, Y: 2, Z: {X: 0, Y: -1}}
+  - {X: 1, Y: 2, Z: {X: -1, Y: -1}}
+  - {X: 1, Y: 2, Z: {X: 0, Y: -1}}
+phenomenon: collision
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause1->collider, cause2->collider
+source: .nan
+story_id: hospitalization
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: cause2, Z: collider}

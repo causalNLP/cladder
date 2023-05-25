@@ -1,0 +1,51 @@
+
+stories:
+#  - getting_late
+#  - getting_late_and
+
+  - firing_squad_and
+  - firing_employee_and
+  - vaccine_kills_and
+  - floor_wet_and
+  - getting_late_and
+  - getting_tanned_and
+  - forest_fire_and
+  - alarm_and
+  - candle_and
+  - penguin_and
+
+  - firing_squad_or
+  - firing_employee_or
+  - vaccine_kills_or
+  - floor_wet_or
+  - getting_late_or
+  - getting_tanned_or
+  - forest_fire_or
+  - alarm_or
+  - candle_or
+  - penguin_or
+
+
+#  - firing_squad_not_and
+#  - firing_employee_not_and
+#  - vaccine_kills_not_and
+#  - floor_wet_not_and
+#  - getting_late_not_and
+#  - getting_tanned_not_and
+#  - forest_fire_not_and
+  - alarm_not_and
+  - candle_not_and
+  - penguin_not_and
+
+#  - firing_squad_not_or
+#  - firing_employee_not_or
+#  - vaccine_kills_not_or
+#  - floor_wet_not_or
+#  - getting_late_not_or
+#  - getting_tanned_not_or
+#  - forest_fire_not_or
+  - alarm_not_or
+  - candle_not_or
+  - penguin_not_or
+
+

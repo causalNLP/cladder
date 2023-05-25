@@ -1,0 +1,193 @@
+
+#_meta.script_name: plan
+#_meta.script_name: bern-generate
+#_meta.script_name: prop-generate
+#_meta.script_name: sync-csv
+
+#seed: 101
+
+###############################
+
+_meta.script_name: summary
+path: data/cladder-v1/cladder-v1-q-aggregate.json
+
+key: graph
+
+###############################
+
+#_meta.script_name: merge
+#
+#paths: [
+#  'data/data-common-easy.json',
+#  'data/data-common-hard.json',
+#
+#  'data/data-anti-easy.json',
+#  'data/data-anti-hard.json',
+#
+#  'data/data-non-easy.json',
+#  'data/data-non-hard.json',
+#
+#  'data/data-det-common.json',
+#
+#  'data/data-det-anti.json',
+#
+#  'data/data-det-non.json',
+#
+#]
+#
+#path: data/cladder-v1-q-aggregate.json
+#
+#model-path: data/data-models.json
+#
+#budget: 10000
+#
+#seed: 101
+
+
+###############################
+
+#_meta.script_name: generate
+#
+#model-meta: data/test-model-meta.json
+#
+#spec-limit: 1
+#
+#seed: 11
+#difficulty: easy
+
+
+#include-background: yes
+
+#overwrite: yes
+
+###############################
+
+#_base: [queries/reg, stories/reg]
+
+#path: data/test-generate-easy.json
+#difficulty: easy
+
+#path: data/test-generate-hard.json
+#difficulty: hard
+
+###############################
+
+#_base: [queries/reg, stories/non]
+#builder._type: random
+#path: data/test-generate-non.json
+
+###############################
+
+#_base: [anti, queries/reg, stories/reg]
+#path: data/test-generate-anti.json
+
+###############################
+
+#_base: [queries/det, stories/reg]
+#path: data/test-generate-det.json
+
+###############################
+
+
+
+#spec-limit: 10
+
+#skip-det: yes
+
+###############################
+
+#out-path: data/summary.csv
+
+#_meta.script_name: summary
+
+
+
+###############################
+
+#seed: 103
+#difficulty: hard
+
+#seed: 101
+#difficulty: easy
+
+#_base: [final/common] # 422
+
+#_base: [final/anti] # 422
+
+#_base: [final/non] # 1100
+
+#_base: [final/det-common] # 256
+
+#_base: [final/det-anti] # 256
+
+#_base: [final/det-non] # 680
+
+
+###############################
+
+#Summary for 47 Story (10560 total questions):
+#Graph                                                                                          Story                     Number  Percent      no    yes
+#---------------------------------------------------------------------------------------------  ----------------------  --------  ---------  ----  -----
+#IV                                                                                             cholesterol                   60  0.6%         30     30
+#IV                                                                                             college_wage                  60  0.6%         30     30
+#IV                                                                                             price                         60  0.6%         30     30
+#IV                                                                                             tax_smoke_birthWeight         60  0.6%         30     30
+#IV                                                                                             water_cholera                 60  0.6%         30     30
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense0                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense1                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense2                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense3                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense4                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense5                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense6                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense7                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense8                    768  7.3%        384    384
+#IV, arrowhead, chain, collision, confounding, diamond, diamondcut, fork, frontdoor, mediation  nonsense9                    768  7.3%        384    384
+#arrowhead                                                                                      gender_admission_state        96  0.9%         48     48
+#arrowhead                                                                                      gender_pay                    96  0.9%         48     48
+#arrowhead                                                                                      nature_vs_nurture             96  0.9%         48     48
+#arrowhead                                                                                      obesity_mortality             96  0.9%         48     48
+#arrowhead                                                                                      smoke_birthWeight             96  0.9%         48     48
+#arrowhead                                                                                      smoking_gene_cancer           96  0.9%         48     48
+#chain                                                                                          college_salary                84  0.8%         42     42
+#chain                                                                                          orange_scurvy                 84  0.8%         42     42
+#chain                                                                                          smoking_tar_cancer            84  0.8%         42     42
+#collision                                                                                      celebrity                     48  0.5%         24     24
+#collision                                                                                      elite_students                48  0.5%         24     24
+#collision                                                                                      hospitalization               48  0.5%         24     24
+#collision                                                                                      man_in_relationship           48  0.5%         24     24
+#confounding                                                                                    simpson_drug                  72  0.7%         36     36
+#confounding                                                                                    simpson_hospital              72  0.7%         36     36
+#confounding                                                                                    simpson_kidneystone           72  0.7%         36     36
+#confounding                                                                                    simpson_vaccine               72  0.7%         36     36
+#diamond                                                                                        firing_squad                  84  0.8%         42     42
+#diamond                                                                                        floor_wet                     84  0.8%         42     42
+#diamond                                                                                        vaccine_kills                 84  0.8%         42     42
+#diamondcut                                                                                     firing_employee               72  0.7%         36     36
+#fork                                                                                           candle                        72  0.7%         36     36
+#fork                                                                                           forest_fire                   72  0.7%         36     36
+#fork                                                                                           getting_late                  72  0.7%         36     36
+#fork                                                                                           getting_tanned                72  0.7%         36     36
+#frontdoor                                                                                      smoking_frontdoor             84  0.8%         42     42
+#mediation                                                                                      alarm                         96  0.9%         48     48
+#mediation                                                                                      penguin                       96  0.9%         48     48
+#mediation                                                                                      blood_pressure                96  0.9%         48     48
+#mediation                                                                                      encouagement_program          96  0.9%         48     48
+#mediation                                                                                      gender_admission              96  0.9%         48     48
+#mediation                                                                                      neg_mediation                 96  0.9%         48     48
+#
+#Summary for 10 Query_type (10560 total questions):
+#Query_type            Number  Percent      no    yes
+#------------------  --------  ---------  ----  -----
+#ate                     1476  14.0%       738    738
+#backadj                 1644  15.6%       822    822
+#collider_bias            168  1.6%         84     84
+#correlation             1476  14.0%       738    738
+#det-counterfactual      1476  14.0%       738    738
+#ett                     1296  12.3%       648    648
+#exp_away                 168  1.6%         84     84
+#marginal                1644  15.6%       822    822
+#nde                      384  3.6%        192    192
+#nie                      828  7.8%        414    414
+#Saved 10560 entries to data\cladder-v1-aggregate.json
+

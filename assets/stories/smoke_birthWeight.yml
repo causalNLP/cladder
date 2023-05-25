@@ -1,0 +1,65 @@
+Source: .nan
+W0_noun: poor health
+W0_sentence: the person has poor health
+W0_wherepartial: with poor health
+W0_wheresentence: people with poor health
+W1_noun: good health
+W1_sentence: the person has good health
+W1_wherepartial: with good health
+W1_wheresentence: people with good health
+Wname: health condition
+Wsubject: infant
+X0_noun: nonsmoking mother
+X0_sentence: the infant has a nonsmoking mother
+X0_sentence_condition: if the infant had a nonsmoking mother instead of a smoking mother
+X0_wherepartial: with nonsmoking mothers
+X0_wheresentence: infants with nonsmoking mothers
+X1_noun: smoking mother
+X1_sentence: the infant has a smoking mother
+X1_sentence_condition: if the infant had a smoking mother instead of a nonsmoking mother
+X1_wherepartial: with smoking mothers
+X1_wheresentence: infants with smoking mothers
+Xname: maternal smoking status
+Xsubject: infant
+Y0_noun: low infant mortality
+Y0_sentence: infant mortality is low
+Y0_wherepartial: low infant mortality
+Y0_wheresentence: cases with low infant mortality
+Y1_noun: high infant mortality
+Y1_sentence: infant mortality is high
+Y1_wherepartial: high infant mortality
+Y1_wheresentence: cases with high infant mortality
+Yname: infant mortality
+Ysubject: infant
+Z0_noun: low infant birth weight
+Z0_sentence: the infant is born with low weight
+Z0_wherepartial: low infant birth weight
+Z0_wheresentence: infants with low birth weight
+Z1_noun: normal infant birth weight
+Z1_sentence: the infant is born with a normal weight
+Z1_wherepartial: normal infant birth weight
+Z1_wheresentence: infants with normal birth weight
+Zname: infant's birth weight
+Zsubject: infant
+causal_graph_type: arrowhead
+easy:
+  - {X: 0, W: 2, Z: {X: -1, W: 1}, Y: {Z: -1, X: 1, W: 1}}
+  - {X: 0, W: 1, Z: {X: -1, W: 1}, Y: {Z: -1, X: 1, W: 0}}
+  - {X: 0, W: 1, Z: {X: -1, W: 0}, Y: {Z: -1, X: 1, W: 0}}
+  - {X: 0, W: 2, Z: {X: -1, W: 1}, Y: {Z: -1, X: 0, W: 1}}
+  - {X: 0, W: 1, Z: {X: -1, W: 1}, Y: {Z: -1, X: 0, W: 0}}
+  - {X: 0, W: 1, Z: {X: -1, W: 0}, Y: {Z: -1, X: 0, W: 0}}
+hard:
+  - {X: 2, W: 0, Z: {X: 1, W: -1}, Y: {Z: 1, X: -1, W: -1}}
+  - {X: 2, W: 0, Z: {X: 1, W: -1}, Y: {Z: 1, X: -1, W: 0}}
+params: {}
+phenomenon: arrowhead
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): conf->collider, conf->effect, cause->collider,
+  cause->effect, collider->effect
+source: https://www.sciencedirect.com/science/article/pii/S0047272798000905
+story_id: smoke_birthWeight
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z collider: null}

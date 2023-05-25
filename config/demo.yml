@@ -1,0 +1,16 @@
+# run this from the terminal using: `fig generate demo`
+# override any settings in this config from the command line: eg. `fig generate demo --seed 12 --name my-demo`
+
+_base: [queries/reg, stories/reg]
+
+
+path: test.json
+
+seed: 1
+
+name: demo
+
+
+spec-limit: 4 # how many specs use per story (selected randomly)
+
+

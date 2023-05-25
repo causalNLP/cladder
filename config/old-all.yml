@@ -1,0 +1,37 @@
+
+queries: [ett, ate, ate_nonident, ett_nonident]
+
+stories:
+  - simpson_hospital
+  - simpson_kidneystone
+  - simpson_drug
+  - simpson_blood_pressure
+
+  - neg_mediation
+  - encouagement_program
+  - gender_admission
+
+  - cholesterol
+  - price
+  - water_cholera
+  - college_wage
+  - tax_smoke_birthWeight
+
+  - orange_scurvy
+  - smoking_tar_cancer
+  - college_salary
+
+  - celebrity
+  - elite_students
+  - hospitalization
+  - man_in_relationship
+
+  - smoke_birthWeight
+  - gender_pay
+  - obesity_mortality
+
+  - gender_admission_state
+  - nature_vs_nurture
+  - smoking_gene_cancer
+
+

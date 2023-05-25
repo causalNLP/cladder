@@ -1,0 +1,65 @@
+Source: ECI p.94
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: receives no treatment
+X0_sentence: the patient receives no treatment
+X0_sentence_condition: if the patient had received no treatment instead of receiving treatment
+X0_wherepartial: not receiving treatment
+X0_wheresentence: patients not receiving treatment
+X1_noun: receives treatment
+X1_sentence: the patient receives treatment
+X1_sentence_condition: if the patient had received treatment instead of not receiving treatment
+X1_wherepartial: receiving treatment
+X1_wheresentence: patients receiving treatment
+Xname: treatment
+Xsubject: patient
+Y0_noun: non-recovery
+Y0_sentence: the patient doesn't recover
+Y0_wherepartial: not experiencing recovery
+Y0_wheresentence: patients not experiencing recovery
+Y1_noun: recovery
+Y1_sentence: the patient does recover
+Y1_wherepartial: experiencing recovery
+Y1_wheresentence: patients experiencing recovery
+Yname: recovery
+Ysubject: patient
+Z0_noun: small kidney stone
+Z0_sentence: the patient has a small kidney stone
+Z0_wherepartial: have small kidney stones
+Z0_wheresentence: patients who have small kidney stones
+Z1_noun: large kidney stone
+Z1_sentence: the patient has a large kidney stone
+Z1_wherepartial: have large kidney stones
+Z1_wheresentence: patients who have large kidney stones
+Zname: kidney stone size
+Zsubject: patient
+causal_graph_type: confounding
+params: {}
+easy:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': 0.3, 'Z': 0.55}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.4}, 'Y': {'X': 0.1, 'Z': 0.71}}
+#  - {Z: 0, X: {Z: 1}, Y: {X: 1, Z: -1}}
+#  - {Z: 0, X: {Z: 1}, Y: {X: -1, Z: -1}}
+hard:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.4}, 'Y': {'X': -0.1, 'Z': -0.71}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.7}, 'Y': {'X': -0.05, 'Z': -0.6}}
+#  - {Z: 2, X: {Z: -1}, Y: {X: -1, Z: 1}}
+#  - {Z: 2, X: {Z: 0}, Y: {X: -1, Z: 1}}
+phenomenon: confounding
+meta:
+  simpson: true
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): conf->cause, conf->effect, cause->effect
+source: ECI p.94
+story_id: simpson_kidneystone
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: conf}

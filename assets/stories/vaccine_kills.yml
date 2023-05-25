@@ -1,0 +1,58 @@
+Source: Why p.51(pdf)
+W0_noun: no vaccine reaction
+W0_sentence: the person has no reaction to the vaccine
+W0_wherepartial: with no reaction to the vaccine
+W0_wheresentence: people with no reaction to the vaccine
+W1_noun: severe vaccination reaction
+W1_sentence: the person has a severe reaction to the vaccine
+W1_wherepartial: with severe reactions to the vaccine
+W1_wheresentence: people with severe reactions to the vaccine
+Wname: vaccination reaction
+X0_noun: lack of vaccination
+X0_sentence: the person isn't vaccinated
+X0_sentence_condition: if the person had been vaccinated instead of not being vaccinated
+X0_wherepartial: unvaccinated individuals
+X0_wheresentence: unvaccinated individuals
+X1_noun: vaccination
+X1_sentence: the person is vaccinated
+X1_sentence_condition: if the person had been vaccinated instead of not being vaccinated
+X1_wherepartial: vaccinated individuals
+X1_wheresentence: vaccinated individuals
+Xname: vaccination status
+Xsubject: person
+Y0_noun: smallpox death
+Y0_sentence: the person dies from smallpox
+Y0_wherepartial: die from smallpox
+Y0_wheresentence: people who die from smallpox
+Y1_noun: smallpox survival
+Y1_sentence: the person survives smallpox
+Y1_wherepartial: survive smallpox
+Y1_wheresentence: people who survive smallpox
+Yname: smallpox survival
+Ysubject: person
+Z0_noun: absence of smallpox
+Z0_sentence: the person doesn't have smallpox
+Z0_wherepartial: without smallpox
+Z0_wheresentence: individuals without smallpox
+Z1_noun: having smallpox
+Z1_sentence: the person has smallpox
+Z1_wherepartial: with smallpox
+Z1_wheresentence: individuals with smallpox
+Zname: getting smallpox
+easy:
+  - {X: [0.7, 1], Z: {X: -0.3}, W: {X: 0.05}, Y: {Z: -0.2, W: -0.2}}
+  - {X: [0.7, 1], Z: {X: -0.3}, W: {X: 0.1}, Y: {Z: -0.2, W: -0.2}}
+hard:
+  - {X: [0, 0.2], Z: {X: 0.3}, W: {X: -0.2}, Y: {Z: 0.3, W: 0.3}}
+causal_graph_type: diamond
+params:
+  conjunction: [true, false]
+phenomenon: diamond
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): root_cause->cause1, root_cause->cause2, cause1->effect,
+  cause2->effect
+source: Why p.51(pdf)
+story_id: vaccine_kills
+structural_equation: .nan
+variable_correspondence: {W: cause2, X: root_cause, Y: effect, Z: cause1}

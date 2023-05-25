@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not tijw
+W0_noun: not tijw
+W0_sentence: an individual is not tijw
+W0_wherepartial: are not tijw
+W0_wheresentence: those who are not tijw
+W1: is tijw
+W1_noun: tijw
+W1_sentence: an individual is tijw
+W1_wherepartial: are tijw
+W1_wheresentence: those who are tijw
+Wname: tijw
+X0: is not xevo
+X0_noun: not xevo
+X0_sentence: an individual is not xevo
+X0_sentence_condition: if the individual was not xevo instead of xevo
+X0_wherepartial: are not xevo
+X0_wheresentence: those who are not xevo
+X1: is xevo
+X1_noun: xevo
+X1_sentence: an individual is xevo
+X1_sentence_condition: if the individual was xevo instead of not xevo
+X1_wherepartial: are xevo
+X1_wheresentence: those who are xevo
+Xname: xevo
+Y0: is not gyzp
+Y0_noun: not gyzp
+Y0_sentence: an individual is not gyzp
+Y0_wherepartial: are not gyzp
+Y0_wheresentence: those who are not gyzp
+Y1: is gyzp
+Y1_noun: gyzp
+Y1_sentence: an individual is gyzp
+Y1_wherepartial: are gyzp
+Y1_wheresentence: those who are gyzp
+Yname: gyzp
+Z0: is not tijv
+Z0_noun: not tijv
+Z0_sentence: an individual is not tijv
+Z0_wherepartial: are not tijv
+Z0_wheresentence: those who are not tijv
+Z1: is tijv
+Z1_noun: tijv
+Z1_sentence: an individual is tijv
+Z1_wherepartial: are tijv
+Z1_wheresentence: those who are tijv
+Zname: tijv
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense2
+variable_correspondence: ''

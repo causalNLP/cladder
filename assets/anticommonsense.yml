@@ -1,0 +1,406 @@
+
+plurals:
+  employee: employees
+  student: students
+  applicant: applicants
+  patient: patients
+  child: children
+  infant: infants
+  situation: situations
+  individual: individuals
+  person: people
+
+
+subjects:
+  X:
+    child:
+      - has a brother
+      - has a sister
+      - likes spicy food
+    individual:
+      - plays card games
+      - speaks english
+      - drinks coffee
+      - has visited England
+      - has a brother
+      - has a sister
+      - listens to jazz
+      - likes spicy food
+    infant:
+      - has a brother
+      - has a sister
+      - likes spicy food
+    patient:
+      - has a brother
+      - has a sister
+      - is religious
+      - can swim
+      - speaks english
+      - plays card games
+    person:
+      - plays card games
+      - speaks english
+      - drinks coffee
+      - has visited England
+      - has a brother
+      - has a sister
+      - listens to jazz
+      - likes spicy food
+    situation:
+      - full moon
+      - solar eclipse
+    student:
+      - is vegetarian
+      - can swim
+      - drinks coffee
+      - has visited England
+      - has a brother
+      - listens to jazz
+      - likes spicy food
+
+  Y:
+    applicant:
+      - curly hair
+      - foot size
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    child:
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    employee:
+      - curly hair
+      - foot size
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    infant:
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    patient:
+      - curly hair
+      - foot size
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    person:
+      - curly hair
+      - foot size
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+    situation:
+      - rainfall
+      - earthquakes
+    student:
+      - curly hair
+      - foot size
+      - brown eyes
+      - lactose intolerance
+      - freckles
+      - black hair
+      - lip thickness
+      - is allergic to peanuts
+
+
+variables:
+  X:
+    has visited England:
+      X0_noun: not having visited England
+      X0_sentence: 'the {subject} has not visited England'
+      X0_sentence_condition: 'if the {subject} had not visited England instead of visiting England'
+      X0_wherepartial: have not visited England
+      X0_wheresentence: '{plural} who have not visited England'
+      X1_noun: having visited England
+      X1_sentence: 'the {subject} has visited England'
+      X1_sentence_condition: 'if the {subject} had visited England instead of not visiting England'
+      X1_wherepartial: have visited England
+      X1_wheresentence: '{plural} who have visited England'
+      Xname: having visited England
+
+    speaks english:
+      X0_noun: not speaking english
+      X0_sentence: 'the {subject} does not speak english'
+      X0_sentence_condition: 'if the {subject} did not speak english instead of speaking english'
+      X0_wherepartial: do not speak english
+      X0_wheresentence: '{plural} who do not speak english'
+      X1_noun: speaking english
+      X1_sentence: 'the {subject} speaks english'
+      X1_sentence_condition: 'if the {subject} spoke english instead of not speaking english'
+      X1_wherepartial: speak english
+      X1_wheresentence: '{plural} who speak english'
+      Xname: ability to speak english
+
+    has a sister:
+      X0_noun: not having a sister
+      X0_sentence: 'the {subject} does not have a sister'
+      X0_sentence_condition: 'if the {subject} did not have a sister instead of having a sister'
+      X0_wherepartial: do not have a sister
+      X0_wheresentence: '{plural} who do not have a sister'
+      X1_noun: having a sister
+      X1_sentence: 'the {subject} has a sister'
+      X1_sentence_condition: 'if the {subject} had a sister instead of not having a sister'
+      X1_wherepartial: have a sister
+      X1_wheresentence: '{plural} who have a sister'
+      Xname: having a sister
+
+    likes spicy food:
+      X0_noun: not liking spicy food
+      X0_sentence: 'the {subject} does not like spicy food'
+      X0_sentence_condition: 'if the {subject} did not like spicy food instead of liking spicy food'
+      X0_wherepartial: do not like spicy food
+      X0_wheresentence: '{plural} who do not like spicy food'
+      X1_noun: liking spicy food
+      X1_sentence: 'the {subject} likes spicy food'
+      X1_sentence_condition: 'if the {subject} liked spicy food instead of not liking spicy food'
+      X1_wherepartial: like spicy food
+      X1_wheresentence: '{plural} who like spicy food'
+      Xname: liking spicy food
+
+    is religious:
+      X0_noun: not being religious
+      X0_sentence: 'the {subject} is not religious'
+      X0_sentence_condition: 'if the {subject} were not religious instead of being religious'
+      X0_wherepartial: are not religious
+      X0_wheresentence: '{plural} who are not religious'
+      X1_noun: being religious
+      X1_sentence: 'the {subject} is religious'
+      X1_sentence_condition: 'if the {subject} were religious instead of not being religious'
+      X1_wherepartial: are religious
+      X1_wheresentence: '{plural} who are religious'
+      Xname: religiousness
+
+    plays card games:
+      X0_noun: not playing card games
+      X0_sentence: 'the {subject} does not play card games'
+      X0_sentence_condition: 'if the {subject} did not play card games instead of playing card games'
+      X0_wherepartial: do not play card games
+      X0_wheresentence: '{plural} who do not play card games'
+      X1_noun: playing card games
+      X1_sentence: 'the {subject} plays card games'
+      X1_sentence_condition: 'if the {subject} played card games instead of not playing card games'
+      X1_wherepartial: play card games
+      X1_wheresentence: '{plural} who play card games'
+      Xname: playing card games
+
+    solar eclipse:
+      X0_noun: no solar eclipse
+      X0_sentence: 'there is no solar eclipse'
+      X0_sentence_condition: 'if there were a solar eclipse instead of no solar eclipse'
+      X0_wherepartial: there is no solar eclipse
+      X0_wheresentence: '{plural} where there is no solar eclipse'
+      X1_noun: solar eclipse
+      X1_sentence: 'there is a solar eclipse'
+      X1_sentence_condition: 'if there were no solar eclipse instead of a solar eclipse'
+      X1_wherepartial: there is a solar eclipse
+      X1_wheresentence: '{plural} where there is a solar eclipse'
+      Xname: solar eclipse
+
+    listens to jazz:
+      X0_noun: not listening to jazz
+      X0_sentence: 'the {subject} does not listen to jazz'
+      X0_sentence_condition: 'if the {subject} did not listen to jazz instead of listening to jazz'
+      X0_wherepartial: do not listen to jazz
+      X0_wheresentence: '{plural} who do not listen to jazz'
+      X1_noun: listening to jazz
+      X1_sentence: 'the {subject} listens to jazz'
+      X1_sentence_condition: 'if the {subject} listened to jazz instead of not listening to jazz'
+      X1_wherepartial: listen to jazz
+      X1_wheresentence: '{plural} who listen to jazz'
+      Xname: listening to jazz
+
+    can swim:
+      X0_noun: not being able to swim
+      X0_sentence: 'the {subject} cannot swim'
+      X0_sentence_condition: 'if the {subject} could swim instead of not being able to swim'
+      X0_wherepartial: cannot swim
+      X0_wheresentence: '{plural} who cannot swim'
+      X1_noun: being able to swim
+      X1_sentence: 'the {subject} can swim'
+      X1_sentence_condition: 'if the {subject} could not swim instead of being able to swim'
+      X1_wherepartial: can swim
+      X1_wheresentence: '{plural} who can swim'
+      Xname: ability to swim
+
+    has a brother:
+      X0_noun: not having a brother
+      X0_sentence: 'the {subject} does not have a brother'
+      X0_sentence_condition: 'if the {subject} did not have a brother instead of having a brother'
+      X0_wherepartial: do not have a brother
+      X0_wheresentence: '{plural} who do not have a brother'
+      X1_noun: having a brother
+      X1_sentence: 'the {subject} has a brother'
+      X1_sentence_condition: 'if the {subject} had a brother instead of not having a brother'
+      X1_wherepartial: have a brother
+      X1_wheresentence: '{plural} who have a brother'
+      Xname: having a brother
+
+    drinks coffee:
+      X0_noun: not drinking coffee
+      X0_sentence: 'the {subject} does not drink coffee'
+      X0_sentence_condition: 'if the {subject} did not drink coffee instead of drinking coffee'
+      X0_wherepartial: do not drink coffee
+      X0_wheresentence: '{plural} who do not drink coffee'
+      X1_noun: drinking coffee
+      X1_sentence: 'the {subject} drinks coffee'
+      X1_sentence_condition: 'if the {subject} drank coffee instead of not drinking coffee'
+      X1_wherepartial: drink coffee
+      X1_wheresentence: '{plural} who drink coffee'
+      Xname: drinking coffee
+
+    is vegetarian:
+      X0_noun: not being vegetarian
+      X0_sentence: 'the {subject} is not vegetarian'
+      X0_sentence_condition: 'if the {subject} were not vegetarian instead of being vegetarian'
+      X0_wherepartial: are not vegetarian
+      X0_wheresentence: '{plural} who are not vegetarian'
+      X1_noun: being vegetarian
+      X1_sentence: 'the {subject} is vegetarian'
+      X1_sentence_condition: 'if the {subject} were vegetarian instead of not being vegetarian'
+      X1_wherepartial: are vegetarian
+      X1_wheresentence: '{plural} who are vegetarian'
+      Xname: vegetarianism
+
+    full moon:
+      X0_noun: no full moon
+      X0_sentence: 'there is no full moon'
+      X0_sentence_condition: 'if there were a full moon instead of no full moon'
+      X0_wherepartial: there is no full moon
+      X0_wheresentence: '{plural} where there is no full moon'
+      X1_noun: full moon
+      X1_sentence: 'there is a full moon'
+      X1_sentence_condition: 'if there were no full moon instead of a full moon'
+      X1_wherepartial: there is a full moon
+      X1_wheresentence: '{plural} where there is a full moon'
+      Xname: full moon
+
+  Y:
+    rainfall:
+      Y0_noun: low rainfall
+      Y0_sentence: 'there is low rainfall'
+      Y0_wherepartial: there is low rainfall
+      Y0_wheresentence: '{plural} where there is low rainfall'
+      Y1_noun: 'high rainfall'
+      Y1_sentence: 'there is high rainfall'
+      Y1_wherepartial: 'there is high rainfall'
+      Y1_wheresentence: '{plural} where there is high rainfall'
+      Yname: rainfall
+
+    curly hair:
+      Y0_noun: straight hair
+      Y0_sentence: 'the {subject} has straight hair'
+      Y0_wherepartial: have straight hair
+      Y0_wheresentence: '{plural} who have straight hair'
+      Y1_noun: 'curly hair'
+      Y1_sentence: 'the {subject} has curly hair'
+      Y1_wherepartial: 'have curly hair'
+      Y1_wheresentence: '{plural} who have curly hair'
+      Yname: curly hair
+
+    foot size:
+      Y0_noun: small feet
+      Y0_sentence: 'the {subject} has small feet'
+      Y0_wherepartial: have small feet
+      Y0_wheresentence: '{plural} who have small feet'
+      Y1_noun: 'large feet'
+      Y1_sentence: 'the {subject} has large feet'
+      Y1_wherepartial: 'have large feet'
+      Y1_wheresentence: '{plural} who have large feet'
+      Yname: foot size
+
+    earthquakes:
+      Y0_noun: few earthquakes
+      Y0_sentence: 'there are few earthquakes'
+      Y0_wherepartial: there are few earthquakes
+      Y0_wheresentence: '{plural} where there are few earthquakes'
+      Y1_noun: 'many earthquakes'
+      Y1_sentence: 'there are many earthquakes'
+      Y1_wherepartial: 'there are many earthquakes'
+      Y1_wheresentence: '{plural} where there are many earthquakes'
+      Yname: earthquakes
+
+    black hair:
+      Y0_noun: blond hair
+      Y0_sentence: 'the {subject} has blond hair'
+      Y0_wherepartial: have blond hair
+      Y0_wheresentence: '{plural} who have blond hair'
+      Y1_noun: 'black hair'
+      Y1_sentence: 'the {subject} has black hair'
+      Y1_wherepartial: 'have black hair'
+      Y1_wheresentence: '{plural} who have black hair'
+      Yname: black hair
+
+    lip thickness:
+      Y0_noun: thin lips
+      Y0_sentence: 'the {subject} has thin lips'
+      Y0_wherepartial: have thin lips
+      Y0_wheresentence: '{plural} who have thin lips'
+      Y1_noun: 'thick lips'
+      Y1_sentence: 'the {subject} has thick lips'
+      Y1_wherepartial: 'have thick lips'
+      Y1_wheresentence: '{plural} who have thick lips'
+      Yname: lip thickness
+
+    freckles:
+      Y0_noun: no freckles
+      Y0_sentence: 'the {subject} has no freckles'
+      Y0_wherepartial: have no freckles
+      Y0_wheresentence: '{plural} who have no freckles'
+      Y1_noun: 'freckles'
+      Y1_sentence: 'the {subject} has freckles'
+      Y1_wherepartial: 'have freckles'
+      Y1_wheresentence: '{plural} who have freckles'
+      Yname: freckles
+
+    brown eyes:
+      Y0_noun: blue eyes
+      Y0_sentence: 'the {subject} has blue eyes'
+      Y0_wherepartial: have blue eyes
+      Y0_wheresentence: '{plural} who have blue eyes'
+      Y1_noun: 'brown eyes'
+      Y1_sentence: 'the {subject} has brown eyes'
+      Y1_wherepartial: 'have brown eyes'
+      Y1_wheresentence: '{plural} who have brown eyes'
+      Yname: brown eyes
+
+    is allergic to peanuts:
+      Y0_noun: not being allergic to peanuts
+      Y0_sentence: 'the {subject} is not allergic to peanuts'
+      Y0_wherepartial: are not allergic to peanuts
+      Y0_wheresentence: '{plural} who are not allergic to peanuts'
+      Y1_noun: 'being allergic to peanuts'
+      Y1_sentence: 'the {subject} is allergic to peanuts'
+      Y1_wherepartial: 'are allergic to peanuts'
+      Y1_wheresentence: '{plural} who are allergic to peanuts'
+      Yname: peanut allergy
+
+    lactose intolerance:
+      Y0_noun: not being lactose intolerant
+      Y0_sentence: 'the {subject} is not lactose intolerant'
+      Y0_wherepartial: are not lactose intolerant
+      Y0_wheresentence: '{plural} who are not lactose intolerant'
+      Y1_noun: 'being lactose intolerant'
+      Y1_sentence: 'the {subject} is lactose intolerant'
+      Y1_wherepartial: 'are lactose intolerant'
+      Y1_wheresentence: '{plural} who are lactose intolerant'
+      Yname: lactose intolerance

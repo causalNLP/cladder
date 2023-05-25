@@ -1,0 +1,59 @@
+Source: Causality and Counterfactuals in the Situation Calculus
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: not blowing out the candle
+X0_sentence: the person in the room doesn't blow out the candle
+X0_sentence_condition: if the person in the room had not blown out the candle instead
+  of blowing out the candle
+X0_wherepartial: not blowing out candles
+X0_wheresentence: people not blowing out candles
+X1_noun: blowing out the candle
+X1_sentence: the person in the room blows out the candle
+X1_sentence_condition: if the person in the room had blown out the candle instead of
+  not blowing out the candle
+X1_wherepartial: blow out candles
+X1_wheresentence: people who blow out candles
+Xname: the man in the room
+Xsubject: person
+Y0_noun: bright room
+Y0_sentence: the room is bright
+Y0_wherepartial: rooms that are bright
+Y0_wheresentence: rooms that are bright
+Y1_noun: dark room
+Y1_sentence: the room is dark
+Y1_wherepartial: rooms that are dark
+Y1_wheresentence: rooms that are dark
+Yname: room
+Z0_noun: candle out of wax
+Z0_sentence: the candle is out of wax
+Z0_wherepartial: with candles out of wax
+Z0_wheresentence: those with candles out of wax
+Z1_noun: candle with wax
+Z1_sentence: the candle has wax
+Z1_wherepartial: with candles not out of wax
+Z1_wheresentence: those with candles not out of wax
+Zname: the candle
+Zsubject: situation
+easy:
+  - {X: [0.2, 0.7], Z: [0.4, 0.9], Y: {X: 0.3, Z: 0.4}}
+hard:
+  - {Z: [0, 0.1], X: [0, 0.2], Y: {X: -0.3, Z: -0.4}}
+causal_graph_type: confounding
+params:
+  conjunction: [true, false]
+  negation: [true, false]
+phenomenon: fork
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: Causality and Counterfactuals in the Situation Calculus
+story_id: candle
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

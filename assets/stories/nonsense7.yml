@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not vubr
+W0_noun: not vubr
+W0_sentence: an individual is not vubr
+W0_wherepartial: are not vubr
+W0_wheresentence: those who are not vubr
+W1: is vubr
+W1_noun: vubr
+W1_sentence: an individual is vubr
+W1_wherepartial: are vubr
+W1_wheresentence: those who are vubr
+Wname: vubr
+X0: is not zuph
+X0_noun: not zuph
+X0_sentence: an individual is not zuph
+X0_sentence_condition: if the individual was not zuph instead of zuph
+X0_wherepartial: are not zuph
+X0_wheresentence: those who are not zuph
+X1: is zuph
+X1_noun: zuph
+X1_sentence: an individual is zuph
+X1_sentence_condition: if the individual was zuph instead of not zuph
+X1_wherepartial: are zuph
+X1_wheresentence: those who are zuph
+Xname: zuph
+Y0: is not uvzi
+Y0_noun: not uvzi
+Y0_sentence: an individual is not uvzi
+Y0_wherepartial: are not uvzi
+Y0_wheresentence: those who are not uvzi
+Y1: is uvzi
+Y1_noun: uvzi
+Y1_sentence: an individual is uvzi
+Y1_wherepartial: are uvzi
+Y1_wheresentence: those who are uvzi
+Yname: uvzi
+Z0: is not wibl
+Z0_noun: not wibl
+Z0_sentence: an individual is not wibl
+Z0_wherepartial: are not wibl
+Z0_wheresentence: those who are not wibl
+Z1: is wibl
+Z1_noun: wibl
+Z1_sentence: an individual is wibl
+Z1_wherepartial: are wibl
+Z1_wheresentence: those who are wibl
+Zname: wibl
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense7
+variable_correspondence: ''

@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not qwiu
+W0_noun: not qwiu
+W0_sentence: an individual is not qwiu
+W0_wherepartial: are not qwiu
+W0_wheresentence: those who are not qwiu
+W1: is qwiu
+W1_noun: qwiu
+W1_sentence: an individual is qwiu
+W1_wherepartial: are qwiu
+W1_wheresentence: those who are qwiu
+Wname: qwiu
+X0: is not jyka
+X0_noun: not jyka
+X0_sentence: an individual is not jyka
+X0_sentence_condition: if the individual was not jyka instead of jyka
+X0_wherepartial: are not jyka
+X0_wheresentence: those who are not jyka
+X1: is jyka
+X1_noun: jyka
+X1_sentence: an individual is jyka
+X1_sentence_condition: if the individual was jyka instead of not jyka
+X1_wherepartial: are jyka
+X1_wheresentence: those who are jyka
+Xname: jyka
+Y0: is not kwox
+Y0_noun: not kwox
+Y0_sentence: an individual is not kwox
+Y0_wherepartial: are not kwox
+Y0_wheresentence: those who are not kwox
+Y1: is kwox
+Y1_noun: kwox
+Y1_sentence: an individual is kwox
+Y1_wherepartial: are kwox
+Y1_wheresentence: those who are kwox
+Yname: kwox
+Z0: is not yupt
+Z0_noun: not yupt
+Z0_sentence: an individual is not yupt
+Z0_wherepartial: are not yupt
+Z0_wheresentence: those who are not yu'detpt
+Z1: is yupt
+Z1_noun: yupt
+Z1_sentence: an individual is yupt
+Z1_wherepartial: are yupt
+Z1_wheresentence: those who are yupt
+Zname: yupt
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense5
+variable_correspondence: ''

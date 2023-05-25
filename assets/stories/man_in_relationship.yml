@@ -1,0 +1,67 @@
+Source: .nan
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: meanness
+X0_sentence: the person is mean
+X0_sentence_condition: if the person had been mean instead of being kind
+X0_wherepartial: with mean personalities
+X0_wheresentence: people with mean personalities
+X1_noun: kindness
+X1_sentence: the person is kind
+X1_sentence_condition: if the person had been kind instead of being mean
+X1_wherepartial: with kind personalities
+X1_wheresentence: people with kind personalities
+Xname: personality
+Xsubject: person
+Y0_noun: unattractive appearance
+Y0_sentence: the person is considered unattractive
+Y0_wherepartial: considered unattractive
+Y0_wheresentence: people considered unattractive
+Y1_noun: attractive appearance
+Y1_sentence: the person is considered attractive
+Y1_wherepartial: considered attractive
+Y1_wheresentence: people considered attractive
+Yname: appearance
+Ysubject: person
+Z0_noun: single
+Z0_sentence: the person is single
+Z0_wherepartial: single people
+Z0_wheresentence: single people
+Z1_noun: in a relationship
+Z1_sentence: the person is in a relationship
+Z1_wherepartial: in a relationship
+Z1_wheresentence: people in a relationship
+Zname: relationship status
+Zsubject: person
+causal_graph_type: collision_fork
+easy:
+  - {X: 2, Y: 1, Z: {X: 1, Y: 1}}
+  - {X: 1, Y: 1, Z: {X: 1, Y: 0}}
+  - {X: 1, Y: 1, Z: {X: 0, Y: 0}}
+  - {X: 1, Y: 1, Z: {X: 0, Y: 1}}
+  - {X: 2, Y: 0, Z: {X: 1, Y: 1}}
+  - {X: 1, Y: 0, Z: {X: 1, Y: 0}}
+  - {X: 1, Y: 0, Z: {X: 0, Y: 0}}
+  - {X: 1, Y: 0, Z: {X: 0, Y: 1}}
+hard:
+  - {X: 0, Y: 0, Z: {X: -1, Y: -1}}
+  - {X: 0, Y: 2, Z: {X: -1, Y: -1}}
+  - {X: 2, Y: 2, Z: {X: -1, Y: -1}}
+  - {X: 0, Y: 2, Z: {X: 0, Y: -1}}
+params: {}
+phenomenon: collision
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause1->collider, cause2->collider
+source: .nan
+story_id: man_in_relationship
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: cause2, Z: collider}

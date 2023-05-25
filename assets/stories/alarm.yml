@@ -1,0 +1,62 @@
+Source: Causality and Counterfactuals in the Situation Calculus
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: alarm not set by husband
+X0_sentence: the husband doesn't set the alarm
+X0_sentence_condition: if the husband had not set the alarm instead of setting the
+  alarm
+X0_wherepartial: husbands that don't set the alarm
+X0_wheresentence: husbands that don't set the alarm
+X1_noun: alarm set by husband
+X1_sentence: the husband sets the alarm
+X1_sentence_condition: if the husband had set the alarm instead of not setting the
+  alarm
+X1_wherepartial: husbands that set the alarm
+X1_wheresentence: husbands that set the alarm
+Xname: husband
+Xsubject: person
+Y0_noun: silent alarm
+Y0_sentence: the alarm doesn't ring the next morning
+Y0_wherepartial: alarms not ringing the next morning
+Y0_wheresentence: alarms not ringing the next morning
+Y1_noun: ringing alarm
+Y1_sentence: the alarm rings the next morning
+Y1_wherepartial: alarms ringing the next morning
+Y1_wheresentence: alarms ringing the next morning
+Yname: alarm clock
+#Ysubject: alarm
+Z0_noun: alarm not set by wife
+Z0_sentence: the wife doesn't set the alarm
+Z0_wherepartial: wives that don't set the alarm
+Z0_wheresentence: wives that don't set the alarm
+Z1_noun: alarm set by wife
+Z1_sentence: the wife sets the alarm
+Z1_wherepartial: wives that set the alarm
+Z1_wheresentence: wives that set the alarm
+Zname: wife
+Zsubject: person
+causal_graph_type: confounding
+easy:
+  - {X: [0.6, 0.8], Z: {X: -0.2}, Y: {X: 0.3, Z: 0.4}}
+  - {X: [0.7, 0.9], Z: {X: 0}, Y: {X: 0.4, Z: 0.4}}
+hard:
+  - {X: [0, 0.2], Z: {X: 0.1}, Y: {X: -0.3, Z: -0.4}}
+params:
+  conjunction: [true, false]
+  negation: [true, false]
+#phenomenon: det-triangle
+phenomenon: mediation
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: Causality and Counterfactuals in the Situation Calculus
+story_id: alarm
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

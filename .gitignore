@@ -5,6 +5,10 @@ __pycache__/
 extra/
 data/backup/
 
+notebooks/
+sketches/
+outputs/
+
 .idea/
 
 # C extensions

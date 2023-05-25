@@ -1,0 +1,57 @@
+Source: .nan
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: unattractive appearance
+X0_sentence: the person is considered unattractive
+X0_sentence_condition: if the person had been considered unattractive instead of attractive
+X0_wherepartial: considered unattractive
+X0_wheresentence: people considered unattractive
+X1_noun: attractive appearance
+X1_sentence: the person is considered attractive
+X1_sentence_condition: if the person had been considered attractive instead of unattractive
+X1_wherepartial: considered attractive
+X1_wheresentence: people considered attractive
+Xname: appearance
+Xsubject: person
+Y0_noun: lack of talent
+Y0_sentence: the person is not talented
+Y0_wherepartial: are not talented
+Y0_wheresentence: people who are not talented
+Y1_noun: talent
+Y1_sentence: the person is talented
+Y1_wherepartial: are talented
+Y1_wheresentence: people who are talented
+Yname: talent # level
+Ysubject: person
+Z0_noun: lack of fame
+Z0_sentence: the person is not famous
+Z0_wherepartial: are not famous
+Z0_wheresentence: people who are not famous
+Z1_noun: fame
+Z1_sentence: the person is famous
+Z1_wherepartial: are famous
+Z1_wheresentence: people who are famous
+Zname: fame
+Zsubject: person
+causal_graph_type: collision_fork
+easy:
+  - {X: 1, Y: 0, Z: {X: 1, Y: 1}}
+hard:
+  - {X: 2, Y: 2, Z: {X: -1, Y: -1}}
+params: {}
+phenomenon: collision
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause1->collider, cause2->collider
+source: .nan
+story_id: celebrity
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: cause2, Z: collider}

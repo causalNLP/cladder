@@ -1,0 +1,15 @@
+
+_base: [queries/reg, stories/reg]
+
+
+path: data/data-common.json
+model-meta: data/data-models.json
+
+
+spec-limit: 30
+
+
+seed: 101
+
+difficulty: easy
+

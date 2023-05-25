@@ -1,0 +1,65 @@
+Source: 3 Directed Acyclic Graphs
+W0_noun: low skill level
+W0_sentence: the person has a low skill level
+W0_wherepartial: with low skill levels
+W0_wheresentence: people with low skill levels
+W1_noun: high skill level
+W1_sentence: the person has a high skill level
+W1_wherepartial: with high skill levels
+W1_wheresentence: people with high skill levels
+Wname: skill
+Wsubject: person
+X0_noun: non-male gender
+X0_sentence: the individual is not male
+X0_sentence_condition: if the individual had not been male instead of male
+X0_wherepartial: are not male
+X0_wheresentence: individuals who are not male
+X1_noun: male gender
+X1_sentence: the individual is male
+X1_sentence_condition: if the individual had been male instead of not being male
+X1_wherepartial: are male
+X1_wheresentence: individuals who are male
+Xname: gender
+Xsubject: individual
+Y0_noun: low salary
+Y0_sentence: the employee has a low salary
+Y0_wherepartial: with low salaries
+Y0_wheresentence: employees with low salaries
+Y1_noun: high salary
+Y1_sentence: the employee has a high salary
+Y1_wherepartial: with high salaries
+Y1_wheresentence: employees with high salaries
+Yname: salary
+Ysubject: employee
+Z0_noun: blue-collar job
+Z0_sentence: the person has a blue-collar job
+Z0_wherepartial: blue-collar workers
+Z0_wheresentence: blue-collar workers
+Z1_noun: white-collar job
+Z1_sentence: the person has a white-collar job
+Z1_wherepartial: white-collar workers
+Z1_wheresentence: white-collar workers
+Zname: occupation
+Zsubject: person
+causal_graph_type: arrowhead
+params: {}
+easy:
+  - {X: 1, W: 0, Z: {X: 1, W: 0}, Y: {Z: 1, X: 0, W: 0}}
+  - {X: 1, W: 0, Z: {X: 1, W: 1}, Y: {Z: 1, X: 0, W: 0}}
+  - {X: 1, W: 0, Z: {X: 1, W: 0}, Y: {Z: 1, X: 1, W: 0}}
+  - {X: 1, W: 0, Z: {X: 0, W: 0}, Y: {Z: 1, X: 1, W: -1}}
+  - {X: 1, W: 0, Z: {X: 0, W: 0}, Y: {Z: 1, X: 1, W: 0}}
+hard:
+  - {X: 0, W: 2, Z: {X: -1, W: -1}, Y: {Z: -1, X: -1, W: -1}}
+  - {X: 0, W: 2, Z: {X: 0, W: -1}, Y: {Z: -1, X: 0, W: -1}}
+  - {X: 2, W: 2, Z: {X: 1, W: -1}, Y: {Z: -1, X: 1, W: -1}}
+phenomenon: arrowhead
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): conf->collider, conf->effect, cause->collider,
+  cause->effect, collider->effect
+source: .nan
+story_id: gender_pay
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z collider: null}

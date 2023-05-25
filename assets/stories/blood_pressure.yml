@@ -1,0 +1,61 @@
+Source: Why p.192 (pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: not taking medication
+X0_sentence: the person takes no medication
+X0_sentence_condition: if the person had taken no medication instead of taking medication
+X0_wherepartial: not taking any medication
+X0_wheresentence: people not taking any medication
+X1_noun: taking medication
+X1_sentence: the person takes medication
+X1_sentence_condition: if the person had taken medication instead of not taking any medication
+X1_wherepartial: taking medication
+X1_wheresentence: people taking medication
+Xname: medication
+Xsubject: person
+Y0_noun: heart problems
+Y0_sentence: the person experiences a heart problems
+Y0_wherepartial: experiencing heart problems
+Y0_wheresentence: people experiencing heart problems
+Y1_noun: healthy heart
+Y1_sentence: the person has a healthy heart
+Y1_wherepartial: with healthy hearts
+Y1_wheresentence: people with healthy hearts
+Yname: heart condition
+Ysubject: person
+Z0_noun: low blood pressure
+Z0_sentence: the person has low blood pressure
+Z0_wherepartial: with low blood pressure
+Z0_wheresentence: people with low blood pressure
+Z1_noun: high blood pressure
+Z1_sentence: the person has high blood pressure
+Z1_wherepartial: with high blood pressure
+Z1_wheresentence: people with high blood pressure
+Zname: blood pressure
+Zsubject: person
+causal_graph_type: confounding
+easy:
+  - {X: 2, Z: {X: -1}, Y: {Z: -1, X: 1}}
+  - {X: 1, Z: {X: -1}, Y: {Z: -1, X: 0}}
+  - {X: 1, Z: {X: 0}, Y: {Z: -1, X: 1}}
+  - {X: 2, Z: {X: 0}, Y: {Z: -1, X: 0}}
+hard:
+  - {X: 0, Z: {X: 1}, Y: {Z: 1, X: -1}}
+  - {X: 0, Z: {X: 0}, Y: {Z: 1, X: -1}}
+params: {}
+phenomenon: mediation
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): cause->med, cause->effect, med->effect
+source: Why p.192 (pdf)
+story_id: simpson_blood_pressure
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

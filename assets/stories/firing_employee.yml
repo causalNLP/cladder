@@ -1,0 +1,62 @@
+Source: self-composed
+W0_noun: director not signing the termination letter
+W0_sentence: the director doesn't sign the termination letter
+W0_wherepartial: directors who don't sign termination letters
+W0_wheresentence: directors who don't sign termination letters
+W1_noun: director signing the termination letter
+W1_sentence: the director signs the termination letter
+W1_wherepartial: directors who sign termination letters
+W1_wheresentence: directors who sign termination letters
+Wname: director
+Z0_noun: CEO's decision to retain the employee
+Z0_sentence: the CEO decides to retain the employee
+#Z0_sentence_condition: if the CEO had decided to retain the employee instead of firing the employee
+Z0_wherepartial: CEOs who fire employees
+Z0_wheresentence: CEOs who fire employees
+Z1_noun: CEO's decision to fire the employee
+Z1_sentence: the CEO decides to fire the employee
+#Z1_sentence_condition: if the CEO had decided to fire the employee instead of retaining the employee
+Z1_wherepartial: CEOs who fire employees
+Z1_wheresentence: CEOs who fire employees
+Zname: CEO
+Zsubject: person
+Y0_noun: employee not being fired
+Y0_sentence: the employee is not fired
+Y0_wherepartial: employees are not fired
+Y0_wheresentence: employees who are not fired
+Y1_noun: employee being fired
+Y1_sentence: the employee is fired
+Y1_wherepartial: employees who are fired
+Y1_wheresentence: employees who are fired
+Yname: employee
+Ysubject: person
+X0_noun: manager not signing the termination letter
+X0_sentence: the manager doesn't sign the termination letter
+X0_sentence_condition: if the manager had signed the termination letter instead of
+  not signing the termination letter
+X0_wherepartial: managers who don't sign termination letters
+X0_wheresentence: managers who don't sign termination letters
+X1_noun: manager signing the termination letter
+X1_sentence: the manager signs the termination letter
+X1_sentence_condition: if the manager had signed the termination letter instead of
+  not signing the termination letter
+X1_wherepartial: managers who sign termination letters
+X1_wheresentence: managers who sign termination letters
+Xname: manager
+Xsubject: person
+easy:
+  - {Z: [0.1, 0.3], X: {Z: 0.1}, W: {Z: 0.2}, Y: {X: 0.3, W: 0.3}}
+hard:
+  - {Z: [0.8, 1], X: {Z: -0.4}, W: {Z: -0.3}, Y: {X: -0.3, W: -0.3}}
+causal_graph_type: diamond
+params:
+  conjunction: [true, false]
+phenomenon: diamondcut
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): root_cause->cause1, root_cause->cause2, cause1->effect,
+  cause2->effect
+source: self_composed
+story_id: firing_employee
+structural_equation: .nan
+variable_correspondence: {W: cause2, Z: root_cause, Y: effect, X: cause1}

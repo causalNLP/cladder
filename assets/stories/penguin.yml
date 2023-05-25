@@ -1,0 +1,58 @@
+Source: .nan
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: taking the stairs
+X0_sentence: I take the stairs
+X0_sentence_condition: if I had taken the stairs instead of taking the elevator
+X0_wherepartial: choose to take the stairs
+X0_wheresentence: those who choose to take the stairs
+X1_noun: taking the elevator
+X1_sentence: I take the elevator
+X1_sentence_condition: if I had taken the elevator instead of taking the stairs
+X1_wherepartial: choose to take the elevator
+X1_wheresentence: those who choose to take the elevator
+Xname: my decision
+Xsubject: individual
+Y0_noun: penguin lives
+Y0_sentence: the penguin lives
+Y0_wherepartial: penguins who survive
+Y0_wheresentence: penguins who survive
+Y1_noun: penguin death
+Y1_sentence: the penguin dies
+Y1_wherepartial: penguins who die
+Y1_wheresentence: penguins who die
+Yname: penguin survival
+Ysubject: person
+Z0_noun: penguin saddness
+Z0_sentence: the penguin is sad
+Z0_wherepartial: penguins who are sad
+Z0_wheresentence: penguins who are sad
+Z1_noun: penguin happiness
+Z1_sentence: the penguin is happy
+Z1_wherepartial: penguins who are happy
+Z1_wheresentence: penguins who are happy
+Zname: penguin mood
+causal_graph_type: .nan
+easy:
+  - {X: [0.3, 0.8], Z: {X: -0.1}, Y: {X: 0.05, Z: 0.3}}
+hard:
+  - {X: [0, 0.2], Z: {X: 0.1}, Y: {X: -0.3, Z: -0.2}}
+  - {X: [0, 0.2], Z: {X: 0.2}, Y: {X: -0.3}}
+params:
+  conjunction: [true, false]
+  negation: [true, false]
+phenomenon: mediation
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: self_composed
+story_id: penguin
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

@@ -1,0 +1,57 @@
+Source: self-composed
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: waking up on time
+X0_sentence: Alice gets up on time
+X0_sentence_condition: if Alice had gotten up on time instead of getting up late
+X0_wherepartial: Alice wakes up on time
+X0_wheresentence: days when Alice wakes up on time
+X1_noun: waking up late
+X1_sentence: Alice gets up late
+X1_sentence_condition: if Alice had gotten up late instead of getting up on time
+X1_wherepartial: Alice wakes up late
+X1_wheresentence: days when Alice wakes up late
+Xname: Alice waking up
+Xsubject: situation
+Y0_noun: arriving to school late
+Y0_sentence: Alice arrives at school late
+Y0_wherepartial: Alice arrives at school late
+Y0_wheresentence: days when Alice arrives at school late
+Y1_noun: arriving to school on time
+Y1_sentence: Alice arrives at school on time
+Y1_wherepartial: Alice arrives at school on time
+Y1_wheresentence: days when Alice arrives at school on time
+Yname: Alice arriving to school
+Ysubject: situation
+Z0_noun: no traffic
+Z0_sentence: there is no traffic on the road
+Z0_wherepartial: with no traffic issues
+Z0_wheresentence: days with no traffic issues
+Z1_noun: heavy traffic
+Z1_sentence: there is heavy traffic on the road
+Z1_wherepartial: with heavy traffic
+Z1_wheresentence: days with heavy traffic
+Zname: traffic
+easy:
+  - {X: [0.5, 0.9], Z: [0.2, 0.8], Y: {X: -0.2, Z: -0.1}}
+  - {X: [0.3, 0.6], Z: [0.2, 0.8], Y: {X: -0.2, Z: 0}}
+hard:
+  - {Z: [0.7, 0.9], X: [0, 0.2], Y: {X: 0.3, Z: 0.4}}
+causal_graph_type: fork
+params:
+  conjunction: [true, false]
+phenomenon: fork
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: self_composed
+story_id: getting_late
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

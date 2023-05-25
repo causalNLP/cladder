@@ -1,0 +1,63 @@
+Source: Why p.279(pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: other unobserved factors
+X0_noun: unintelligent parents
+X0_sentence: the child has unintelligent parents
+X0_sentence_condition: if the child had unintelligent parents instead of intelligent parents
+X0_wherepartial: with unintelligent parents
+X0_wheresentence: children with unintelligent parents
+X1_noun: intelligent parents
+X1_sentence: the child has intelligent parents
+X1_sentence_condition: if the child had intelligent parents instead of unintelligent parents
+X1_wherepartial: with intelligent parents
+X1_wheresentence: children with intelligent parents
+Xname: parents' intelligence
+Xsubject: child
+Y0_noun: unintelligent child
+Y0_sentence: the child is not intelligent
+Y0_wherepartial: with low intelligence
+Y0_wheresentence: children with low intelligence
+Y1_noun: intelligent child
+Y1_sentence: the child is intelligent
+Y1_wherepartial: with high intelligence
+Y1_wheresentence: children with high intelligence
+Yname: child's intelligence
+Ysubject: child
+Z0_noun: low parental social status
+Z0_sentence: the child has parents with low social status
+Z0_wherepartial: with low parental social status
+Z0_wheresentence: children with low parental social status
+Z1_noun: high parental social status
+Z1_sentence: the child has parents with high social status
+Z1_wherepartial: with high parental social status
+Z1_wheresentence: children with high parental social status
+Zname: parents' social status
+Zsubject: child
+causal_graph_type: arrowhead
+easy:
+  - {X: 1, W: 1, Z: {X: 1, W: 0}, Y: {Z: 0, X: 1, W: 0}}
+  - {X: 1, W: 1, Z: {X: 1, W: 0}, Y: {Z: -1, X: 1, W: 0}}
+  - {X: 1, W: 1, Z: {X: 0, W: 0}, Y: {Z: 0, X: 1, W: 0}}
+  - {X: 1, W: 1, Z: {X: -1, W: 0}, Y: {Z: 0, X: 1, W: 0}}
+hard:
+  - {X: 0, W: 1, Z: {X: -1, W: -1}, Y: {Z: 0, X: -1, W: 0}}
+  - {X: 0, W: 1, Z: {X: -1, W: 0}, Y: {Z: -1, X: -1, W: 0}}
+  - {X: 0, W: 1, Z: {X: 0, W: 0}, Y: {Z: -1, X: -1, W: 0}}
+params: {}
+phenomenon: arrowhead
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause->med, cause->effect, conf->med, conf->effect,
+  med->effect
+source: Why p.279(pdf)
+story_id: nature_vs_nurture
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: med}

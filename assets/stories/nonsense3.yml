@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not cwoi
+W0_noun: not cwoi
+W0_sentence: an individual is not cwoi
+W0_wherepartial: are not cwoi
+W0_wheresentence: those who are not cwoi
+W1: is cwoi
+W1_noun: cwoi
+W1_sentence: an individual is cwoi
+W1_wherepartial: are cwoi
+W1_wheresentence: those who are cwoi
+Wname: cwoi
+X0: is not yomx
+X0_noun: not yomx
+X0_sentence: an individual is not yomx
+X0_sentence_condition: if the individual was not yomx instead of yomx
+X0_wherepartial: are not yomx
+X0_wheresentence: those who are not yomx
+X1: is yomx
+X1_noun: yomx
+X1_sentence: an individual is yomx
+X1_sentence_condition: if the individual was yomx instead of not yomx
+X1_wherepartial: are yomx
+X1_wheresentence: those who are yomx
+Xname: yomx
+Y0: is not xevu
+Y0_noun: not xevu
+Y0_sentence: an individual is not xevu
+Y0_wherepartial: are not xevu
+Y0_wheresentence: those who are not xevu
+Y1: is xevu
+Y1_noun: xevu
+Y1_sentence: an individual is xevu
+Y1_wherepartial: are xevu
+Y1_wheresentence: those who are xevu
+Yname: xevu
+Z0: is not gwet
+Z0_noun: not gwet
+Z0_sentence: an individual is not gwet
+Z0_wherepartial: are not gwet
+Z0_wheresentence: those who are not gwet
+Z1: is gwet
+Z1_noun: gwet
+Z1_sentence: an individual is gwet
+Z1_wherepartial: are gwet
+Z1_wheresentence: those who are gwet
+Zname: gwet
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense3
+variable_correspondence: ''

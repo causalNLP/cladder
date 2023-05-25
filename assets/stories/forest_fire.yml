@@ -1,0 +1,59 @@
+Source: {Causes and Explanations: "A Structural-Model Approach\u2014", Part II: Explanations}
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: the camper not lighting a match
+X0_sentence: the camper doesn't light a match
+X0_sentence_condition: if the camper had not lit a match instead of lighting
+  a match
+X0_wherepartial: campers who do not light a match
+X0_wheresentence: campers who do not light a match
+X1_noun: the camper lighting a match
+X1_sentence: the camper lights a match
+X1_sentence_condition: if the camper had lit a match instead of not lighting
+  a match
+X1_wherepartial: campers who light a match
+X1_wheresentence: campers who light a match
+Xname: the camper
+Xsubject: person
+Y0_noun: the forest not on fire
+Y0_sentence: the forest doesn't burn down
+Y0_wherepartial: forests that are not burned down
+Y0_wheresentence: forests that are not burned down
+Y1_noun: the forest on fire
+Y1_sentence: the forest burns down
+Y1_wherepartial: forests that are burned down
+Y1_wheresentence: forests that are burned down
+Yname: the forest
+Ysubject: situation
+Z0_noun: the chain-smoker not lighting a match
+Z0_sentence: the chain-smoker doesn't light a match
+Z0_wherepartial: chain-smokers who do not light a match
+Z0_wheresentence: chain-smokers who do not light a match
+Z1_noun: the chain-smoker lighting a match
+Z1_sentence: the chain-smoker lights a match
+Z1_wherepartial: chain-smokers who light a match
+Z1_wheresentence: chain-smokers who light a match
+Zname: the smoker
+easy:
+  - {X: [0, 0.3], Z: [0.6, 0.9], Y: {X: 0.2, Z: 0.05}}
+hard:
+  - {X: [0.9, 1], Z: [0, 0.2], Y: {X: -0.1, Z: -0.4}}
+  - {X: [0.9, 1], Z: [0, 0.2], Y: {X: -0.3, Z: -0.4}}
+causal_graph_type: fork
+params:
+  conjunction: [true, false]
+phenomenon: fork
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: {Causes and Explanations: A Structural-Model Approach. Part II}
+story_id: forest_fire
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

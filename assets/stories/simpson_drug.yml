@@ -1,0 +1,65 @@
+Source: Why p.191 (pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: receives no treatment
+X0_sentence: the patient receives no treatment
+X0_sentence_condition: if the patient had received no treatment instead of receiving treatment
+X0_wherepartial: not receiving treatment
+X0_wheresentence: patients not receiving treatment
+X1_noun: receives treatment
+X1_sentence: the patient receives treatment
+X1_sentence_condition: if the patient had received treatment instead of not receiving treatment
+X1_wherepartial: receiving treatment
+X1_wheresentence: patients receiving treatment
+Xname: treatment
+Xsubject: patient
+Y0_noun: non-recovery
+Y0_sentence: the patient doesn't recover
+Y0_wherepartial: not experiencing recovery
+Y0_wheresentence: patients not experiencing recovery
+Y1_noun: recovery
+Y1_sentence: the patient does recover
+Y1_wherepartial: experiencing recovery
+Y1_wheresentence: patients experiencing recovery
+Yname: recovery
+Ysubject: patient
+Z0_noun: non-male gender
+Z0_sentence: the patient is not male
+Z0_wherepartial: are not male
+Z0_wheresentence: patients who are not male
+Z1_noun: male gender
+Z1_sentence: the patient is male
+Z1_wherepartial: are male
+Z1_wheresentence: patients who are male
+Zname: gender
+Zsubject: patient
+causal_graph_type: confounding
+params: {}
+easy:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.5}, 'Y': {'X': 0.2, 'Z': 0.7}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': 0.1, 'Z': 0.55}}
+#  - {Z: 1, X: {Z: -1}, Y: {X: 1, Z: 1}}
+#  - {Z: 1, X: {Z: 1}, Y: {X: -1, Z: -1}}
+hard:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': -0.1, 'Z': -0.55}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': -0.3, 'Z': -0.55}}
+#  - {Z: 2, X: {Z: 1}, Y: {X: -1, Z: -1}}
+#  - {Z: 0, X: {Z: -1}, Y: {X: -1, Z: 1}}
+meta:
+  simpson: true
+phenomenon: confounding
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): conf->cause, conf->effect, cause->effect
+source: Why p.191 (pdf)
+story_id: simpson_drug
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: conf}

@@ -1,0 +1,60 @@
+Source: A Primer p.94
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: discouragement
+X0_sentence: the student receives no encouragement
+X0_sentence_condition: if the student had received no encouragement instead of being
+  encouraged
+X0_wherepartial: are not encouraged
+X0_wheresentence: students who are not encouraged
+X1_noun: encouragement
+X1_sentence: the student is encouraged
+X1_sentence_condition: if the student had been encouraged instead of receiving no
+  encouragement
+X1_wherepartial: are encouraged
+X1_wheresentence: students who are encouraged
+Xname: encouragement level
+Xsubject: student
+Y0_noun: low exam score
+Y0_sentence: the student has a low exam score
+Y0_wherepartial: with low exam scores
+Y0_wheresentence: students with low exam scores
+Y1_noun: high exam score
+Y1_sentence: the student has a high exam score
+Y1_wherepartial: with high exam scores
+Y1_wheresentence: students with high exam scores
+Yname: exam score
+Ysubject: student
+Z0_noun: lack of studying
+Z0_sentence: the student doesn't study
+Z0_wherepartial: do not study hard
+Z0_wheresentence: students who do not study hard
+Z1_noun: studying hard
+Z1_sentence: the student studies hard
+Z1_wherepartial: study hard
+Z1_wheresentence: those who study hard
+Zname: studying habit
+Zsubject: student
+causal_graph_type: confounding
+params: {}
+easy:
+  - {X: 0, Z: {X: 1}, Y: {Z: 1, X: 1}}
+  - {X: 1, Z: {X: 1}, Y: {Z: 1, X: 1}}
+hard:
+  - {X: 2, Z: {X: -1}, Y: {Z: -1, X: -1}}
+phenomenon: mediation
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause->med, cause->effect, med->effect
+source: A Primer p.94
+story_id: encouagement_program
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

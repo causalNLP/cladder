@@ -1,0 +1,59 @@
+Source: A Primer p.66
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: nonsmoking
+X0_sentence: the person is a nonsmoker
+X0_sentence_condition: if the person had been a nonsmoker instead of a smoker
+X0_wherepartial: nonsmokers
+X0_wheresentence: nonsmokers
+X1_noun: smoking
+X1_sentence: the person is a smoker
+X1_sentence_condition: if the person had been a smoker instead of a nonsmoker
+X1_wherepartial: smokers
+X1_wheresentence: smokers
+Xname: smoking
+Xsubject: person
+Y0_noun: absence of lung cancer
+Y0_sentence: the person has no lung cancer
+Y0_wherepartial: with no lung cancer
+Y0_wheresentence: people with no lung cancer
+Y1_noun: lung cancer
+Y1_sentence: the person has lung cancer
+Y1_wherepartial: with lung cancer
+Y1_wheresentence: people with lung cancer
+Yname: lung cancer
+Ysubject: person
+Z0_noun: absence of tar deposit
+Z0_sentence: the person has no tar deposit in their lungs
+Z0_wherepartial: with no tar deposit
+Z0_wheresentence: people with no tar deposit
+Z1_noun: high tar deposit
+Z1_sentence: the person has a high tar deposit in their lungs
+Z1_wherepartial: with high tar deposit
+Z1_wheresentence: people with high tar deposit
+Zname: tar deposit
+Zsubject: person
+causal_graph_type: chain
+easy:
+  - {X: 0, Z: {X: 1}, Y: {Z: 1}}
+hard:
+  - {X: 0, Z: {X: -1}, Y: {Z: -1}}
+  - {X: 2, Z: {X: -1}, Y: {Z: -1}}
+  - {X: 2, Z: {X: 1}, Y: {Z: -1}}
+params: {}
+phenomenon: chain
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: nonlinear
+semantic_graph (by topological order): cause->med->effect
+source: A Primer p.66
+story_id: smoking_tar_cancer
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

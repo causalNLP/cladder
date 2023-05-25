@@ -1,0 +1,15 @@
+
+
+
+builder:
+  _type: deterministic
+
+
+
+queries:
+  - _type: det-counterfactual
+    ask-polarities: yes
+    ask-treatments: no
+    ask-outcomes: no
+
+

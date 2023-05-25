@@ -1,0 +1,49 @@
+
+
+
+stories:
+# DETERMINISTIC
+  - alarm #
+  - candle #
+  - firing_employee #
+  - firing_squad #
+  - floor_wet #
+  - forest_fire #
+  - getting_late #
+  - getting_tanned #
+  - penguin #
+  - vaccine_kills #
+
+# NONDETERMINISTIC
+  - blood_pressure #
+  - celebrity #
+  - cholesterol #
+  - college_salary #
+  - college_wage #
+  - elite_students #
+  - encouagement_program #
+  - gender_admission #
+  - gender_admission_state #
+  - gender_pay #
+  - hospitalization #
+  - man_in_relationship #
+  - nature_vs_nurture #
+  - neg_mediation #
+  - obesity_mortality #
+  - orange_scurvy #
+  - price #
+  - simpson_drug #
+  - simpson_hospital #
+  - simpson_kidneystone #
+  - simpson_vaccine #
+  - smoke_birthWeight #
+  - smoking_frontdoor #
+  - smoking_gene_cancer #
+  - smoking_tar_cancer #
+  - tax_smoke_birthWeight #
+  - water_cholera #
+
+
+
+
+

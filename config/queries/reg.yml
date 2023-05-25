@@ -1,0 +1,57 @@
+
+
+
+builder:
+  _type: difficulty
+
+
+
+queries:
+  - _type: ate
+    ask-polarities: yes
+    ask-treatments: no
+    ask-outcomes: no
+
+  - _type: ett
+    ask-polarities: yes
+    ask-treatments: no
+    ask-outcomes: no
+
+  - _type: nie
+    ask-polarities: yes
+
+  - _type: nde
+    ask-polarities: yes
+
+  - _type: marginal
+    ask-polarities: yes
+    ask-treatments: no
+
+  - _type: correlation
+    ask-polarities: yes
+    ask-treatments: no
+    ask-outcomes: no
+
+  - _type: backadj
+    ask-polarities: no
+    ask-flipped: yes
+    ask-all-adj: no
+    ask-all-bad: no
+
+  - _type: collider_bias
+    ask-polarities: yes
+    ask-all-colliders: no
+    ask-treatments: no
+    ask-outcomes: no
+    ask-baselines: no
+
+  - _type: exp_away
+    ask-polarities: yes
+    ask-all-colliders: no
+    ask-treatments: no
+    ask-outcomes: no
+    ask-baselines: no
+
+
+
+

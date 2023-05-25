@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not zory
+W0_noun: not zory
+W0_sentence: an individual is not zory
+W0_wherepartial: are not zory
+W0_wheresentence: those who are not zory
+W1: is zory
+W1_noun: zory
+W1_sentence: an individual is zory
+W1_wherepartial: are zory
+W1_wheresentence: those who are zory
+Wname: zory
+X0: is not zuph
+X0_noun: not zuph
+X0_sentence: an individual is not zuph
+X0_sentence_condition: if the individual was not zuph instead of zuph
+X0_wherepartial: are not zuph
+X0_wheresentence: those who are not zuph
+X1: is zuph
+X1_noun: zuph
+X1_sentence: an individual is zuph
+X1_sentence_condition: if the individual was zuph instead of not zuph
+X1_wherepartial: are zuph
+X1_wheresentence: those who are zuph
+Xname: zuph
+Y0: is not glimx
+Y0_noun: not glimx
+Y0_sentence: an individual is not glimx
+Y0_wherepartial: are not glimx
+Y0_wheresentence: those who are not glimx
+Y1: is glimx
+Y1_noun: glimx
+Y1_sentence: an individual is glimx
+Y1_wherepartial: are glimx
+Y1_wheresentence: those who are glimx
+Yname: glimx
+Z0: is not jyka
+Z0_noun: not jyka
+Z0_sentence: an individual is not jyka
+Z0_wherepartial: are not jyka
+Z0_wheresentence: those who are not jyka
+Z1: is jyka
+Z1_noun: jyka
+Z1_sentence: an individual is jyka
+Z1_wherepartial: are jyka
+Z1_wheresentence: those who are jyka
+Zname: jyka
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense9
+variable_correspondence: ''

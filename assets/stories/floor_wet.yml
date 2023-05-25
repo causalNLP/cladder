@@ -1,0 +1,58 @@
+Source: Causality p.15
+W0_noun: sprinkler off
+W0_sentence: the sprinkler is off
+W0_wherepartial: with sprinklers off
+W0_wheresentence: situations with sprinklers off
+W1_noun: sprinkler on
+W1_sentence: the sprinkler is on
+W1_wherepartial: with sprinklers on
+W1_wheresentence: situations with sprinklers on
+Wname: sprinkler
+X0_noun: dry season
+X0_sentence: the season is dry
+X0_sentence_condition: if the season had been dry instead of the rainy season
+X0_wherepartial: in the dry season
+X0_wheresentence: people in the dry season
+X1_noun: rainy season
+X1_sentence: the season is rainy
+X1_sentence_condition: if the season had been rainy instead of being dry
+X1_wherepartial: in the rainy season
+X1_wheresentence: in the rainy season
+Xname: season
+Xsubject: situation
+Y0_noun: dry ground
+Y0_sentence: the ground is dry
+Y0_wherepartial: with a dry ground
+Y0_wheresentence: situations with a dry ground
+Y1_noun: wet ground
+Y1_sentence: the ground is wet
+Y1_wherepartial: with a wet ground
+Y1_wheresentence: situations with a wet ground
+Yname: ground
+Ysubject: situation
+Z0_noun: no rain
+Z0_sentence: there is no rain
+Z0_wherepartial: experiencing no rain
+Z0_wheresentence: weather without rain
+Z1_noun: rain
+Z1_sentence: there is rain
+Z1_wherepartial: experiencing rain
+Z1_wheresentence: weather with rain
+Zname: weather
+causal_graph_type: diamond
+easy:
+  - {X: [0.1, 0.4], Z: {X: 0.4}, W: {X: -0.3}, Y: {Z: 0.3, W: 0.2}}
+  - {X: [0.1, 0.5], Z: {X: 0.2}, W: {X: -0.4}, Y: {Z: 0.2, W: 0.1}}
+hard:
+  - {X: [0.8, 1], Z: {X: -0.4}, W: {X: 0.3}, Y: {Z: -0.3, W: -0.3}}
+params:
+  conjunction: [true, false]
+phenomenon: diamond
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): root_cause->cause1, root_cause->cause2, cause1->effect,
+  cause2->effect
+source: Causality p.15
+story_id: floor_wet
+structural_equation: .nan
+variable_correspondence: {W: cause2, X: root_cause, Y: effect, Z: cause1}

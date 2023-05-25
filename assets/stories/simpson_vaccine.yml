@@ -1,0 +1,67 @@
+Source: self-composed
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: vaccine refusal
+X0_sentence: the person refuses the vaccine
+X0_sentence_condition: if the person had not refused the vaccine instead of refusing the vaccine
+X0_wherepartial: refusing the vaccine
+X0_wheresentence: people refusing the vaccine
+X1_noun: getting the vaccine
+X1_sentence: the person gets the vaccine
+X1_sentence_condition: if the person had gotten the vaccine instead of refusing the vaccine
+X1_wherepartial: getting the vaccine
+X1_wheresentence: people getting the vaccine
+Xname: vaccination
+Xsubject: person
+Y0_noun: dying from the disease
+Y0_sentence: the person dies from the disease
+Y0_wherepartial: dying from the disease
+Y0_wheresentence: people dying from the disease
+Y1_noun: recovering from the disease
+Y1_sentence: the person recovers from the disease
+Y1_wherepartial: recovering from the disease
+Y1_wheresentence: people recovering from the disease
+Yname: disease
+Ysubject: person
+Z0_noun: no pre-conditions
+Z0_sentence: the person has no pre-conditions
+Z0_wherepartial: with no pre-conditions
+Z0_wheresentence: people with no pre-conditions
+Z1_noun: pre-conditions
+Z1_sentence: the person has pre-conditions
+Z1_wherepartial: with pre-conditions
+Z1_wheresentence: people with pre-conditions
+Zname: pre-conditions
+Zsubject: person
+causal_graph_type: confounding
+params: {}
+easy:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.7}, 'Y': {'X': 0.2, 'Z': 0.6}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': 0.3, 'Z': 0.55}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.4}, 'Y': {'X': 0.1, 'Z': 0.71}}
+#  - {Z: [0., 0.2], X: {Z: -0.4}, Y: {X: 0.1, Z: -0.1}}
+#  - {Z: [0., 0.2], X: {Z: -0.1}, Y: {X: 0.3, Z: -0.2}}
+hard:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.7}, 'Y': {'X': -0.05, 'Z': -0.6}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.5}, 'Y': {'X': -0.2, 'Z': -0.7}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': -0.1, 'Z': -0.55}}
+#  - {Z: [0.8, 1], X: {Z: 0.3}, Y: {X: -0.2, Z: 0.3}}
+#  - {Z: [0.3, 0.6], X: {Z: 0.3}, Y: {X: -0.2, Z: 0.3}}
+meta:
+  simpson: true
+phenomenon: confounding
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): conf->cause, conf->effect, cause->effect
+source: self-composed
+story_id: simpson_vaccine
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: conf}

@@ -1,0 +1,61 @@
+Source: A Primer p.98
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: high school degree or lower
+X0_sentence: the person doesn't have a college degree
+X0_sentence_condition: if the person had not had a college degree instead of a college
+  degree or above
+X0_wherepartial: without a college degree
+X0_wheresentence: people without a college degree
+X1_noun: college degree or higher
+X1_sentence: the person has a college degree or above
+X1_sentence_condition: if the person had a college degree or above instead of not
+  having a college degree
+X1_wherepartial: with a college degree or higher
+X1_wheresentence: people with a college degree or higher
+Xname: education level
+Xsubject: person
+Y0_noun: low salary
+Y0_sentence: the employee has a low salary
+Y0_wherepartial: with low salaries
+Y0_wheresentence: employees with low salaries
+Y1_noun: high salary
+Y1_sentence: the employee has a high salary
+Y1_wherepartial: with high salaries
+Y1_wheresentence: employees with high salaries
+Yname: salary
+Ysubject: employee
+Z0_noun: low skill level
+Z0_sentence: the person has a low skill level
+Z0_wherepartial: with low skill levels
+Z0_wheresentence: people with low skill levels
+Z1_noun: high skill level
+Z1_sentence: the person has a high skill level
+Z1_wherepartial: with high skill levels
+Z1_wheresentence: people with high skill levels
+Zname: skill
+Zsubject: person
+causal_graph_type: chain
+easy:
+  - {X: 0, Y: {Z: 1}, Z: {X: 1}}
+  - {X: 1, Y: {Z: 1}, Z: {X: 1}}
+#  - {X: 1, Y: {Z: 0}, Z: {X: 0}}
+hard:
+  - {X: 2, Y: {Z: -1}, Z: {X: -1}}
+params: {}
+phenomenon: chain
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: nonlinear
+semantic_graph (by topological order): cause->med->effect
+source: A Primer p.98
+story_id: college_salary
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

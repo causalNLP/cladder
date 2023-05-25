@@ -1,0 +1,64 @@
+Source: Collider Bias in Observational Studies - PMC
+W0_noun: nonsmoker
+W0_sentence: the person is a nonsmoker
+W0_wherepartial: nonsmokers
+W0_wheresentence: nonsmokers
+W1_noun: smoker
+W1_sentence: the person is a smoker
+W1_wherepartial: smokers
+W1_wheresentence: smokers
+Wname: smoking
+Wsubject: person
+X0_noun: normal weight
+X0_sentence: the person is not obese
+X0_sentence_condition: if the person had been normal weight instead of obese
+X0_wherepartial: normal weight people
+X0_wheresentence: normal weight people
+X1_noun: obesity
+X1_sentence: the person is obese
+X1_sentence_condition: if the person had been obese instead of normal weight
+X1_wherepartial: obese people
+X1_wheresentence: obese people
+Xname: obesity
+Xsubject: person
+Y0_noun: short lifespan
+Y0_sentence: the person has a short lifespan
+Y0_wherepartial: with short lifespans
+Y0_wheresentence: people with short lifespans
+Y1_noun: long lifespan
+Y1_sentence: the person has a long lifespan
+Y1_wherepartial: with long lifespans
+Y1_wheresentence: people with long lifespans
+Yname: lifespan
+Ysubject: person
+Z0_noun: absence of diabetes
+Z0_sentence: the person doesn't have diabetes
+Z0_wherepartial: without diabetes
+Z0_wheresentence: people without diabetes
+Z1_noun: having diabetes
+Z1_sentence: the person has diabetes
+Z1_wherepartial: with diabetes
+Z1_wheresentence: people with diabetes
+Zname: diabetes
+Zsubject: person
+causal_graph_type: arrowhead
+easy:
+  - {X: 0, W: 0, Z: {X: 1, W: 1}, Y: {Z: -1, X: -1, W: -1}}
+  - {X: 0, W: 0, Z: {X: 1, W: 0}, Y: {Z: -1, X: -1, W: -1}}
+  - {X: 0, W: 1, Z: {X: 1, W: 0}, Y: {Z: -1, X: -1, W: -1}}
+  - {X: 0, W: 0, Z: {X: 1, W: 1}, Y: {Z: -1, X: 0, W: -1}}
+hard:
+  - {X: 2, W: 2, Z: {X: -1, W: -1}, Y: {Z: 1, X: 1, W: 1}}
+  - {X: 2, W: 2, Z: {X: -1, W: 0}, Y: {Z: 1, X: 1, W: 1}}
+  - {X: 2, W: 2, Z: {X: -1, W: 0}, Y: {Z: 1, X: 0, W: 1}}
+params: {}
+phenomenon: arrowhead
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): conf->collider, conf->effect, cause->collider,
+  cause->effect, collider->effect
+source: .nan
+story_id: obesity_mortality
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z collider: null}

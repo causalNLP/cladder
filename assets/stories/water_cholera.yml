@@ -1,0 +1,59 @@
+Source: Why p.229(pdf)
+W0_noun: low poverty
+W0_sentence: the region has low poverty
+W0_wherepartial: regions with low poverty
+W0_wheresentence: regions with low poverty
+W1_noun: high poverty
+W1_sentence: the region has high poverty
+W1_wherepartial: regions with high poverty
+W1_wheresentence: regions with high poverty
+Wname: poverty
+Wsubject: region
+X0_noun: polluted water
+X0_sentence: the person drinks polluted water
+X0_sentence_condition: if the person had drunk polluted water instead of clean water
+X0_wherepartial: with only polluted water
+X0_wheresentence: people with only polluted water
+X1_noun: clean water
+X1_sentence: the person drinks clean water
+X1_sentence_condition: if the person had drunk clean water instead of polluted water
+X1_wherepartial: with access to clean water
+X1_wheresentence: people with access to clean water
+Xname: water quality
+Xsubject: person
+Y0_noun: cholera prevention
+Y0_sentence: the person avoids cholera
+Y0_wherepartial: not getting cholera
+Y0_wheresentence: people not getting cholera
+Y1_noun: cholera contraction
+Y1_sentence: the person gets cholera
+Y1_wherepartial: getting cholera
+Y1_wheresentence: people getting cholera
+Yname: cholera
+Ysubject: person
+Z0_noun: local water company
+Z0_sentence: the person is served by a local water company
+Z0_wherepartial: served by a local water company
+Z0_wheresentence: people served by a local water company
+Z1_noun: global water company
+Z1_sentence: the person is served by a global water company
+Z1_wherepartial: served by a global water company
+Z1_wheresentence: people served by a global water company
+Zname: water company
+Zsubject: person
+causal_graph_type: IV
+easy:
+  - {X: {Z: 1, W: -1}, Y: {X: -1, W: 1}, Z: 1, W: 2}
+  - {X: {Z: 0, W: -1}, Y: {X: -1, W: 1}, Z: 0, W: 1}
+hard:
+  - {X: {Z: -1, W: 1}, Y: {X: 1, W: -1}, Z: 2, W: 0}
+params: {}
+phenomenon: IV
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): iv->cause, conf- >cause, conf->effect, cause->effect
+source: Why p.229(pdf)
+story_id: water_cholera
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: iv}

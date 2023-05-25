@@ -1,0 +1,16 @@
+
+_base: [queries/reg, stories/non]
+
+builder._type: random
+
+path: data/data-non.json
+model-meta: data/data-models.json
+
+
+spec-limit: 10
+
+
+seed: 101
+
+difficulty: easy
+

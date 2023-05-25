@@ -1,0 +1,61 @@
+Source: Why p.226(pdf)
+W0_noun: reduced demand
+W0_sentence: the demand is low
+W0_wherepartial: with low demand
+W0_wheresentence: situations with low demand
+W1_noun: increased demand
+W1_sentence: the demand is high
+W1_wherepartial: with high demand
+W1_wheresentence: situations with high demand
+Wname: demand
+Wsubject: situation
+X0_noun: reduced supply
+X0_sentence: there is reduced supply
+X0_sentence_condition: if there is reduced supply instead of increased supply
+X0_wherepartial: with reduced supply
+X0_wheresentence: situations with reduced supply
+X1_noun: increased supply
+X1_sentence: there is increased supply
+X1_sentence_condition: if there is increased supply instead of reduced supply
+X1_wherepartial: with increased supply
+X1_wheresentence: situations with increased supply
+Xname: supply
+Xsubject: situation
+Y0_noun: reduced price
+Y0_sentence: there is a reduced price
+Y0_wherepartial: with reduced prices
+Y0_wheresentence: situations with reduced prices
+Y1_noun: increased price
+Y1_sentence: there is an increased price
+Y1_wherepartial: with increased prices
+Y1_wheresentence: situations with increased prices
+Yname: price
+Ysubject: situation
+Z0_noun: reduced yield per acre
+Z0_sentence: the farm has a reduced yield per acre
+Z0_wherepartial: with reduced crop yield per acre
+Z0_wheresentence: farms with reduced crop yield per acre
+Z1_noun: increased yield per acre
+Z1_sentence: the farm has an increased yield per acre
+Z1_wherepartial: with increased crop yield per acre
+Z1_wheresentence: farms with increased crop yield per acre
+Zname: yield per acre
+Zsubject: farm
+causal_graph_type: IV
+easy:
+  - {X: {Z: 1, W: 1}, Y: {X: -1, W: 1}, Z: 1, W: 2}
+  - {X: {Z: 1, W: 0}, Y: {X: -1, W: 1}, Z: 1, W: 1}
+hard:
+  - {X: {Z: -1, W: -1}, Y: {X: 1, W: -1}, Z: 0, W: 0}
+  - {X: {Z: -1, W: 0}, Y: {X: 1, W: -1}, Z: 0, W: 0}
+  - {X: {Z: 0, W: 0}, Y: {X: 0, W: 0}, Z: 2, W: 2}
+params: {}
+phenomenon: IV
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): iv->cause, conf- >cause, conf->effect, cause->effect
+source: Why p.226(pdf)
+story_id: price
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: iv}

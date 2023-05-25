@@ -1,0 +1,58 @@
+Source: Can higher cigarette taxes improve birth outcomes? - ScienceDirect
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: unobserved confounders
+X0_noun: nonsmoking mother
+X0_sentence: the infant has a nonsmoking mother
+X0_sentence_condition: if the infant had a nonsmoking mother instead of a smoking mother
+X0_wherepartial: with nonsmoking mothers
+X0_wheresentence: infants with nonsmoking mothers
+X1_noun: smoking mother
+X1_sentence: the infant has a smoking mother
+X1_sentence_condition: if the infant had a smoking mother instead of a nonsmoking mother
+X1_wherepartial: with smoking mothers
+X1_wheresentence: infants with smoking mothers
+Xname: maternal smoking status
+Xsubject: infant
+Y0_noun: low infant birth weight
+Y0_sentence: the infant is born with low weight
+Y0_wherepartial: low infant birth weight
+Y0_wheresentence: infants with low birth weight
+Y1_noun: normal infant birth weight
+Y1_sentence: the infant is born with a normal weight
+Y1_wherepartial: normal infant birth weight
+Y1_wheresentence: infants with normal birth weight
+Yname: infant's birth weight
+Ysubject: infant
+Z0_noun: low cigarette tax
+Z0_sentence: the cigarette tax is low
+Z0_wherepartial: in areas with low cigarette tax
+Z0_wheresentence: areas with low cigarette tax
+Z1_noun: high cigarette tax
+Z1_sentence: the cigarette tax is high
+Z1_wherepartial: in areas with high cigarette tax
+Z1_wheresentence: areas with high cigarette tax
+Zname: cigarette tax
+Zsubject: area
+causal_graph_type: IV
+params: {}
+easy:
+  - {X: {Z: -1, W: 0}, Y: {X: -1, W: 0}, Z: 2, W: 1}
+hard:
+  - {X: {Z: 1, W: -1}, Y: {X: 1, W: -1}, Z: 0, W: 2}
+  - {X: {Z: 1, W: 0}, Y: {X: 1, W: 0}, Z: 0, W: 2}
+phenomenon: IV
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): iv->cause, conf- >cause, conf->effect, cause->effect
+source: Can higher cigarette taxes improve birth outcomes? - ScienceDirect
+story_id: tax_smoke_birthWeight
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: iv}

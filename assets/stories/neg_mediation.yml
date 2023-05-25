@@ -1,0 +1,62 @@
+Source: self-composed
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: nonsmoking
+X0_sentence: the student is a nonsmoker
+X0_sentence_condition: if the student had been a nonsmoker instead of a smoker
+X0_wherepartial: nonsmokers
+X0_wheresentence: nonsmokers
+X1_noun: smoking
+X1_sentence: the student is a smoker
+X1_sentence_condition: if the student had been a smoker instead of a nonsmoker
+X1_wherepartial: smokers
+X1_wheresentence: smokers
+Xname: smoking
+Xsubject: student
+Y0_noun: college rejection
+Y0_sentence: the student gets rejected from college
+Y0_wherepartial: rejected from college
+Y0_wheresentence: students rejected from college
+Y1_noun: college admission
+Y1_sentence: the student gets admitted to college
+Y1_wherepartial: admitted to college
+Y1_wheresentence: students admitted to college
+Yname: college admission
+Ysubject: student
+Z0_noun: being lazy
+Z0_sentence: the student is lazy
+Z0_wherepartial: are lazy
+Z0_wheresentence: students who are lazy
+Z1_noun: being hard-working
+Z1_sentence: the student works hard
+Z1_wherepartial: are hard-working
+Z1_wheresentence: students who are hard-working
+Zname: effort
+Zsubject: student
+causal_graph_type: confounding
+params: {}
+easy:
+  - {X: 0, Z: {X: 0}, Y: {Z: 1, X: -1}}
+  - {X: 0, Z: {X: 0}, Y: {Z: 1, X: 0}}
+  - {X: 0, Z: {X: -1}, Y: {Z: 1, X: 0}}
+  - {X: 0, Z: {X: -1}, Y: {Z: 1, X: -1}}
+hard:
+  - {X: 2, Z: {X: 1}, Y: {Z: -1, X: 1}}
+  - {X: 2, Z: {X: 1}, Y: {Z: -1, X: 0}}
+  - {X: 2, Z: {X: 1}, Y: {Z: -1, X: 0}}
+phenomenon: mediation
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause->med, cause->effect, med->effect
+source: self_composed
+story_id: neg_mediation
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

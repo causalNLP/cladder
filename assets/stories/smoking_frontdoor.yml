@@ -1,0 +1,61 @@
+Source: .nan
+W0_noun: non-female
+W0_sentence: the person is non-female
+W0_wherepartial: non-females
+W0_wheresentence: non-females
+W1_noun: female
+W1_sentence: the person is female
+W1_wherepartial: females
+W1_wheresentence: females
+Wname: gender
+Wsubject: person
+X0_noun: nonsmoking
+X0_sentence: the person is a nonsmoker
+X0_sentence_condition: if the person had been a nonsmoker instead of a smoker
+X0_wherepartial: nonsmokers
+X0_wheresentence: nonsmokers
+X1_noun: smoking
+X1_sentence: the person is a smoker
+X1_sentence_condition: if the person had been a smoker instead of a nonsmoker
+X1_wherepartial: smokers
+X1_wheresentence: smokers
+Xname: smoking
+Xsubject: person
+Y0_noun: absence of lung cancer
+Y0_sentence: the person has no lung cancer
+Y0_wherepartial: with no lung cancer
+Y0_wheresentence: people with no lung cancer
+Y1_noun: lung cancer
+Y1_sentence: the person has lung cancer
+Y1_wherepartial: with lung cancer
+Y1_wheresentence: people with lung cancer
+Yname: lung cancer
+Ysubject: person
+Z0_noun: absence of tar deposit
+Z0_sentence: the person has no tar deposit in their lungs
+Z0_wherepartial: with no tar deposit
+Z0_wheresentence: people with no tar deposit
+Z1_noun: high tar deposit
+Z1_sentence: the person has a high tar deposit in their lungs
+Z1_wherepartial: with high tar deposit
+Z1_wheresentence: people with high tar deposit
+Zname: tar deposit
+Zsubject: person
+easy:
+  - {W: 1, X: {W: 0}, Z: {X: 1}, Y: {Z: 1, W: 0}}
+  - {W: 1, X: {W: 0}, Z: {X: 1}, Y: {Z: 1, W: 1}}
+  - {W: 1, X: {W: -1}, Z: {X: 1}, Y: {Z: 1, W: 1}}
+hard:
+  - {W: 0, X: {W: 1}, Z: {X: -1}, Y: {Z: -1, W: -1}}
+  - {W: 2, X: {W: 1}, Z: {X: -1}, Y: {Z: -1, W: 0}}
+causal_graph_type: .nan
+params: {}
+phenomenon: frontdoor
+queries: .nan
+scm: .nan
+semantic_graph (by topological order): conf -> cause, conf -> effect, cause ->med,
+  med -> effect
+source: A Primer p.66
+story_id: smoking_frontdoor
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: med}

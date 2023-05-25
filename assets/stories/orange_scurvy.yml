@@ -1,0 +1,58 @@
+Source: Why p.274 (pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: absence of citrus
+X0_sentence: the patient doesn't consume citrus
+X0_sentence_condition: if the patient had not consumed citrus instead of eating citrus
+X0_wherepartial: not consuming citrus
+X0_wheresentence: patients not consuming citrus
+X1_noun: citrus intake
+X1_sentence: the patient eats citrus
+X1_sentence_condition: if the patient had eaten citrus instead of not consuming citrus
+X1_wherepartial: consuming citrus
+X1_wheresentence: patients consuming citrus
+Xname: eating citrus
+Xsubject: patient
+Y0_noun: no scurvy
+Y0_sentence: the patient recovers from scurvy
+Y0_wherepartial: recovering from scurvy
+Y0_wheresentence: patients recovering from scurvy
+Y1_noun: scurvy
+Y1_sentence: the patient has scurvy
+Y1_wherepartial: with scurvy
+Y1_wheresentence: patients with scurvy
+Yname: scurvy
+Ysubject: patient
+Z0_noun: vitamin C deficiency
+Z0_sentence: the patient doesn't have enough vitamin C
+Z0_wherepartial: without enough vitamin C
+Z0_wheresentence: patients without enough vitamin C
+Z1_noun: sufficient vitamin C
+Z1_sentence: the patient has sufficient vitamin C
+Z1_wherepartial: with sufficient vitamin C
+Z1_wheresentence: patients with sufficient vitamin C
+Zname: vitmain C
+Zsubject: patient
+causal_graph_type: chain
+easy:
+  - {X: 2, Z: {X: 1}, Y: {Z: -1}}
+hard:
+  - {X: 0, Z: {X: -1}, Y: {Z: 1}}
+  - {X: 0, Z: {X: 0}, Y: {Z: 1}}
+params: {}
+phenomenon: chain
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: nonlinear
+semantic_graph (by topological order): cause->med->effect
+source: Why p.274 (pdf)
+story_id: orange_scurvy
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

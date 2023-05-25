@@ -1,0 +1,60 @@
+Source: Why p.230(pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: unobserved confounders
+X0_noun: not taking of any assigned drugs #?
+X0_sentence: the patient did not take any assigned drugs
+X0_sentence_condition: if the patient had not taken any assigned drugs instead of taking
+  all assigned drugs
+X0_wherepartial: not taking any drugs
+X0_wheresentence: patients that have not taken any drugs
+X1_noun: taking of all assigned drugs
+X1_sentence: the patient takes all assigned drugs
+X1_sentence_condition: if the patient had taken all drugs instead of not
+  taking any assigned drugs
+X1_wherepartial: taking all assigned drugs
+X1_wheresentence: patients that have taken all assigned drugs
+Xname: drug taken
+Xsubject: patient
+Y0_noun: high cholesterol
+Y0_sentence: the patient has high cholesterol
+Y0_wherepartial: with high cholesterol levels
+Y0_wheresentence: patients with high cholesterol levels
+Y1_noun: low cholesterol
+Y1_sentence: the patient has low cholesterol
+Y1_wherepartial: with low cholesterol levels
+Y1_wheresentence: patients with low cholesterol levels
+Yname: cholesterol level
+Ysubject: patient
+Z0_noun: absence of assignment of drug treatment
+Z0_sentence: the patient is not assigned the drug treatment
+Z0_wherepartial: not assigned the drug treatment
+Z0_wheresentence: patients not assigned the drug treatment
+Z1_noun: assignment of drug treatment
+Z1_sentence: the patient is assigned the treatment
+Z1_wherepartial: assigned the drug treatment
+Z1_wheresentence: patients assigned the drug treatment
+Zname: treatment assignment
+Zsubject: patient
+causal_graph_type: IV
+easy:
+  - {X: {Z: 1, W: 0}, Y: {X: 0, W: 0}, Z: 1}
+  - {X: {Z: 1, W: 0}, Y: {X: 0, W: 0}, Z: 0}
+hard:
+  - {X: {Z: -1, W: 0}, Y: {X: 0, W: 0}, Z: 2}
+params: {}
+phenomenon: IV
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): iv->cause, conf- >cause, conf->effect, cause->effect
+source: Why p.230(pdf)
+story_id: cholesterol
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: iv}

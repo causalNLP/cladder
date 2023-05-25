@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not gyzp
+W0_noun: not gyzp
+W0_sentence: an individual is not gyzp
+W0_wherepartial: are not gyzp
+W0_wheresentence: those who are not gyzp
+W1: is gyzp
+W1_noun: gyzp
+W1_sentence: an individual is gyzp
+W1_wherepartial: are gyzp
+W1_wheresentence: those who are gyzp
+Wname: gyzp
+X0: is not jyka
+X0_noun: not jyka
+X0_sentence: an individual is not jyka
+X0_sentence_condition: if the individual was not jyka instead of jyka
+X0_wherepartial: are not jyka
+X0_wheresentence: those who are not jyka
+X1: is jyka
+X1_noun: jyka
+X1_sentence: an individual is jyka
+X1_sentence_condition: if the individual was jyka instead of not jyka
+X1_wherepartial: are jyka
+X1_wheresentence: those who are jyka
+Xname: jyka
+Y0: is not lirg
+Y0_noun: not lirg
+Y0_sentence: an individual is not lirg
+Y0_wherepartial: are not lirg
+Y0_wheresentence: those who are not lirg
+Y1: is lirg
+Y1_noun: lirg
+Y1_sentence: an individual is lirg
+Y1_wherepartial: are lirg
+Y1_wheresentence: those who are lirg
+Yname: lirg
+Z0: is not hwax
+Z0_noun: not hwax
+Z0_sentence: an individual is not hwax
+Z0_wherepartial: are not hwax
+Z0_wheresentence: those who are not hwax
+Z1: is hwax
+Z1_noun: hwax
+Z1_sentence: an individual is hwax
+Z1_wherepartial: are hwax
+Z1_wheresentence: those who are hwax
+Zname: hwax
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense4
+variable_correspondence: ''

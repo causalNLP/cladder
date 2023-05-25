@@ -1,0 +1,61 @@
+Source: Why p.285 (pdf)
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: non-male gender
+X0_sentence: the individual is not male
+X0_sentence_condition: if the individual had not been male instead of male
+X0_wherepartial: are not male
+X0_wheresentence: individuals who are not male
+X1_noun: male gender
+X1_sentence: the individual is male
+X1_sentence_condition: if the individual had been male instead of not being male
+X1_wherepartial: are male
+X1_wheresentence: individuals who are male
+Xname: gender
+Xsubject: individual
+Y0_noun: admission rejection
+Y0_sentence: the applicant gets rejected
+Y0_wherepartial: applicants are rejected
+Y0_wheresentence: applicants who are rejected
+Y1_noun: admission acceptance
+Y1_sentence: the applicant gets admitted
+Y1_wherepartial: applicants are admitted
+Y1_wheresentence: applicants who are admitted
+Yname: admission status
+Ysubject: applicant
+Z0_noun: non-competitive department
+Z0_sentence: the applicant applies to a non-competitive department
+Z0_wherepartial: applicants to a non-competitive department
+Z0_wheresentence: applicants to a non-competitive department
+Z1_noun: competitive department
+Z1_sentence: the applicant applies to a competitive department
+Z1_wherepartial: applicants to a competitive department
+Z1_wheresentence: applicants to a competitive department
+Zname: department competitiveness
+Zsubject: applicant
+causal_graph_type: confounding
+params: {}
+easy:
+  - {X: 1, Z: {X: 1}, Y: {Z: -1, X: 0}}
+  - {X: 1, Z: {X: 0}, Y: {Z: -1, X: 0}}
+  - {X: 1, Z: {X: 1}, Y: {Z: 0, X: 0}}
+  - {X: 1, Z: {X: 0}, Y: {Z: 0, X: 0}}
+hard:
+  - {X: 0, Z: {X: -1}, Y: {Z: 1, X: -1}}
+  - {X: 0, Z: {X: -1}, Y: {Z: 1, X: 0}}
+phenomenon: mediation
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause->med, cause->effect, med->effect
+source: Why p.285 (pdf)
+story_id: gender_admission
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: med}

@@ -1,0 +1,14 @@
+
+_base: [anti, queries/det, stories/reg]
+
+
+path: data/data-det-anti.json
+model-meta: data/data-models.json
+
+
+spec-limit: 30
+
+
+seed: 101
+
+difficulty: easy

@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not kraz
+W0_noun: not kraz
+W0_sentence: an individual is not kraz
+W0_wherepartial: are not kraz
+W0_wheresentence: those who are not kraz
+W1: is kraz
+W1_noun: kraz
+W1_sentence: an individual is kraz
+W1_wherepartial: are kraz
+W1_wheresentence: those who are kraz
+Wname: kraz
+X0: is not pexu
+X0_noun: not pexu
+X0_sentence: an individual is not pexu
+X0_sentence_condition: if the individual was not pexu instead of pexu
+X0_wherepartial: are not pexu
+X0_wheresentence: those who are not pexu
+X1: is pexu
+X1_noun: pexu
+X1_sentence: an individual is pexu
+X1_sentence_condition: if the individual was pexu instead of not pexu
+X1_wherepartial: are pexu
+X1_wheresentence: those who are pexu
+Xname: pexu
+Y0: is not rukz
+Y0_noun: not rukz
+Y0_sentence: an individual is not rukz
+Y0_wherepartial: are not rukz
+Y0_wheresentence: those who are not rukz
+Y1: is rukz
+Y1_noun: rukz
+Y1_sentence: an individual is rukz
+Y1_wherepartial: are rukz
+Y1_wheresentence: those who are rukz
+Yname: rukz
+Z0: is not hwax
+Z0_noun: not hwax
+Z0_sentence: an individual is not hwax
+Z0_wherepartial: are not hwax
+Z0_wheresentence: those who are not hwax
+Z1: is hwax
+Z1_noun: hwax
+Z1_sentence: an individual is hwax
+Z1_wherepartial: are hwax
+Z1_wheresentence: those who are hwax
+Zname: hwax
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense8
+variable_correspondence: ''

@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not muvy
+W0_noun: not muvy
+W0_sentence: an individual is not muvy
+W0_wherepartial: are not muvy
+W0_wheresentence: those who are not muvy
+W1: is muvy
+W1_noun: muvy
+W1_sentence: an individual is muvy
+W1_wherepartial: are muvy
+W1_wheresentence: those who are muvy
+Wname: muvy
+X0: is not kwox
+X0_noun: not kwox
+X0_sentence: an individual is not kwox
+X0_sentence_condition: if the individual was not kwox instead of kwox
+X0_wherepartial: are not kwox
+X0_wheresentence: those who are not kwox
+X1: is kwox
+X1_noun: kwox
+X1_sentence: an individual is kwox
+X1_sentence_condition: if the individual was kwox instead of not kwox
+X1_wherepartial: are kwox
+X1_wheresentence: those who are kwox
+Xname: kwox
+Y0: is not kwoz
+Y0_noun: not kwoz
+Y0_sentence: an individual is not kwoz
+Y0_wherepartial: are not kwoz
+Y0_wheresentence: those who are not kwoz
+Y1: is kwoz
+Y1_noun: kwoz
+Y1_sentence: an individual is kwoz
+Y1_wherepartial: are kwoz
+Y1_wheresentence: those who are kwoz
+Yname: kwoz
+Z0: is not swoq
+Z0_noun: not swoq
+Z0_sentence: an individual is not swoq
+Z0_wherepartial: are not swoq
+Z0_wheresentence: those who are not swoq
+Z1: is swoq
+Z1_noun: swoq
+Z1_sentence: an individual is swoq
+Z1_wherepartial: are swoq
+Z1_wheresentence: those who are swoq
+Zname: swoq
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense1
+variable_correspondence: ''

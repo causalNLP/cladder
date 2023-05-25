@@ -1,0 +1,14 @@
+# run this from the terminal using: `fig generate demo_mini`
+# override any settings in this config from the command line: eg. `fig generate demo --seed 12 --name my-demo`
+
+path: demo-mini
+
+queries: [ate]
+
+stories:
+  - simpson_hospital
+
+
+seed: 11
+
+

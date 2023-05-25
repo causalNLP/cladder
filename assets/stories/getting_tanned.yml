@@ -1,0 +1,59 @@
+Source: {Causes and Explanations: "A Structural-Model Approach\u2014", Part II: Explanations}
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: no tanning salon treatment
+X0_sentence: the person does not get a tanning salon treatment
+X0_sentence_condition: if the person had not had a tanning salon treatment instead
+  of going to a tanning salon
+X0_wherepartial: not using tanning salon treatments
+X0_wheresentence: people not using tanning salon treatments
+X1_noun: tanning salon treatment
+X1_sentence: the person went to a tanning salon
+X1_sentence_condition: if the person had gone to a tanning salon instead of not having
+  a tanning salon treatment
+X1_wherepartial: went to tanning salons
+X1_wheresentence: people who went to tanning salons
+Xname: tanning salon treatment
+Xsubject: person
+Y0_noun: pale skin
+Y0_sentence: the person has pale skin
+Y0_wherepartial: with pale skin
+Y0_wheresentence: people with pale skin
+Y1_noun: tanned skin
+Y1_sentence: the person has tanned skin
+Y1_wherepartial: with tanned skin
+Y1_wheresentence: people with tanned skin
+Yname: skin
+Ysubject: person
+Z0_noun: not going to the beach
+Z0_sentence: the person does not go to the beach
+Z0_wherepartial: who do not go to the beach
+Z0_wheresentence: people who do not go to the beach
+Z1_noun: going to the beach
+Z1_sentence: the person goes to the beach
+Z1_wherepartial: who go to the beach
+Z1_wheresentence: people who go to the beach
+Zname: going to the beach
+causal_graph_type: fork
+easy:
+  - {X: [0, 0.1], Z: [0.2, 0.5], Y: {X: 0.4, Z: 0.1}}
+  - {X: [0, 0.1], Z: [0.2, 0.5], Y: {X: 0.4}}
+hard:
+  - {X: [0.8, 1], Z: [0.6, 0.8], Y: {X: -0.3, Z: -0.2}}
+params:
+  conjunction: [true, false]
+phenomenon: fork
+queries: cou_y, interv_y
+scm: .nan
+semantic_graph (by topological order): cause1->effect, cause2->effect
+source: {Causes and Explanations: A Structural-Model Approach. Part II}
+story_id: getting_tanned
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: effect, Z: cause2}

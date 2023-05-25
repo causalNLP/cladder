@@ -1,0 +1,66 @@
+Source: self-composed
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: low hospital bill
+X0_sentence: the patient pays a low hospital bill
+X0_sentence_condition: if the patient had paid a low hospital bill instead of a high hospital bill
+X0_wherepartial: pay a low hospital bill
+X0_wheresentence: patients who pay a low hospital bill
+X1_noun: high hospital bill
+X1_sentence: the patient pays a high hospital bill
+X1_sentence_condition: if the patient had paid a high hospital bill instead of a low hospital bill
+X1_wherepartial: pay a high hospital bill
+X1_wheresentence: people who pay a high hospital bill
+Xname: hospital costs
+Xsubject: patient
+Y0_noun: non-recovery
+Y0_sentence: the patient doesn't recover
+Y0_wherepartial: do not recover
+Y0_wheresentence: patients who do not recover
+Y1_noun: recovery
+Y1_sentence: the patient recovers
+Y1_wherepartial: recovered
+Y1_wheresentence: patients who recovered
+Yname: recovery
+Ysubject: patient
+Z0_noun: youth
+Z0_sentence: the patient is young
+Z0_wherepartial: are young
+Z0_wheresentence: patients who are young
+Z1_noun: old age
+Z1_sentence: the patient is old
+Z1_wherepartial: are old
+Z1_wheresentence: patients who are old
+Zname: age
+Zsubject: patient
+causal_graph_type: confounding
+params: {}
+easy:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.7}, 'Y': {'X': 0.05, 'Z': 0.6}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.4}, 'Y': {'X': 0.1, 'Z': 0.71}}
+#  - {Z: 2, X: {Z: 1}, Y: {X: 0, Z: -1}}
+#  - {Z: 1, X: {Z: 1}, Y: {X: 0, Z: -1}}
+#  - {Z: 1, X: {Z: 1}, Y: {X: 1, Z: -1}}
+hard:
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.5}, 'Y': {'X': -0.2, 'Z': -0.7}}
+  - {'Z': [0.4, 0.6], 'X': {'Z': -0.8}, 'Y': {'X': -0.1, 'Z': -0.55}}
+#  - {Z: 0, X: {Z: -1}, Y: {X: -1, Z: 1}}
+#  - {Z: 0, X: {Z: -1}, Y: {X: -1, Z: 0}}
+meta:
+  simpson: true
+phenomenon: confounding
+queries: cou, cou_pos, cou_y, att, nde, nie, nie_polarity, nde_pos, nie_polarity,
+  adj, constant_set, ace, ace_pos, interv_y, te
+scm: .nan
+semantic_graph (by topological order): conf->cause, conf->effect, cause->effect
+source: self_composed
+story_id: simpson_hospital
+structural_equation: .nan
+variable_correspondence: {X: cause, Y: effect, Z: conf}

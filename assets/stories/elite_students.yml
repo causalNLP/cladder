@@ -1,0 +1,58 @@
+Source: .nan
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: .nan
+X0_noun: lack of talent
+X0_sentence: the student is not talented
+X0_sentence_condition: if the student had not been talented instead of talented
+X0_wherepartial: are not talented
+X0_wheresentence: students who are not talented
+X1_noun: talent
+X1_sentence: the student is talented
+X1_sentence_condition: if the student had been talented instead of not being talented
+X1_wherepartial: are talented
+X1_wheresentence: students who are talented
+Xname: talent #level
+Xsubject: student
+Y0_noun: being lazy
+Y0_sentence: the student is lazy
+Y0_wherepartial: are lazy
+Y0_wheresentence: those who are lazy
+Y1_noun: being hard-working
+Y1_sentence: the student works hard
+Y1_wherepartial: are hard-working
+Y1_wheresentence: students who are hard-working
+Yname: effort
+Ysubject: student
+Z0_noun: elite institution rejection
+Z0_sentence: the student is rejected by the elite institution
+Z0_wherepartial: rejected from elite institutions
+Z0_wheresentence: students rejected from elite institutions
+Z1_noun: elite institution acceptance
+Z1_sentence: the student is accepted by the elite institution
+Z1_wherepartial: accepted to elite institutions
+Z1_wheresentence: students accepted to elite institutions
+Zname: elite institution admission status
+Zsubject: student
+causal_graph_type: collision_fork
+params: {}
+easy:
+  - {X: 0, Y: 0, Z: {X: 1, Y: 1}}
+  - {X: 1, Y: 1, Z: {X: 1, Y: 1}}
+hard:
+  - {X: 2, Y: 2, Z: {X: -1, Y: -1}}
+phenomenon: collision
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  collider_bias, collider_bias, ace, ace_pos, te
+scm: linear
+semantic_graph (by topological order): cause1->collider, cause2->collider
+source: .nan
+story_id: elite_students
+structural_equation: .nan
+variable_correspondence: {X: cause1, Y: cause2, Z: collider}

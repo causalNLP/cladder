@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not swoy
+W0_noun: not swoy
+W0_sentence: an individual is not swoy
+W0_wherepartial: are not swoy
+W0_wheresentence: those who are not swoy
+W1: is swoy
+W1_noun: swoy
+W1_sentence: an individual is swoy
+W1_wherepartial: are swoy
+W1_wheresentence: those who are swoy
+Wname: swoy
+X0: is not rixq
+X0_noun: not rixq
+X0_sentence: an individual is not rixq
+X0_sentence_condition: if the individual was not rixq instead of rixq
+X0_wherepartial: are not rixq
+X0_wheresentence: those who are not rixq
+X1: is rixq
+X1_noun: rixq
+X1_sentence: an individual is rixq
+X1_sentence_condition: if the individual was rixq instead of not rixq
+X1_wherepartial: are rixq
+X1_wheresentence: those who are rixq
+Xname: rixq
+Y0: is not xevu
+Y0_noun: not xevu
+Y0_sentence: an individual is not xevu
+Y0_wherepartial: are not xevu
+Y0_wheresentence: those who are not xevu
+Y1: is xevu
+Y1_noun: xevu
+Y1_sentence: an individual is xevu
+Y1_wherepartial: are xevu
+Y1_wheresentence: those who are xevu
+Yname: xevu
+Z0: is not zuph
+Z0_noun: not zuph
+Z0_sentence: an individual is not zuph
+Z0_wherepartial: are not zuph
+Z0_wheresentence: those who are not zuph
+Z1: is zuph
+Z1_noun: zuph
+Z1_sentence: an individual is zuph
+Z1_wherepartial: are zuph
+Z1_wheresentence: those who are zuph
+Zname: zuph
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense0
+variable_correspondence: ''

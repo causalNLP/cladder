@@ -1,0 +1,60 @@
+Source: Card 1995.pdf
+W0_noun: .nan
+W0_sentence: .nan
+W0_wherepartial: .nan
+W0_wheresentence: .nan
+W1_noun: .nan
+W1_sentence: .nan
+W1_wherepartial: .nan
+W1_wheresentence: .nan
+Wname: unobserved confounders
+X0_noun: high school degree or lower
+X0_sentence: the person doesn't have a college degree
+X0_sentence_condition: if the person had not had a college degree instead of a college
+  degree or above
+X0_wherepartial: without a college degree
+X0_wheresentence: people without a college degree
+X1_noun: college degree or higher
+X1_sentence: the person has a college degree or above
+X1_sentence_condition: if the person had a college degree or above instead of not
+  having a college degree
+X1_wherepartial: with a college degree or higher
+X1_wheresentence: people with a college degree or higher
+Xname: education level
+Xsubject: person
+Y0_noun: low salary
+Y0_sentence: the employee has a low salary
+Y0_wherepartial: with low salaries
+Y0_wheresentence: employees with low salaries
+Y1_noun: high salary
+Y1_sentence: the employee has a high salary
+Y1_wherepartial: with high salaries
+Y1_wheresentence: employees with high salaries
+Yname: salary
+Ysubject: employee
+Z0_noun: far from a college
+Z0_sentence: the person lives far from a college
+Z0_wherepartial: living far from a college
+Z0_wheresentence: people living far from a college
+Z1_noun: close to a college
+Z1_sentence: the person lives close to a college
+Z1_wherepartial: living close to a college
+Z1_wheresentence: people living close to a college
+Zname: proximity to a college
+Zsubject: person
+causal_graph_type: IV
+easy:
+  - {X: {Z: 1, W: 0}, Y: {X: 1, W: 0}, Z: 1}
+hard:
+  - {X: {Z: -1, W: 0}, Y: {X: -1, W: 0}, Z: 2}
+  - {X: {Z: -1, W: 0}, Y: {X: -1, W: 0}, Z: 0}
+params: {}
+phenomenon: IV
+queries: cou, cou_pos, att, nde, nie, nie_polarity, nde_pos, nie_polarity, adj, constant_set,
+  ace, ace_pos, te
+scm: .nan
+semantic_graph (by topological order): iv->cause, conf- >cause, conf->effect, cause->effect
+source: Card 1995.pdf
+story_id: college_wage
+structural_equation: .nan
+variable_correspondence: {W: conf, X: cause, Y: effect, Z: iv}

@@ -1,0 +1,55 @@
+Source: gpt4
+W0: is not xyfo
+W0_noun: not xyfo
+W0_sentence: an individual is not xyfo
+W0_wherepartial: are not xyfo
+W0_wheresentence: those who are not xyfo
+W1: is xyfo
+W1_noun: xyfo
+W1_sentence: an individual is xyfo
+W1_wherepartial: are xyfo
+W1_wheresentence: those who are xyfo
+Wname: xyfo
+X0: is not yupt
+X0_noun: not yupt
+X0_sentence: an individual is not yupt
+X0_sentence_condition: if the individual was not yupt instead of yupt
+X0_wherepartial: are not yupt
+X0_wheresentence: those who are not yupt
+X1: is yupt
+X1_noun: yupt
+X1_sentence: an individual is yupt
+X1_sentence_condition: if the individual was yupt instead of not yupt
+X1_wherepartial: are yupt
+X1_wheresentence: those who are yupt
+Xname: yupt
+Y0: is not muvq
+Y0_noun: not muvq
+Y0_sentence: an individual is not muvq
+Y0_wherepartial: are not muvq
+Y0_wheresentence: those who are not muvq
+Y1: is muvq
+Y1_noun: muvq
+Y1_sentence: an individual is muvq
+Y1_wherepartial: are muvq
+Y1_wheresentence: those who are muvq
+Yname: muvq
+Z0: is not zupj
+Z0_noun: not zupj
+Z0_sentence: an individual is not zupj
+Z0_wherepartial: are not zupj
+Z0_wheresentence: those who are not zupj
+Z1: is zupj
+Z1_noun: zupj
+Z1_sentence: an individual is zupj
+Z1_wherepartial: are zupj
+Z1_wheresentence: those who are zupj
+Zname: zupj
+phenomenon: [chain, collision, confounding, mediation, frontdoor, IV, arrowhead, diamond, diamondcut, fork]
+meta:
+  nonsense: true
+params: {}
+queries: {}
+scm: {}
+story_id: nonsense6
+variable_correspondence: ''
