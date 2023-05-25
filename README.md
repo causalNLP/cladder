@@ -4,7 +4,7 @@
 
 {% note %}
 
-**🚀 Get the dataset now!** [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip)
+**Note** 🚀 Get the dataset now! [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip)
 
 {% endnote %}
 
