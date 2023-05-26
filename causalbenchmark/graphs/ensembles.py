@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 from omnibelt import unspecified_argument
-from omnidata import Parameterized, hparam, submodule
+from omniplex import Parameterized, hparam, submodule
 
 from scipy.linalg import pascal
 
