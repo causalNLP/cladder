@@ -1,5 +1,5 @@
 import numpy as np
-from omnidata import Guru
+from omniplex import Guru
 from ..graphs import create_graph
 from ..graphs.stories.simpson import SimpsonsParadox
 

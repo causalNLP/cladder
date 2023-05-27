@@ -1,6 +1,6 @@
 omnibelt==0.7.6
 omnifig==1.0.1
-omnidata==0.1.1
+omniplex==0.1.1
 pomegranate==0.14.8
 pytest
 numpy

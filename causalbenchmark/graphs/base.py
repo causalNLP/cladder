@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import pomegranate as pg
 from functools import lru_cache
-from omnidata import hparam
+from omniplex import hparam
 # from omnidata import Structured, material as _material, machine as _machine, hparam, inherit_hparams
 # source = _material.from_size # just an alias to make the SCMs more legible
 # mechanism = _machine # just an alias to make the SCMs more legible

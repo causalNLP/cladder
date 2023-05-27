@@ -3,7 +3,7 @@ from pathlib import Path
 from tqdm import tqdm
 from tabulate import tabulate
 from collections import Counter
-from omnibelt import export, load_export
+from omnibelt import export, load_export, save_json, load_json
 import omnifig as fig
 import numpy as np
 import pandas as pd
@@ -241,11 +241,11 @@ def generate_and_store(config):
 	print(f'Generated {len(data)} questions from {i+1} stories.')
 	print(f'Solution profile: {solutions}')
 
-	outpath = export(data, path, fmt='json')
+	outpath = save_json(data, path)
 	print(f'Saved to {outpath}')
 
 	if separate_models is not None:
-		export(model_meta_list, separate_models, fmt='json')
+		save_json(model_meta_list, separate_models)
 		print(f'Saved model meta to {separate_models}')
 
 	if config.pull('summarize', True):

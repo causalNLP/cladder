@@ -7,7 +7,7 @@ from pathlib import Path
 import omnifig as fig
 
 from omnibelt import unspecified_argument, JSONABLE
-from omnidata import Parameterized, hparam, submodule
+from omniplex import Parameterized, hparam, submodule
 
 from scipy.linalg import pascal
 from scipy import optimize as opt

@@ -7,7 +7,7 @@ from string import Formatter
 
 from argparse import Namespace
 
-from omnidata import Parameterized as _Parameterized, hparam
+from omniplex import Parameterized as _Parameterized, hparam
 
 from itertools import product, chain, combinations
 
