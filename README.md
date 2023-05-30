@@ -60,7 +60,7 @@ For example, the prompt corresponding to question 16825 (which asks about the av
 >
 > Will college degree or higher decrease the chance of high salary?
 
-The associated reasoning steps found in the `reasoning` field are:
+Here the correct answer is `no`. The associated reasoning steps found in the `reasoning` field are:
     
 > Step 0: Let V2 = proximity to a college; V1 = unobserved confounders; X = education level; Y = salary. 
 > 
