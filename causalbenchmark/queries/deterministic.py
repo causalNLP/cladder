@@ -107,7 +107,7 @@ class DeterministicCounterfactualEffectQuery(AbstractQueryType):
 		description = scm.verbalize_description(labels)
 
 		if len(scm.get_variable(self.outcome).parents) == 0:
-			raise self._QueryFailedError(f'{self.outcome} variable must not have parents')
+			raise self._QueryFailedError(f'{self.outcome} variable must have parents')
 
 		if self.treatment is None:
 			raise NotImplementedError # TODO: implement this

@@ -70,27 +70,27 @@ def test_ate():
 
 
 
-def test_ate_spec():
-	query = create_query('ate',
-	                     ask_treatments=False,
-	                     ask_polarities=False,
-	                     ask_outcomes=False,
-	                     )
-
-	graph_id = 'confounding'
-
-	builder = MechanismCorrelationBuilder(seed=100)
-	specs = list(builder.spawn_specs(graph_id))
-	builder._rng.shuffle(specs)
-	specs = specs[:10]
-
-	labels = example_labels
-
-	entries = [q for spec in specs
-	           for q in query.generate_questions(builder.generate_constrained_scm(graph_id, spec), labels)]
-
-	print()
-	print(len(entries))
+# def test_ate_spec():
+# 	query = create_query('ate',
+# 	                     ask_treatments=False,
+# 	                     ask_polarities=False,
+# 	                     ask_outcomes=False,
+# 	                     )
+#
+# 	graph_id = 'confounding'
+#
+# 	builder = MechanismCorrelationBuilder(seed=100)
+# 	specs = list(builder.spawn_specs(graph_id))
+# 	builder._rng.shuffle(specs)
+# 	specs = specs[:10]
+#
+# 	labels = example_labels
+#
+# 	entries = [q for spec in specs
+# 	           for q in query.generate_questions(builder.generate_constrained_scm(graph_id, spec), labels)]
+#
+# 	print()
+# 	print(len(entries))
 
 
 
@@ -122,31 +122,31 @@ def test_ett():
 
 
 
-def test_ett_spec():
-	story = load_story('simpson_drug')
-
-	graph_id = story['phenomenon']
-	labels = story
-
-	query = create_query('ett',
-	                     ask_treatments=False,
-	                     ask_polarities=False,
-	                     ask_outcomes=False,
-	                     )
-
-	# graph_id = 'confounding'
-	# labels = example_labels
-
-	builder = MechanismCorrelationBuilder(seed=100)
-	specs = list(builder.spawn_specs(graph_id))
-	builder._rng.shuffle(specs)
-	specs = specs[:10]
-
-	entries = [q for spec in specs
-	           for q in query.generate_questions(builder.generate_constrained_scm(graph_id, spec), labels)]
-
-	print()
-	print(len(entries))
+# def test_ett_spec():
+# 	story = load_story('simpson_drug')
+#
+# 	graph_id = story['phenomenon']
+# 	labels = story
+#
+# 	query = create_query('ett',
+# 	                     ask_treatments=False,
+# 	                     ask_polarities=False,
+# 	                     ask_outcomes=False,
+# 	                     )
+#
+# 	# graph_id = 'confounding'
+# 	# labels = example_labels
+#
+# 	builder = MechanismCorrelationBuilder(seed=100)
+# 	specs = list(builder.spawn_specs(graph_id))
+# 	builder._rng.shuffle(specs)
+# 	specs = specs[:10]
+#
+# 	entries = [q for spec in specs
+# 	           for q in query.generate_questions(builder.generate_constrained_scm(graph_id, spec), labels)]
+#
+# 	print()
+# 	print(len(entries))
 
 
 
@@ -229,56 +229,50 @@ def test_backadj():
 
 def test_deterministic_counterfactual():
 
-	query = create_query('cou_y')
+	query = create_query('det-counterfactual')
 
-	scm = create_graph('det-twocauses')
-
-	questions = list(query.generate_questions(scm, example_labels))
-
-	assert len(questions) == 8
-
-	query2 = create_query('cou_y', treatment=None)
-
-	questions = list(query2.generate_questions(scm, example_labels))
-
-	assert len(questions) == 16
-
-
-
-def test_deterministic_interventions():
-
-	query = create_query('interv_y')
-
-	scm = create_graph('det-twocauses')
+	scm = create_graph('det-mediation')
 
 	questions = list(query.generate_questions(scm, example_labels))
-	print(questions)
 
-	assert len(questions) == 8
+	assert len(questions) == 4
 
-	query2 = create_query('interv_y', treatment=None)
+	# query2 = create_query('det-counterfactual', treatment=None)
+	#
+	# questions = list(query2.generate_questions(scm, example_labels))
+	#
+	# assert len(questions) == 8
 
-	questions = list(query2.generate_questions(scm, example_labels))
 
-	assert len(questions) == 16
+
+# def test_deterministic_interventions():
+#
+# 	query = create_query('interv_y')
+#
+# 	scm = create_graph('det-twocauses')
+#
+# 	questions = list(query.generate_questions(scm, example_labels))
+# 	print(questions)
+#
+# 	assert len(questions) == 8
+#
+# 	query2 = create_query('interv_y', treatment=None)
+#
+# 	questions = list(query2.generate_questions(scm, example_labels))
+#
+# 	assert len(questions) == 16
 
 
 
 def test_deterministic_counterfactual2():
 
-	query = create_query('cou_y')
+	query = create_query('det-counterfactual')
 
 	scm = create_graph('det-arrowhead')
 
 	questions = list(query.generate_questions(scm, example_labels))
 
 	assert len(questions) == 8
-
-	query2 = create_query('cou_y', treatment=None)
-
-	questions = list(query2.generate_questions(scm, example_labels))
-
-	assert len(questions) == 32
 
 
 

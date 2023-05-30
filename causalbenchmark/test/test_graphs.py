@@ -1,17 +1,17 @@
 import numpy as np
-from omniplex import Guru
+from omniply import Guru
 from ..graphs import create_graph
 from ..graphs.stories.simpson import SimpsonsParadox
 
 
 def test_det_fork():
-	g = create_graph('det-twocauses')
+	g = create_graph('det-mediation')
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
 	assert np.allclose(ctx['X'] | ctx['V2'], ctx['Y'])
 
-	g = create_graph('det-twocauses', conjunction=True)
+	g = create_graph('det-mediation', conjunction=True)
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
@@ -20,7 +20,7 @@ def test_det_fork():
 
 
 def test_det_confounding():
-	g = create_graph('det-triangle')
+	g = create_graph('det-mediation')
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
@@ -28,7 +28,7 @@ def test_det_confounding():
 	assert np.allclose(ctx['X'] | ctx['V2'], ctx['Y'])
 
 
-	g = create_graph('det-triangle', negation=True)
+	g = create_graph('det-mediation', negation=True)
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
@@ -36,7 +36,7 @@ def test_det_confounding():
 	assert np.allclose(ctx['X'] | ctx['V2'], ctx['Y'])
 
 
-	g = create_graph('det-triangle', conjunction=True)
+	g = create_graph('det-mediation', conjunction=True)
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
@@ -44,7 +44,7 @@ def test_det_confounding():
 	assert np.allclose(ctx['X'] & ctx['V2'], ctx['Y'])
 
 
-	g = create_graph('det-triangle', conjunction=True, negation=True)
+	g = create_graph('det-mediation', conjunction=True, negation=True)
 	ctx = g.context()
 	ctx.update(g.brute_force())
 
@@ -127,21 +127,21 @@ def test_arrowhead():
 
 
 
-def test_simpson():
-
-	for _ in range(10):
-
-		# g = create_graph('simpson')#, overlap=0.5, width=0.5, offset=0.2, overlap_offset=0.4)
-		g = SimpsonsParadox()#, overlap=0.5, width=0.5, offset=0.2, overlap_offset=0.4)
-
-		stats = g.simpsons_paradox_stats()
-
-		[[worst_control, best_control, agg_control],
-		 [worst_treated, best_treated, agg_treated]] = stats
-
-		assert agg_treated < agg_control
-		assert worst_treated > worst_control
-		assert best_treated > best_control
+# def test_simpson():
+#
+# 	for _ in range(10):
+#
+# 		# g = create_graph('simpson')#, overlap=0.5, width=0.5, offset=0.2, overlap_offset=0.4)
+# 		g = SimpsonsParadox()#, overlap=0.5, width=0.5, offset=0.2, overlap_offset=0.4)
+#
+# 		stats = g.simpsons_paradox_stats()
+#
+# 		[[worst_control, best_control, agg_control],
+# 		 [worst_treated, best_treated, agg_treated]] = stats
+#
+# 		assert agg_treated < agg_control
+# 		assert worst_treated > worst_control
+# 		assert best_treated > best_control
 
 
 

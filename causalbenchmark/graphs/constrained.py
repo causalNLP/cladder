@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 from omnibelt import unspecified_argument, JSONABLE
-from omniplex import Parameterized, hparam, submodule
+from omniply import Parameterized, hparam, submodule
 
 from scipy.linalg import pascal
 from scipy import optimize as opt

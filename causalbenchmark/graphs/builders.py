@@ -7,7 +7,7 @@ from pathlib import Path
 import omnifig as fig
 
 from omnibelt import unspecified_argument, JSONABLE
-from omniplex import Parameterized, hparam, submodule
+from omniply import Parameterized, hparam, submodule
 
 from scipy.linalg import pascal
 from scipy import optimize as opt
@@ -65,7 +65,7 @@ class AbstractBuilder:
 		raise NotImplementedError
 
 
-	def verbalize_spec(self, labels: Dict[str, str], graph_id: str, spec: JSONABLE):
+	def verbalize_spec(self, labels: Dict[str, str], story: str, spec: JSONABLE):
 		raise NotImplementedError
 
 
@@ -456,10 +456,10 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 	                        'is always more likely than {{var.name}{int(spec[var.name][parent] < 0)}_sentence}.'
 
 	_source_template = 'The chance of {{var.name}1_noun} is {bin_labels[spec[var.name]]} {{var.name}0_noun}.'
-	def verbalize_spec(self, labels: Dict[str, str], graph_id: str, spec: JSONABLE):
+	def verbalize_spec(self, labels: Dict[str, str], story: str, spec: JSONABLE):
 		lines = []
 
-		for var in self._find_graph_type(graph_id).static_variables():
+		for var in self._find_graph_type(story).static_variables():
 			if len(var.parents) == 0:
 				lines.append(util.pformat(self._source_template,
 				                          var=var, spec=spec, bin_labels=self.bin_labels, **labels))
@@ -494,19 +494,19 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 	# 	lims = np.linspace(limit, 1 - limit, bins * 2)
 	# 	mn, mx = lims[::2], lims[1::2]
 	# 	return mx.copy()
-
-
-	def _generate_source_params(self, sel):
-
-		width = 1 - 2 * self.limit
-		assert width > 0, f'limit must be less than 0.5, got {self.limit}'
-
-		# lims = np.linspace(self.limit, 1 - self.limit, self.bins * 2)
-		#
-		# mn, mx = lims[sel * 2], lims[sel * 2 + 1]
-		bias = self._rng.uniform(self.bin_min_limits(self.bins, self.limit)[sel],
-		                         self.bin_max_limits(self.bins, self.limit)[sel])
-		return bias
+	#
+	#
+	# def _generate_source_params(self, sel):
+	#
+	# 	width = 1 - 2 * self.limit
+	# 	assert width > 0, f'limit must be less than 0.5, got {self.limit}'
+	#
+	# 	# lims = np.linspace(self.limit, 1 - self.limit, self.bins * 2)
+	# 	#
+	# 	# mn, mx = lims[sel * 2], lims[sel * 2 + 1]
+	# 	bias = self._rng.uniform(self.bin_min_limits(self.bins, self.limit)[sel],
+	# 	                         self.bin_max_limits(self.bins, self.limit)[sel])
+	# 	return bias
 
 
 	def spec_count(self, story: Dict[str, Any]):
@@ -575,6 +575,10 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 			assert corr != 0, 'cannot have a correlation of 0'
 			rest = [p for p in node.parents if p != parent]
 
+			mag = abs(corr)
+			if mag >= 1:
+				mag = self.gap
+
 			if len(rest) == 0:
 				proj = np.zeros(base.dof())
 
@@ -584,7 +588,7 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 					proj *= -1
 
 				Anew.append(proj)
-				bnew.append(abs(corr) + self.epsilon)
+				bnew.append(mag + self.epsilon)
 
 			else:
 				for conds in product([0, 1], repeat=len(rest)):
@@ -598,7 +602,7 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 						proj *= -1
 
 					Anew.append(proj)
-					bnew.append(abs(corr) + self.epsilon)
+					bnew.append(mag + self.epsilon)
 
 		return Anew, bnew
 
@@ -648,16 +652,6 @@ class MechanismCorrelationBuilder(ConstraintBuilder, EnsembleBuilder, _Mechanism
 		if len(A):
 			constraints.append(opt.LinearConstraint(np.stack(A), np.asarray(b), keep_feasible=False))
 		return constraints
-
-
-	def generate_scm_params(self, story: Dict[str, Any], spec: JSONABLE, bins=None, limit=None, gap=None):
-		if bins is None:
-			bins = self.bins
-		if limit is None:
-			limit = self.limit
-		if gap is None:
-			gap = self.gap
-		return super().generate_scm_params(story, spec, bins, limit, gap)
 
 
 

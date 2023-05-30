@@ -1,14 +1,14 @@
 from typing import Type, Any, Dict, Union, Iterator, Optional, Callable, Tuple, List, Sequence, Iterable, Set, Mapping
 import numpy as np
-from omniplex import Structured
+from omniply import Structured
 import pomegranate as pg
 from functools import lru_cache
 
 from omnibelt import agnostic, unspecified_argument, JSONABLE
 
-from omniplex import Context
-from omniplex.tools.crafts import Signatured, ToolCraft, AbstractTool
-from omniplex.tools.kits import DynamicKit
+from omniply import Context
+from omniply.tools.crafts import Signatured, ToolCraft, AbstractTool
+from omniply.tools.kits import DynamicKit
 
 from .. import util
 from ..util import Seeded, hparam

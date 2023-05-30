@@ -1,6 +1,6 @@
 from pathlib import Path
 import omnifig as fig
-from ..graphs.revised import GraphProperty,Estimand, LinearGraph,PropGraph,BernGraph
+# from ..graphs.revised import GraphProperty,Estimand, LinearGraph,PropGraph,BernGraph
 from .. import util
 # from causalnlp import ci_relation_check
 import networkx as nx
@@ -45,7 +45,7 @@ def test_generate_questions():
 	                     ask_polarities=False,
 	                     ask_outcomes=False)
 
-	entries = [q for q in generate_questions(story_id, builder, query, spec_limit=10, pbar=False)]
+	entries = [q for q in generate_questions(story_id, builder, None, query, spec_limit=10, pbar=False)]
 
 	assert len(entries) == 10
 
@@ -65,7 +65,7 @@ def test_full_generator():
 		spec_limit=5,
 	)
 
-	assert outpath.exists()
+	assert _temp_data_file_path.exists()
 
 
 
@@ -80,7 +80,7 @@ def test_extract_summary():
 	                     ask_polarities=False,
 	                     ask_outcomes=False)
 
-	entries = [q for q in generate_questions(story_id, builder, query, spec_limit=10, pbar=False)]
+	entries = [q for q in generate_questions(story_id, builder, None, query, spec_limit=10, pbar=False)]
 
 	summary = extract_summary_data(entries)
 
@@ -91,7 +91,7 @@ def test_extract_summary():
 def test_summary():
 
 	outpath = fig.quick_run('summary',
-		data_path=str(_temp_data_file_path),
+		path=str(_temp_data_file_path),
 		out_path=str(_temp_data_summary_path),
 	)
 

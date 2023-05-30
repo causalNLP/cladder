@@ -1,4 +1,4 @@
-from ..graphs.revised import GraphProperty,Estimand, LinearGraph,PropGraph,BernGraph
+# from ..graphs.revised import GraphProperty,Estimand, LinearGraph,PropGraph,BernGraph
 from .. import util
 # from causalnlp import ci_relation_check
 import networkx as nx

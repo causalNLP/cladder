@@ -68,7 +68,7 @@ def test_ensemble():
 	N = 5
 
 	# ensemble = RelativeSCMEnsemble(graph_id=graph_id, spec=spec, builder=builder, num_samples=N)
-	ensemble = builder.generate_ensemble_scm(graph_id=graph_id, spec=spec, size=N)
+	ensemble = builder.generate_ensemble_scm(graph_id, spec=spec, size=N)
 
 	assert len(ensemble) == N
 

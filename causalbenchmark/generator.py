@@ -27,7 +27,7 @@ def dataset_summary(config, data_path=None, data=None):
 
 	if data is None:
 		if data_path is None:
-			data_path = config.pull('path', 'data/demo-beta.json')
+			data_path = config.pull('path')
 		data_path = Path(data_path).expanduser()
 
 		if not data_path.exists():
@@ -274,7 +274,9 @@ def generate_questions(story_id, builder, transformation, queries, spec_limit=No
 	
 	if 'scm' not in story:
 		raise ValueError(f'"scm" missing in {story}')
-	
+
+	if not isinstance(queries, (list, tuple)):
+		queries = [queries]
 	if len(queries) == 0:
 		if 'queries' not in story:
 			raise ValueError(f'"queries" missing in {story}')
@@ -376,7 +378,8 @@ def generate_questions(story_id, builder, transformation, queries, spec_limit=No
 					if query not in failures:
 						failures[query] = (query, e)
 
-		itr.close()
+		if pbar:
+			itr.close()
 		if len(failures) > 0:
 			print('\n'.join(f'Query {query.name!r} failed for {graph_id!r} (story {story_id!r}): {e}'
 			                for query, e in failures.values()))

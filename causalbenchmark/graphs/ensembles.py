@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 from omnibelt import unspecified_argument
-from omniplex import Parameterized, hparam, submodule
+from omniply import Parameterized, hparam, submodule
 
 from scipy.linalg import pascal
 
@@ -17,7 +17,7 @@ from .bayes import BayesLike, CausalProcess
 
 class SCMEnsemble(CausalProcess, Parameterized):
 	'''Uses Monte Carlo sampling to estimate the bounds of a distribution of SCMs.'''
-	graph_id = hparam(required=True, inherit=True)
+	story = hparam(required=True, inherit=True)
 	spec = hparam(required=True, inherit=True)
 	builder = hparam(required=True, inherit=True)
 
@@ -29,7 +29,7 @@ class SCMEnsemble(CausalProcess, Parameterized):
 
 
 	def verbalize_mechanisms(self, labels: Dict[str, str]) -> str:
-		return self.builder.verbalize_spec(labels, graph_id=self.graph_id, spec=self.spec)
+		return self.builder.verbalize_spec(labels, story=self.story, spec=self.spec)
 
 
 	def __init__(self, ensemble=None, *args, **kwargs):
@@ -63,7 +63,7 @@ class SCMEnsemble(CausalProcess, Parameterized):
 	def _build_ensemble(self, **sample_kwargs):
 		ensemble = []
 		for _ in range(self.size):
-			ensemble.append(self.builder.generate_scm_example(self.graph_id, spec=self.spec, **sample_kwargs))
+			ensemble.append(self.builder.generate_scm_example(self.story, spec=self.spec, **sample_kwargs))
 		return ensemble
 
 
