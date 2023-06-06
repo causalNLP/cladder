@@ -5,7 +5,7 @@ __pycache__/
 extra/
 data/backup/
 
-notebooks/
+#notebooks/
 sketches/
 outputs/
 
