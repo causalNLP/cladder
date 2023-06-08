@@ -8,8 +8,8 @@
 
 ###############################
 
-#_meta.script_name: summary
-#path: data/cladder-v1/cladder-v1-q-aggregate.json
+_meta.script_name: summary
+path: data/backup/cladder-v1-q-commonsense.json
 #
 #key: graph
 
@@ -46,9 +46,9 @@
 
 ###############################
 
-_base: [demo-mini]
-
-_meta.script_name: generate
+#_base: [demo-mini]
+#
+#_meta.script_name: generate
 #
 #model-meta: data/test-model-meta.json
 #
