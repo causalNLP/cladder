@@ -1,5 +1,521 @@
-from typing import Sequence, Optional
+from typing import Sequence, Optional, List
+from scipy.spatial.distance import squareform
+from scipy import optimize as opt
+from functools import lru_cache
 import numpy as np
+
+from .base import Seeded
+
+
+
+def prentice_bounds(marginals):
+	N = len(marginals)
+	I, J = np.triu_indices(N, k=1)
+	pi, pj = marginals[I], marginals[J]
+	lim = np.minimum(np.sqrt((pi * (1 - pj)) / (pj * (1 - pi))), np.sqrt((pj * (1 - pi)) / (pi * (1 - pj))))
+	return lim
+
+
+
+import numpy as np
+from scipy.stats import binom
+
+
+def cBernMdepk_single(p, rho):
+	m = len(p)
+	k = len(p)
+
+	p = np.pad(p, (0, k), 'constant', constant_values=0)
+	for w in range(k):
+		p[m + w] = p[m]
+		rho[w][(m-w):m] = 0
+
+	Y = b = np.zeros((k, m))
+	for w in range(k):
+		for j in range(m):
+			b[w, j] = p[j]*p[w+j] / (rho[w][j]*np.sqrt(p[j]*p[w+j]*(1-p[j])*(1-p[w+j])) + p[j]*p[w+j])
+			Y[w, j] = np.random.uniform() < b[w, j]
+			# Y[w, j] = binom.rvs(1, b[w, j])
+
+	a = U = X = np.zeros(m)
+	for w in range(m):
+		prod1 = prod2 = 1
+		if w == 0:
+			for l in range(k):
+				prod1 *= b[l, w]
+				prod2 *= Y[l, w]
+		elif w <= k:
+			for l in range(k):
+				prod1 *= b[l, w]
+				prod2 *= Y[l, w]
+			for l in range(w):
+				prod1 *= b[l, w-l]
+				prod2 *= Y[l, w-l]
+		else:
+			for l in range(k):
+				prod1 *= b[l, w]*b[l, w-l]
+				prod2 *= Y[l, w]*Y[l, w-l]
+
+		a[w] = p[w] / prod1
+		U[w] = np.random.uniform() < a[w]
+		# U[w] = binom.rvs(1, a[w])
+		X[w] = U[w] * prod2
+
+	return X
+
+
+
+def test_generate_joint():
+
+	gen = np.random.RandomState()
+
+	N = 3
+
+	marginals = gen.uniform(0.1, 0.9, size=N)
+	marginals = np.ones(N) * 0.5
+
+	correlations = prentice_bounds(marginals) * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+	correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations = np.asarray([0.635244, -0.70220, -0.4590])
+
+	p, rho = marginals, squareform(correlations)+np.eye(N)
+
+	samples = np.stack([cBernMdepk_single(p, rho) for _ in range(1000)])
+	samples = samples.astype(float)
+
+	bits = 2 ** np.arange(N-1, -1, -1)
+
+	counts = np.bincount(np.dot(samples, bits).astype(int), minlength=2**N)
+
+	params = counts / counts.sum()
+
+
+
+
+
+	print(f'failed {failed/1000:.1%} / 100')
+
+
+
+
+
+def generate_joint_jiang(marginals: Sequence[float],
+						 correlations: Sequence[float],
+						 *, nsamples=10, seed=None):
+	'''
+	implemented based on https://arxiv.org/pdf/2007.14080.pdf
+
+	apparently an N dimensional bernoulli can be transformed into an N+1 dimensional symmetric bernoulli
+	(ie. marginals are all 1/2)
+
+	:param marginals: marginal prob of each var numpy array shape (3,)
+	:param correlations: correlations between each pair of vars (in condensed form [(0,1), (0,2), (1,2)])
+	numpy array shape (3,)
+
+	any of the above can be None, in which case it is sampled from a uniform distribution
+
+	:return: bernoulli joint distribution numpy array shape (2, 2, 2)
+	'''
+
+	N = len(marginals)
+	if N > 10:
+		print(f'WARNING: generating joint distribution with {N} variables (generally not recommended for N > 10)')
+
+	assert len(correlations) == N * (N - 1) // 2, f'correlations = {correlations} should have length {N * (N - 1) // 2}'
+
+	assert all(m is None or 0 <= m <= 1 for m in marginals), f'marginals = {marginals} should be in [0, 1]'
+	assert all(c is None or -1 <= c <= 1 for c in correlations), f'correlations = {correlations} should be in [-1, 1]'
+
+	gen = np.random.RandomState(seed)
+
+	# check Prentice constraints
+
+	lim = prentice_bounds(marginals)
+	accept = np.all(np.abs(correlations) <= lim)
+
+
+	rho = squareform(correlations) + np.eye(N)
+
+	beta = np.zeros((N, N))
+
+	for i, j in np.ndindex(N, N):
+
+		p_j = marginals[j]
+		p_ij = marginals[min(N-1, i+j)]
+
+		num = p_j * p_ij
+		den = num + rho[i, j] * np.sqrt(num * (1 - p_j) * (1 - p_ij))
+
+		beta[i, j] = num / den
+
+	Y = gen.uniform(0, 1, size=(N*N, nsamples)) - beta.reshape(-1, 1) < 0
+	Y = Y.astype(int).reshape(N, N, nsamples)
+
+
+	alpha = marginals[0] / np.prod(beta[:, 0])
+	fail = alpha > 1
+
+	U = gen.uniform(0, 1, size=(nsamples,)) - alpha < 0
+	U = U.astype(int)
+
+	Xs = [U * np.prod(Y[:, 0, :], axis=0)]
+
+	for i in range(1, N):
+		sel = np.eye(i, dtype=bool)[::-1]
+		bsel = beta[:i, :i][sel]
+
+		alpha = marginals[i] / np.prod(beta[:, i])
+		alpha *= np.prod(bsel)
+
+		fail = fail | (alpha > 1)
+
+		U = gen.uniform(0, 1, size=(nsamples,)) - alpha < 0
+		U = U.astype(int)
+
+		Xi = U * np.prod(Y[:i, i, :], axis=0)
+		Xi *= np.prod(Y[:i, :i, :][sel, :], axis=0)
+
+		Xs.append(Xi)
+
+	X = np.stack(Xs, axis=0)
+
+	print(X)
+
+	return X
+
+
+
+# def test_generate_joint():
+#
+# 	gen = np.random.RandomState()
+#
+# 	N = 3
+#
+# 	marginals = gen.uniform(0.1, 0.9, size=N)
+# 	marginals = np.ones(N) * 0.5
+#
+# 	correlations = np.ones(N * (N - 1) // 2) * 0.
+# 	# correlations = np.asarray([0.635244, -0.70220, -0.45903])
+#
+# 	params = generate_joint_jiang(marginals, correlations)
+#
+# 	if np.allclose(params.sum(), 1) and np.all(params >= 0):
+# 		pass
+#
+# 		D = JointDistribution(params=params)
+#
+# 		actual_corr = D.corr()
+# 		actual_marginals = D.marginals()
+#
+# 		print('actual_corr', actual_corr)
+# 		print('actual_marginals', actual_marginals)
+#
+# 	else:
+# 		failed += 1
+#
+# 	print(f'failed {failed/1000:.1%} / 100')
+
+
+
+
+
+class JointDistribution(Seeded):
+	def __init__(self, N=None, *, params=None, **kwargs):
+		assert N is not None or params is not None, 'Either N or params must be specified'
+		if params is not None:
+			N = len(params.shape)
+		super().__init__(**kwargs)
+		self._params = self._generate_params(N, params=params)
+
+
+	@property
+	def N(self):
+		return len(self._params.shape)
+
+
+	def _generate_params(self, N, params=None):
+		if params is None:
+			raw = self._rng.uniform(size=[2**N+1]).cumsum()
+			raw /= raw[-1]
+			params = raw[1:] - raw[:-1]
+		else:
+			params = np.asarray(params)
+			assert params.size == 2**N
+		assert np.isclose(params.sum(), 1), f'params must sum to 1, got {params.sum()}'
+		return params.reshape([2]*N)
+
+
+	def prob(self, *vals: Optional[float]) -> float:
+		params = self._params
+		assert len(vals) == len(params.shape), f'Expected {len(params.shape)} values, got {len(vals)}'
+		N = len(vals)
+
+		for i, val in enumerate(vals):
+			if val is None:
+				continue
+			x = np.array([1 - val, val]).reshape([1] * i + [2] + [1] * (N - i - 1))
+			params = params * x
+			params = params.sum(axis=i, keepdims=True)
+
+		return params.sum()
+
+
+	def marginals(self, *conds: Optional[float], val: int = 1) -> List[float]:
+		if not len(conds):
+			return [self.marginal(i, val=val) for i in range(self.N)]
+		assert len(conds) == self.N, f'Expected {self.N} values, got {len(conds)}'
+		condition = self.prob(*conds)
+		return [self.marginal(i, val=val) / condition if c is None else c for i, c in enumerate(conds)]
+
+
+	def marginal(self, *indices: int, val: int = 1) -> float:
+		sel = [slice(None)] * self.N
+		for i in indices:
+			sel[i] = val
+		return self._params[tuple(sel)].sum()
+
+
+	def variance(self, i: int) -> float:
+		marginal = self.marginal(i)
+		return marginal * (1 - marginal)
+
+
+	def covariance(self, i: int, j: int) -> float:
+		marginal_i = self.marginal(i)
+		marginal_j = self.marginal(j)
+		joint = self.marginal(i, j)
+		return joint - marginal_i * marginal_j
+
+
+	def correlation(self, i: int, j: int) -> float:
+		covariance = self.covariance(i, j)
+		variance_i = self.variance(i)
+		variance_j = self.variance(j)
+		return covariance / np.sqrt(variance_i * variance_j)
+
+
+	def cov(self):
+		return np.asarray([self.covariance(i, j) for i in range(self.N) for j in range(i + 1, self.N)])
+
+
+	def corr(self):
+		return np.asarray([self.correlation(i, j) for i in range(self.N) for j in range(i + 1, self.N)])
+
+
+	def cov_matrix(self):
+		return squareform(self.cov())
+
+
+	def corr_matrix(self):
+		return squareform(self.corr())
+
+
+
+
+@lru_cache(maxsize=1000)
+def _get_constraints(N: int):
+	corners = np.asarray([[0, *inds] for inds in np.ndindex(*[2] * N)]).T
+	i, j = np.triu_indices(N+1, k=1)
+	constraints = (-1.) ** (corners[i] + corners[j])
+	constraints = np.concatenate([constraints, np.ones((1, 2**N))]) # constraint that sum of all params = 1
+	return constraints
+
+
+
+def generate_joint_huber(marginals: Sequence[float],
+							   correlations: Sequence[float],
+							   ):
+	'''
+	implemented based on https://jsdajournal.springeropen.com/articles/10.1186/s40488-019-0091-5
+
+	apparently an N dimensional bernoulli can be transformed into an N+1 dimensional symmetric bernoulli
+	(ie. marginals are all 1/2)
+
+	:param marginals: marginal prob of each var numpy array shape (3,)
+	:param correlations: correlations between each pair of vars (in condensed form [(0,1), (0,2), (1,2)])
+	numpy array shape (3,)
+
+	any of the above can be None, in which case it is sampled from a uniform distribution
+
+	:return: bernoulli joint distribution numpy array shape (2, 2, 2)
+	'''
+
+	N = len(marginals)
+	if N > 10:
+		print(f'WARNING: generating joint distribution with {N} variables (generally not recommended for N > 10)')
+
+	assert len(correlations) == N * (N - 1) // 2, f'correlations = {correlations} should have length {N * (N - 1) // 2}'
+
+	assert all(m is None or 0 <= m <= 1 for m in marginals), f'marginals = {marginals} should be in [0, 1]'
+	assert all(c is None or -1 <= c <= 1 for c in correlations), f'correlations = {correlations} should be in [-1, 1]'
+
+	targets = np.concatenate([marginals, correlations, [1]])
+	N, targets = 2, np.asarray([0.635244, -0.70220, -0.45903, 1.]) # example from paper
+
+	constraints = _get_constraints(N)
+
+	sol, r = opt.nnls(constraints, targets)
+
+	total = sol.sum()
+
+	# if not np.isclose(sol.sum(), 1) or np.any(sol < 0) or np.any(sol > 1):
+	# 	raise ValueError(f'sol = {sol} should be in [0, 1]')
+
+	corners = np.asarray([[0, *inds] for inds in np.ndindex(*[2] * N)])
+
+	params = np.concatenate([sol/2]*2).reshape([2] * (N+1))
+
+
+	dis = JointDistribution(params=params)
+
+	mar = dis.marginals()
+	cor = dis.corr()
+
+
+	return sol.reshape([2] * (N))
+
+
+
+# def test_generate_joint():
+#
+# 	gen = np.random.RandomState()
+#
+# 	N = 3
+#
+# 	failed = 0
+# 	for _ in range(1000):
+#
+# 		marginals = gen.uniform(0.1, 0.9, size=N)
+# 		marginals = np.ones(N) * 0.5
+#
+# 		correlations = gen.uniform(0.1, 0.9, size=N * (N - 1) // 2)
+# 		i, j = np.triu_indices(N, k=1)
+# 		mi, mj = marginals[i], marginals[j]
+# 		min_corr = -np.minimum(np.minimum(np.minimum((1-mi)/mi, mi/(1-mi)), (1-mj)/mj), mj/(1-mj))
+# 		correlations = (1-min_corr) * correlations + min_corr
+#
+# 		# correlations = np.ones(N * (N - 1) // 2) * 0.
+# 		correlations = np.asarray([0.635244, -0.70220, -0.45903])
+#
+# 		params = generate_joint(marginals, correlations)
+#
+# 		if np.allclose(params.sum(), 1) and np.all(params >= 0):
+# 			pass
+#
+# 			D = JointDistribution(params=params)
+#
+# 			actual_corr = D.corr()
+# 			actual_marginals = D.marginals()
+#
+# 			print('actual_corr', actual_corr)
+# 			print('actual_marginals', actual_marginals)
+#
+# 		else:
+# 			failed += 1
+#
+# 	print(f'failed {failed/1000:.1%} / 100')
+
+
+
+
+
+
+def generate_joint_numeric(N=None, *, marginals: Optional[Sequence[Optional[float]]] = None,
+						   correlations: Optional[Sequence[Optional[float]]] = None,
+						   range_marginal=0.98, range_correlation=0.98,
+						   seed=None, nsamples=10000):
+	'''
+	:param marginals: marginal prob of each var numpy array shape (3,)
+	:param correlations: correlations between each pair of vars (in order of var1, var2, var3)
+	:param range_marginal: range of marginal prob
+	:param range_correlation: range of correlation
+	:param alpha_choice: function to choose alpha
+	:param seed: random seed
+	:param fuel: number of attempts to generate a valid joint distribution
+	:return:
+	'''
+
+	if N is None:
+		assert marginals is not None or correlations is not None, 'Either N or marginals and correlations must be specified'
+		if marginals is not None:
+			N = len(marginals)
+		else:
+			N = int((np.sqrt(8 * len(correlations) + 1) + 1) / 2) #int(np.sqrt(len(correlations) * 2))
+
+	gen = np.random.RandomState(seed)
+
+	if marginals is None:
+		marginals = N*[None]
+	if correlations is None:
+		correlations = (N-1)*N//2*[None]
+
+	marginals = np.asarray([gen.uniform((1-range_marginal) / 2, 1 - (1-range_marginal)/2) if m is None else m for m in marginals])
+	correlations = np.asarray([gen.uniform(-range_correlation, range_correlation) if c is None else c for c in correlations])
+
+	assert all(m is None or 0 <= m <= 1 for m in marginals), f'marginals = {marginals} should be in [0, 1]'
+	assert all(c is None or -1 <= c <= 1 for c in correlations), f'correlations = {correlations} should be in [-1, 1]'
+
+	corr = squareform(correlations) + np.eye(N)
+	std = np.sqrt(marginals * (1 - marginals))
+
+	cov = corr * np.outer(std, std)
+
+	# generate gaussian samples
+	samples = gen.multivariate_normal(np.zeros(N), cov, size=nsamples)
+
+	def sigmoid(x):
+		return 1.0 / (1.0 + np.exp(-x))
+	# convert to bernoulli
+	samples = (sigmoid(samples) - marginals.reshape(1, -1) < 0).astype(int)
+
+	bits = 2 ** np.arange(N-1, -1, -1)
+
+	counts = np.bincount(np.dot(samples, bits), minlength=2**N)
+
+	params = counts / counts.sum()
+	return params.reshape((2,)*N)
+
+
+
+def test_sample_numeric_joint():
+	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+	#
+	# print(generate_joint_numeric(correlations=[1]*3, marginals=[0.5]*3, seed=101))
+	# print(generate_joint_numeric(correlations=[-1, 0, 0], marginals=[0.5]*3, seed=101))
+	#
+	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+
+	# print(generate_joint_numeric(correlations=[0, 0, 0], seed=101, range_marginal=0.5, range_correlation=0.5))
+	# print(generate_joint_numeric(marginals=[0.55, 0.5, 0.5], seed=101, range_marginal=0.5, range_correlation=0.5))
+
+	print(generate_joint_numeric(4, seed=101))
+
+	for _ in range(100):
+		print(generate_joint_numeric(3, seed=101))
+
+
+
+def test_verify_numeric_joint():
+
+	# gen = np.random.RandomState(101)
+	gen = np.random.RandomState()
+
+	for _ in range(10):
+
+		corr = gen.uniform(-1, 1, size=(3,))
+		marginals = gen.uniform(0, 1, size=(3,))
+
+		params = generate_joint_numeric(correlations=corr, marginals=marginals, seed=101)
+
+		D = JointDistribution(params=params)
+
+		actual_corr = D.corr()
+		actual_marginals = D.marginals()
+
+		print(corr, actual_corr)
+
+		# assert np.allclose(actual_corr, corr), f'Expected {corr}, got {actual_corr}'
+		# assert np.allclose(actual_marginals, marginals), f'Expected {marginals}, got {actual_marginals}'
 
 
 
@@ -9,10 +525,10 @@ def _convexity_from_correlation(c12, m1, m2):
 
 
 def generate_joint_3_variables(*, marginals: Optional[Sequence[Optional[float]]] = None,
-                               correlations: Optional[Sequence[Optional[float]]] = None,
-                               range_marginal=0.98, range_correlation=0.02,
-                               alpha_choice=None,
-                               seed=None, fuel=100):
+							   correlations: Optional[Sequence[Optional[float]]] = None,
+							   range_marginal=0.98, range_correlation=0.98,
+							   alpha_choice=None,
+							   seed=None, fuel=100):
 	'''
 	implemented based on https://arxiv.org/pdf/1311.2002.pdf
 
@@ -56,13 +572,13 @@ def generate_joint_3_variables(*, marginals: Optional[Sequence[Optional[float]]]
 		l14, l24, l34 = m1, m2, m3
 
 		l = max(l14 + l24 + l13 + l23,
-		        l14 + l34 + l12 + l23,
-		        l24 + l34 + l12 + l13)
+				l14 + l34 + l12 + l23,
+				l24 + l34 + l12 + l13)
 
 		u = min(l12 + l23 + l13,
-		        l12 + l24 + l14,
-		        l13 + l34 + l14,
-		        l23 + l34 + l24)
+				l12 + l24 + l14,
+				l13 + l34 + l14,
+				l23 + l34 + l24)
 
 		check1 = u >= 1
 		check2 = l <= u + 1
@@ -96,43 +612,39 @@ def generate_joint_3_variables(*, marginals: Optional[Sequence[Optional[float]]]
 
 	else:
 		raise RuntimeError(f'could not generate a valid bernoulli distribution (after {start_fuel} tries): '
-		                   f'marginals={marginals}, correlations={correlations}')
+						   f'marginals={marginals}, correlations={correlations}')
 
 	return q.reshape((2, 2, 2))
 
 
 
 
-
-
-
-
-def test_sample_correlations():
-	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, alpha_choice=0., seed=101))
-	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, alpha_choice=1., seed=101))
-
-	# print(generate_joint_3_variables(correlations=[1]*3, marginals=[0.5]*3, seed=101))
-	# print(generate_joint_3_variables(correlations=[-1, 0, 0], marginals=[0.5]*3, seed=101))
-
-	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, seed=101))
-
-	print(generate_joint_3_variables(correlations=[0, 0, 0], marginals=[0.5, 0.5, 0.5],
-	                                 alpha_choice=1.,
-	                                 seed=101, range_marginal=0.5, range_correlation=0.5))
-
-	for _ in range(10):
-		print(generate_joint_3_variables(correlations=[0, 0, 0], marginals=[0.55, 0.5, 0.5],
-		                                 alpha_choice=1.,
-		                                 seed=101, range_marginal=0.5, range_correlation=0.5))
-
-
-	print(generate_joint_3_variables(correlations=[0, 0, 0], seed=101, range_marginal=0.5, range_correlation=0.5))
-
-
-	for _ in range(100):
-		print(generate_joint_3_variables(seed=101))
-
-	pass
+# def test_sample_controlled_joint():
+# 	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, alpha_choice=0., seed=101))
+# 	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, alpha_choice=1., seed=101))
+#
+# 	# print(generate_joint_3_variables(correlations=[1]*3, marginals=[0.5]*3, seed=101))
+# 	# print(generate_joint_3_variables(correlations=[-1, 0, 0], marginals=[0.5]*3, seed=101))
+#
+# 	# print(generate_joint_3_variables(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+#
+# 	print(generate_joint_3_variables(correlations=[0, 0, 0], marginals=[0.5, 0.5, 0.5],
+# 	                                 alpha_choice=1.,
+# 	                                 seed=101, range_marginal=0.5, range_correlation=0.5))
+#
+# 	for _ in range(10):
+# 		print(generate_joint_3_variables(correlations=[0, 0, 0], marginals=[0.55, 0.5, 0.5],
+# 		                                 alpha_choice=1.,
+# 		                                 seed=101, range_marginal=0.5, range_correlation=0.5))
+#
+#
+# 	print(generate_joint_3_variables(correlations=[0, 0, 0], seed=101, range_marginal=0.5, range_correlation=0.5))
+#
+#
+# 	for _ in range(100):
+# 		print(generate_joint_3_variables(seed=101))
+#
+# 	pass
 
 
 
