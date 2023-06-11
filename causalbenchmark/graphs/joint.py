@@ -122,10 +122,6 @@ class CorrelationLoss(TargetLoss):
 
 
 
-
-
-
-
 class FullySpecifiedLoss(TargetLoss):
 	def __init__(self, moments=None, *, N=None, **kwargs):
 		'''
@@ -146,7 +142,7 @@ class FullySpecifiedLoss(TargetLoss):
 
 	@staticmethod
 	def n_combos(indices, reverse_order=False, include_full=False, include_empty=False): # not including empty set or full set
-		if include_empty:
+		if not reverse_order and include_empty:
 			yield ()
 		for r in range(len(indices)-1+int(include_full), 0, -1) \
 				if reverse_order else range(1, len(indices)+int(include_full)):
@@ -157,8 +153,9 @@ class FullySpecifiedLoss(TargetLoss):
 
 
 	@classmethod
-	def groups(cls, N, reverse_order=False, include_full=False):
-		yield from cls.n_combos(list(range(N)), reverse_order=reverse_order, include_full=include_full)
+	def groups(cls, N, *, reverse_order=False, include_full=False, include_empty=False):
+		yield from cls.n_combos(list(range(N)), reverse_order=reverse_order,
+		                        include_full=include_full, include_empty=include_empty)
 
 
 	@classmethod
@@ -181,59 +178,58 @@ class FullySpecifiedLoss(TargetLoss):
 		dofs = 2**N - 1
 		params_flat = params.reshape(-1) # (2**N,)
 
-		D = JointDistribution(params=params)
-
-		# marginals2 = np.cumsum(params, axis=None)
-
-		integrals_flat = np.ones((2**N,)) * params_flat[-1]
-
 		codes = util.generate_all_bit_strings(N, dtype=bool).T  # shape (n, 2**n)
-		codes = ~codes[::-1]
-
 		@lru_cache(maxsize=1000)
-		def get_index(inds):
-			return (2 ** np.asarray(inds)).sum()
+		def get_selection(inds):
+			return codes[list(inds)].prod(axis=0).astype(bool)
 
-		@lru_cache(maxsize=1000)
-		def get_integral(inds):
-			return codes[list(inds)].sum(axis=0).astype(bool)
+		intersections = {g: params_flat[get_selection(g)].sum()
+		                 for g in cls.groups(N, include_empty=False, include_full=True)}
+		
+		marginals = np.asarray([intersections[(i,)] for i in range(N)])
 
-		for g in cls.groups(N):
-			index = get_index(g)
-			p = params_flat[index]
-			col = get_integral(g)
-			integrals_flat[col] += p
-
-		gt_mar = D.marginals()
-		marginals = integrals_flat[2**np.arange(N)]
-
-		moments = marginals.tolist()#[::-1]
+		moments = marginals.tolist()
 
 		stds = np.sqrt(marginals * (1 - marginals))
 
-		for group in cls.groups(N, include_full=True):
+		for group in cls.groups(N, include_full=True, reverse_order=False):
 			if len(group) > 1:
 				terms = []
 				for mar, mom in cls.split_group(group):
 					mus = marginals[list(mar)].prod() if len(mar) else 1.
-					moment = integrals_flat[get_index(mom)] if len(mom) else 1.
+					moment = intersections.get(mom, 1.)
 					terms.append((-1)**len(mar) * moment * mus)
 
-				total = sum(terms) / stds[list(group)].prod()
-				moments.append(total)
+				covariance = sum(terms) / stds[list(group)].prod()
+				moments.append(covariance)
 
 		return np.asarray(moments)
 
 
+def generate_joint_bernoulli(marginals, correlation):
+	
+	N = len(marginals)
 
-def optimize_joint_bernoulli(marginals, correlations, *, x0=None, full_moments=False):
-	# params : (2**N,)
-	# marginals : (N,)
-	# correlations : (N * (N - 1) // 2,)
+	lim = prentice_bounds(marginals)
+	accept = np.all(np.abs(correlations) <= lim)
 
-	# if losses is None:
-	# 	losses = []
+	if x0 is None:
+		x0 = np.zeros((2 ** N,))
 
+	constraints = len(marginals) + len(correlations)
+	dof = 2 ** N - constraints - 1
+
+	wts = np.ones((2 ** N - 1,)) * 1.
+	wts[len(marginals) : len(marginals) + len(correlations)] = 5.
+	wts[len(marginals)+len(correlations):] = 1.
+	
+	pass
+
+
+
+def optimize_joint_bernoulli(moments, *, x0=None, wts=None):
+	# moments : (2**N-1,)
+	
 	N = len(marginals)
 
 	lim = prentice_bounds(marginals)
@@ -278,16 +274,15 @@ def test_optim_bernoulli():
 	gen = np.random.RandomState()
 
 	N = 3
-
+	
 	marginals = gen.uniform(0.1, 0.9, size=N)
 	# marginals = np.ones(N) * 0.5
 
 	correlations = prentice_bounds(marginals) \
 	               * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
-	# correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations = np.ones(N * (N - 1) // 2) * -0.9
 	# correlations[0] = 0.2
 	# correlations = np.abs(correlations)
-
 
 	moments = FullySpecifiedLoss.max_entropy_moments(N)
 	moments[:N] = marginals
@@ -297,23 +292,19 @@ def test_optim_bernoulli():
 
 	D = JointDistribution(params=params)
 
+	
+	
+
+
 	mar = marginals
 	amr = D.marginals()
 
 	cor = correlations
 	acr = D.corr()
 
-	goal = \
-		moments
-	full = \
-		FullySpecifiedLoss.estimate(params)
-
 	samples = gen.choice(np.arange(2**N).astype(int), p=params.reshape(-1), size=50000)
 	# counts = np.bincount(samples, minlength=2**N)
 	# emp = counts / counts.sum()
-
-	emp_mar = np.mean(samples.reshape((-1, 1)) & (1 << np.arange(N))[::-1] != 0, axis=0)
-
 
 	print('actual_corr',)
 	print('actual_marginals')
