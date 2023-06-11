@@ -3,10 +3,13 @@ from scipy.spatial.distance import squareform
 from scipy import optimize as opt
 from functools import lru_cache
 import numpy as np
+from scipy import stats, special
+
+import itertools
+
 
 from .base import Seeded
-
-from scipy import stats, special
+from .. import util
 
 
 def prentice_bounds(marginals):
@@ -17,52 +20,575 @@ def prentice_bounds(marginals):
 	return lim
 
 
-import torch
+
+class BernoulliLoss:
+	def __init__(self, N, **kwargs):
+		super().__init__(**kwargs)
+		self.N = N
 
 
-def bernoulli_losses():
-	pass
+	@property
+	def n_constraints(self):
+		raise NotImplementedError
 
 
-def optimize_bernoulli_params(losses, x0, *, maxiter=1000, threshold=1e-3):
-	
-	x = x0.clone()
-	
-	optim = torch.optim.Adam([x], lr=1e-2)
-	
-	prev = float('inf')
-	i = 0
-	for i in range(1, maxiter+1):
-		optim.zero_grad()
-		loss = losses(x)
-		loss.backward()
-		optim.step()
-		
-		if torch.abs(loss - prev) < threshold:
-			break
-	
-	return i, x
-	
-	
-def optimize_joint_bernoulli(marginals, correlations, *, x0=None,
-                       seed=None, eps=1e-3, maxiter=1000):
+	def marginal(self, params, *indices: int, val: int = 1) -> float:
+		sel = [slice(None)] * len(params.shape)
+		for i in indices:
+			sel[i] = val
+		return params[tuple(sel)].sum()
+
+
+	def variance(self, params, i: int) -> float:
+		marginal = self.marginal(params, i)
+		return marginal * (1 - marginal)
+
+
+	def covariance(self, params, i: int, j: int) -> float:
+		marginal_i = self.marginal(params, i)
+		marginal_j = self.marginal(params, j)
+		joint = self.marginal(params, i, j)
+		return joint - marginal_i * marginal_j
+
+
+	def correlation(self, params, i: int, j: int) -> float:
+		covariance = self.covariance(params, i, j)
+		variance_i = self.variance(params, i)
+		variance_j = self.variance(params, j)
+		return covariance / np.sqrt(variance_i * variance_j)
+
+
+	def compute_loss(self, params):
+		raise NotImplementedError
+
+
+	def estimate(self, params):
+		raise NotImplementedError
+
+
+
+class TargetLoss(BernoulliLoss):
+	def __init__(self, targets, *, wts=None, p=2, N=None, **kwargs):
+		if N is None:
+			N = len(targets)
+		if wts is None:
+			wts = np.ones((N,))
+		if not isinstance(wts, np.ndarray):
+			wts = np.asarray(wts)
+		if not isinstance(targets, np.ndarray):
+			targets = np.asarray(targets)
+		super().__init__(N=N, **kwargs)
+		self.wts = wts
+		self.targets = targets
+		# assert p in {1, 2}, f'p={p} is not supported'
+		self.p = p
+
+
+	@property
+	def n_constraints(self):
+		# braodcast wts with targets and count how many are non-zero
+		return self.N - np.isclose(np.broadcast_to(self.wts, self.targets.shape), 0.).sum()
+
+
+	def compute_loss(self, params):
+		estimate = self.estimate(params)
+
+		diffs = np.abs(estimate - self.targets) ** self.p
+
+		return np.sum(self.wts * diffs)
+
+
+
+class MarginalLoss(TargetLoss):
+	def __init__(self, marginals, **kwargs):
+		super().__init__(targets=marginals, **kwargs)
+
+
+	def estimate(self, params):
+		marginals = np.asarray([self.marginal(params, i) for i in range(self.N)])
+		return marginals
+
+
+
+class CorrelationLoss(TargetLoss):
+	def __init__(self, correlations, **kwargs):
+		super().__init__(targets=correlations, **kwargs)
+		self.pairs = [(i, j) for i in range(self.N) for j in range(i+1, self.N)]
+
+
+	def estimate(self, params):
+		corrs = np.asarray([self.correlation(params, i, j) for i, j in self.pairs])
+		return corrs
+
+
+
+
+
+
+
+class FullySpecifiedLoss(TargetLoss):
+	def __init__(self, moments=None, *, N=None, **kwargs):
+		'''
+		first N moments are marginals, then N(N-1)/2 covariances,
+		and so on (so all higher order moments are included)
+		'''
+		if N is None:
+			N = np.log2(len(moments)+1).round().astype(int)
+		super().__init__(targets=moments, N=N, **kwargs)
+
+
+	@staticmethod
+	def max_entropy_moments(N: int):
+		moments = np.zeros((2**N - 1,))
+		moments[:N] = 0.5
+		return moments
+
+
+	@staticmethod
+	def n_combos(indices, reverse_order=False, include_full=False, include_empty=False): # not including empty set or full set
+		if include_empty:
+			yield ()
+		for r in range(len(indices)-1+int(include_full), 0, -1) \
+				if reverse_order else range(1, len(indices)+int(include_full)):
+			combinations = itertools.combinations(indices, r)
+			yield from combinations
+		if reverse_order and include_empty:
+			yield ()
+
+
+	@classmethod
+	def groups(cls, N, reverse_order=False, include_full=False):
+		yield from cls.n_combos(list(range(N)), reverse_order=reverse_order, include_full=include_full)
+
+
+	@classmethod
+	def split_group(cls, base, reverse_order=False):
+		total = set(base)
+		for group in cls.n_combos(base, reverse_order=reverse_order, include_full=True, include_empty=True):
+			yield group, tuple(total.difference(group))
+
+
+	@classmethod
+	def estimate(cls, params):
+		'''
+		estimates all moments from params
+
+		:param params:
+		:return:
+		'''
+
+		N = len(params.shape)
+		dofs = 2**N - 1
+		params_flat = params.reshape(-1) # (2**N,)
+
+		D = JointDistribution(params=params)
+
+		# marginals2 = np.cumsum(params, axis=None)
+
+		integrals_flat = np.ones((2**N,)) * params_flat[-1]
+
+		codes = util.generate_all_bit_strings(N, dtype=bool).T  # shape (n, 2**n)
+		codes = ~codes[::-1]
+
+		@lru_cache(maxsize=1000)
+		def get_index(inds):
+			return (2 ** np.asarray(inds)).sum()
+
+		@lru_cache(maxsize=1000)
+		def get_integral(inds):
+			return codes[list(inds)].sum(axis=0).astype(bool)
+
+		for g in cls.groups(N):
+			index = get_index(g)
+			p = params_flat[index]
+			col = get_integral(g)
+			integrals_flat[col] += p
+
+		gt_mar = D.marginals()
+		marginals = integrals_flat[2**np.arange(N)]
+
+		moments = marginals.tolist()#[::-1]
+
+		stds = np.sqrt(marginals * (1 - marginals))
+
+		for group in cls.groups(N, include_full=True):
+			if len(group) > 1:
+				terms = []
+				for mar, mom in cls.split_group(group):
+					mus = marginals[list(mar)].prod() if len(mar) else 1.
+					moment = integrals_flat[get_index(mom)] if len(mom) else 1.
+					terms.append((-1)**len(mar) * moment * mus)
+
+				total = sum(terms) / stds[list(group)].prod()
+				moments.append(total)
+
+		return np.asarray(moments)
+
+
+
+def optimize_joint_bernoulli(marginals, correlations, *, x0=None, full_moments=False):
 	# params : (2**N,)
 	# marginals : (N,)
 	# correlations : (N * (N - 1) // 2,)
-	
+
+	# if losses is None:
+	# 	losses = []
+
 	N = len(marginals)
-	
+
 	lim = prentice_bounds(marginals)
 	accept = np.all(np.abs(correlations) <= lim)
-	
+
 	if x0 is None:
-		x0 = torch.zeros(2 ** N)
-	
+		x0 = np.zeros((2 ** N,))
+
+	constraints = len(marginals) + len(correlations)
+	dof = 2 ** N - constraints - 1
+
+	wts = np.ones((2 ** N - 1,)) * 1.
+	wts[len(marginals) : len(marginals) + len(correlations)] = 5.
+	wts[len(marginals)+len(correlations):] = 1.
+
+	# losses = [MarginalLoss(marginals), CorrelationLoss(correlations, N=N, wts=10), *losses]
+
+	moments = FullySpecifiedLoss.max_entropy_moments(N)
+	moments[:N] = marginals
+	moments[N:N+len(correlations)] = correlations
+	criterion = FullySpecifiedLoss(moments=moments, N=N, wts=wts)
+
+	def step(params):
+		params = special.softmax(params).reshape(([2] * N))
+		return criterion.compute_loss(params)
+		vals = [loss.compute_loss(params) for loss in losses]
+		return sum(vals)
+
+	sol = opt.minimize(step, x0)
+
+	# print(sol)
+
+	probs = special.softmax(sol.x).reshape(([2] * N))
+
+	# probs = probs.transpose(np.argsort(np.arange(N)[::-1]))
+
+	return probs
+
+
+
+def test_optim_bernoulli():
+	gen = np.random.RandomState()
+
+	N = 3
+
+	marginals = gen.uniform(0.1, 0.9, size=N)
+	# marginals = np.ones(N) * 0.5
+
+	correlations = prentice_bounds(marginals) \
+	               * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+	# correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations[0] = 0.2
+	# correlations = np.abs(correlations)
+
+
+	moments = FullySpecifiedLoss.max_entropy_moments(N)
+	moments[:N] = marginals
+	moments[N:N+len(correlations)] = correlations
+
+	params = optimize_joint_bernoulli(marginals, correlations)
+
+	D = JointDistribution(params=params)
+
+	mar = marginals
+	amr = D.marginals()
+
+	cor = correlations
+	acr = D.corr()
+
+	goal = \
+		moments
+	full = \
+		FullySpecifiedLoss.estimate(params)
+
+	samples = gen.choice(np.arange(2**N).astype(int), p=params.reshape(-1), size=50000)
+	# counts = np.bincount(samples, minlength=2**N)
+	# emp = counts / counts.sum()
+
+	emp_mar = np.mean(samples.reshape((-1, 1)) & (1 << np.arange(N))[::-1] != 0, axis=0)
+
+
+	print('actual_corr',)
+	print('actual_marginals')
+
+	# assert isinstance(result, np.ndarray)
+	# assert len(result) == 3
+
+	pass
+
+	# params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+	# params /= params.sum()
+	#
+	# D = JointDistribution(params=params.reshape([2] * N))
 
 
 
 
 
+#
+# def generate_natural_bernoulli(marginals, correlations, seed=None):
+# 	# https://pages.stat.wisc.edu/~wahba/ftp1/tr1171.pdf
+#
+#
+# 	# step 1: moments -> natural parameters
+#
+#
+#
+#
+# 	# step 2: natural parameters -> probs
+#
+# 	pass
+#
+#
+#
+#
+#
+# def test_natural_bernoulli():
+# 	gen = np.random.RandomState()
+#
+# 	N = 4
+#
+# 	marginals = gen.uniform(0.1, 0.9, size=N)
+# 	# marginals = np.ones(N) * 0.5
+#
+# 	correlations = prentice_bounds(marginals) \
+# 	               * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+# 	# correlations = np.ones(N * (N - 1) // 2) * 0.
+# 	# correlations[0] = 0.2
+# 	correlations = np.abs(correlations)
+#
+# 	params = generate_natural_bernoulli(marginals, correlations)
+#
+# 	D = JointDistribution(params=params)
+#
+# 	actual_marginals = D.marginals()
+# 	actual_corr = D.corr()
+#
+# 	print('actual_corr', actual_corr)
+# 	print('actual_marginals', actual_marginals)
+#
+# 	# assert isinstance(result, np.ndarray)
+# 	# assert len(result) == 3
+#
+# 	pass
+#
+# 	# params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+# 	# params /= params.sum()
+# 	#
+# 	# D = JointDistribution(params=params.reshape([2] * N))
+
+
+
+
+
+
+
+
+
+# import torch
+# from torch import nn
+# from torch.nn import functional as F
+
+#
+# def bernoulli_losses():
+# 	pass
+#
+#
+# class BernoulliLoss(nn.Module):
+# 	def __init__(self, N, **kwargs):
+# 		super().__init__(**kwargs)
+# 		self.N = N
+#
+#
+# 	@property
+# 	def n_constraints(self):
+# 		raise NotImplementedError
+#
+#
+# 	def marginal(self, params, *indices: int, val: int = 1) -> float:
+# 		sel = [slice(None)] * len(params.shape)
+# 		for i in indices:
+# 			sel[i] = val
+# 		return params[sel].sum()
+#
+#
+# 	def variance(self, params, i: int) -> float:
+# 		marginal = self.marginal(params, i)
+# 		return marginal * (1 - marginal)
+#
+#
+# 	def covariance(self, params, i: int, j: int) -> float:
+# 		marginal_i = self.marginal(params, i)
+# 		marginal_j = self.marginal(params, j)
+# 		joint = self.marginal(params, i, j)
+# 		return joint - marginal_i * marginal_j
+#
+#
+# 	def correlation(self, params, i: int, j: int) -> float:
+# 		covariance = self.covariance(params, i, j)
+# 		variance_i = self.variance(params, i)
+# 		variance_j = self.variance(params, j)
+# 		return covariance / (variance_i * variance_j).sqrt()
+#
+#
+# 	def compute_loss(self, params):
+# 		raise NotImplementedError
+#
+#
+#
+# class TargetLoss(BernoulliLoss):
+# 	def __init__(self, targets, *, wts=None, p=2, N=None, **kwargs):
+# 		if N is None:
+# 			N = len(targets)
+# 		if wts is None:
+# 			wts = torch.ones(N)
+# 		if not isinstance(wts, torch.Tensor):
+# 			wts = torch.as_tensor(wts).float()
+# 		if not isinstance(targets, torch.Tensor):
+# 			targets = torch.as_tensor(targets).float()
+# 		super().__init__(N=N, **kwargs)
+# 		self.wts = wts
+# 		self.targets = targets
+# 		assert p in {1, 2}, f'p={p} is not supported'
+# 		self.criterion = nn.MSELoss(reduction='none') if p == 2 else nn.L1Loss(reduction='none')
+#
+#
+# 	@property
+# 	def n_constraints(self):
+# 		# braodcast wts with targets and count how many are non-zero
+# 		return self.N - torch.broadcast_to(self.wts, self.targets.shape).isclose(torch.tensor(0.)).sum().item()
+#
+#
+# 	def compute_loss(self, params):
+# 		estimate = self(params)
+# 		losses = self.criterion(estimate, self.targets)#.sum(dim=1)
+# 		return losses.mul(self.wts).sum()
+#
+#
+#
+# class MarginalLoss(TargetLoss):
+# 	def __init__(self, marginals, **kwargs):
+# 		super().__init__(targets=marginals, **kwargs)
+#
+#
+# 	def forward(self, params):
+# 		marginals = torch.stack([self.marginal(params, i) for i in range(self.N)])
+# 		return marginals
+#
+#
+#
+# class CorrelationLoss(TargetLoss):
+# 	def __init__(self, correlations, **kwargs):
+# 		super().__init__(targets=correlations, **kwargs)
+# 		self.pairs = [(i, j) for i in range(self.N) for j in range(i+1, self.N)]
+#
+#
+# 	def forward(self, params):
+# 		corrs = torch.stack([self.correlation(params, i, j) for i, j in self.pairs])
+# 		return corrs
+#
+#
+#
+# def optimize_params(criterion, x0, *, maxiter=1000, threshold=1e-5):
+# 	x = x0.clone()
+# 	x.requires_grad_(True)
+#
+# 	optim = torch.optim.Adam([x], lr=1e-2)
+#
+# 	prev = float('inf')
+# 	i = 0
+# 	for i in range(1, maxiter+1):
+# 		optim.zero_grad()
+# 		loss = criterion(F.softmax(x))
+# 		loss.backward()
+# 		optim.step()
+#
+# 		if torch.abs(loss - prev) < threshold:
+# 			break
+# 		prev = loss.item()
+#
+# 	return i, x
+#
+#
+#
+# def optimize_joint_bernoulli(marginals, correlations, *, x0=None,
+#                        seed=None, eps=1e-3, maxiter=1000, losses=None):
+# 	# params : (2**N,)
+# 	# marginals : (N,)
+# 	# correlations : (N * (N - 1) // 2,)
+#
+# 	if losses is None:
+# 		losses = []
+#
+# 	N = len(marginals)
+#
+# 	lim = prentice_bounds(marginals)
+# 	accept = np.all(np.abs(correlations) <= lim)
+#
+# 	if x0 is None:
+# 		x0 = torch.zeros(2 ** N)
+#
+# 	losses = [MarginalLoss(marginals), CorrelationLoss(correlations, wts=10), *losses]
+#
+# 	constraints = sum(loss.n_constraints for loss in losses)
+# 	dof = 2 ** N - constraints
+#
+#
+# 	def criterion(params):
+# 		params = params.view(*([2] * N))
+# 		vals = [loss.compute_loss(params) for loss in losses]
+# 		return sum(vals)
+#
+# 	i, x = optimize_params(criterion, x0, maxiter=maxiter, threshold=eps)
+#
+# 	return F.softmax(x).detach().numpy().reshape([2] * N)
+#
+#
+#
+# def test_optim_bernoulli():
+# 	gen = np.random.RandomState()
+#
+# 	N = 4
+#
+# 	marginals = gen.uniform(0.1, 0.9, size=N)
+# 	# marginals = np.ones(N) * 0.5
+#
+# 	correlations = prentice_bounds(marginals) \
+# 	               * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+# 	# correlations = np.ones(N * (N - 1) // 2) * 0.
+# 	# correlations[0] = 0.2
+# 	correlations = np.abs(correlations)
+#
+# 	params = optimize_joint_bernoulli(marginals, correlations)
+#
+# 	D = JointDistribution(params=params)
+#
+# 	actual_marginals = D.marginals()
+# 	actual_corr = D.corr()
+#
+# 	print('actual_corr', actual_corr)
+# 	print('actual_marginals', actual_marginals)
+#
+# 	# assert isinstance(result, np.ndarray)
+# 	# assert len(result) == 3
+#
+# 	pass
+#
+# 	# params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+# 	# params /= params.sum()
+# 	#
+# 	# D = JointDistribution(params=params.reshape([2] * N))
+
+
+
+########################################################################################################################
 
 
 def gaussian_cdf(x, *, mu=None, sigma=None):
@@ -606,12 +1132,12 @@ class JointDistribution(Seeded):
 		return params.sum()
 
 
-	def marginals(self, *conds: Optional[float], val: int = 1) -> List[float]:
+	def marginals(self, *conds: Optional[float], val: int = 1):
 		if not len(conds):
-			return [self.marginal(i, val=val) for i in range(self.N)]
+			return np.asarray([self.marginal(i, val=val) for i in range(self.N)])
 		assert len(conds) == self.N, f'Expected {self.N} values, got {len(conds)}'
 		condition = self.prob(*conds)
-		return [self.marginal(i, val=val) / condition if c is None else c for i, c in enumerate(conds)]
+		return np.asarray([self.marginal(i, val=val) / condition if c is None else c for i, c in enumerate(conds)])
 
 
 	def marginal(self, *indices: int, val: int = 1) -> float:
