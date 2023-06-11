@@ -6,6 +6,7 @@ import numpy as np
 
 from .base import Seeded
 
+from scipy import stats, special
 
 
 def prentice_bounds(marginals):
@@ -16,59 +17,100 @@ def prentice_bounds(marginals):
 	return lim
 
 
-
-import numpy as np
-from scipy.stats import binom
-
-
-def cBernMdepk_single(p, rho):
-	m = len(p)
-	k = len(p)
-
-	p = np.pad(p, (0, k), 'constant', constant_values=0)
-	for w in range(k):
-		p[m + w] = p[m]
-		rho[w][(m-w):m] = 0
-
-	Y = b = np.zeros((k, m))
-	for w in range(k):
-		for j in range(m):
-			b[w, j] = p[j]*p[w+j] / (rho[w][j]*np.sqrt(p[j]*p[w+j]*(1-p[j])*(1-p[w+j])) + p[j]*p[w+j])
-			Y[w, j] = np.random.uniform() < b[w, j]
-			# Y[w, j] = binom.rvs(1, b[w, j])
-
-	a = U = X = np.zeros(m)
-	for w in range(m):
-		prod1 = prod2 = 1
-		if w == 0:
-			for l in range(k):
-				prod1 *= b[l, w]
-				prod2 *= Y[l, w]
-		elif w <= k:
-			for l in range(k):
-				prod1 *= b[l, w]
-				prod2 *= Y[l, w]
-			for l in range(w):
-				prod1 *= b[l, w-l]
-				prod2 *= Y[l, w-l]
-		else:
-			for l in range(k):
-				prod1 *= b[l, w]*b[l, w-l]
-				prod2 *= Y[l, w]*Y[l, w-l]
-
-		a[w] = p[w] / prod1
-		U[w] = np.random.uniform() < a[w]
-		# U[w] = binom.rvs(1, a[w])
-		X[w] = U[w] * prod2
-
-	return X
+def gaussian_cdf(x, *, mu=None, sigma=None):
+	if mu is None and sigma is None:
+		return stats.norm.cdf(x)
+	return 0.5 * (1 + special.erf((x - mu) / (sigma * np.sqrt(2))))
 
 
+def gaussian_inv_cdf(p, *, mu=None, sigma=None):
+	if mu is None and sigma is None:
+		return stats.norm.ppf(p)
+	return mu + sigma * np.sqrt(2) * special.erfinv(2 * p - 1)
 
-def test_generate_joint():
+
+def gaussian_2d_cdf(x, *, rho=0, mu=None, sigma=None):
+	cov = np.asarray([[1, rho], [rho, 1]]) if sigma is None else sigma
+	# row = np.stack([np.ones_like(rho), rho], -1)
+	# cov = np.stack([row, np.stack([rho, np.ones_like(rho)], -1)], -1) if sigma is None else sigma
+	if mu is None:
+		mu = np.zeros((2,))
+	# check if cov is positive definite
+	assert np.all(np.linalg.eigvals(cov) > 0), f'cov = {cov} is not positive definite'
+	mvn = stats.multivariate_normal(mean=mu, cov=cov)
+	return mvn.cdf(x)
+
+
+def gaussian_2d_inv_cdf(p, *, rho=0, mu=None, sigma=None):
+	cov = np.asarray([[1, rho], [rho, 1]]) if sigma is None else sigma
+	if mu is None:
+		mu = np.zeros((2,))
+	mvn = stats.multivariate_normal(mean=mu, cov=cov)
+	return mvn.ppf(p)
+
+
+def find_rho(target, loc, baseline, *, eps=1e-3):
+	# loc : (N, 2)
+	return opt.brentq(lambda rho: target - gaussian_2d_cdf(loc, rho=rho) + baseline, -1+eps, 1-eps)
+
+
+def generate_gaussian_bernoulli(marginals,
+                                correlations, *,
+                                nsamples=1000, seed=None):
+	
+	N = len(marginals)
+	if N > 10:
+		print(f'WARNING: generating joint distribution with {N} variables (generally not recommended for N > 10)')
+
+	assert len(correlations) == N * (N - 1) // 2, f'correlations = {correlations} should have length {N * (N - 1) // 2}'
+
+	assert all(m is None or 0 <= m <= 1 for m in marginals), f'marginals = {marginals} should be in [0, 1]'
+	assert all(c is None or -1 <= c <= 1 for c in correlations), f'correlations = {correlations} should be in [-1, 1]'
+
+	gen = np.random.RandomState(seed)
+
+	# check Prentice constraints
+
+	lim = prentice_bounds(marginals)
+	accept = np.all(np.abs(correlations) <= lim)
+
+	b_sigma = squareform(correlations) + np.eye(N)
+	
+	b_cov = b_sigma * np.outer(marginals, marginals)
+
+	i, j = np.triu_indices(N, k=1)
+	targets = b_cov[i, j]
+	
+	mu = gaussian_inv_cdf(marginals)
+	
+	rho = find_rho(targets, np.stack([mu[i], mu[j]], axis=-1), baseline=marginals[i] * marginals[j])
+	
+	diag2 = gaussian_cdf(mu) * gaussian_cdf(-mu)
+	diag = marginals * (1 - marginals)
+	
+	sigma = squareform(rho) + np.diag(diag)
+	
+	# generate samples
+	
+	samples = gen.multivariate_normal(mean=np.zeros((N,)), cov=sigma, size=nsamples)
+	
+	# convert to Bernoulli
+	
+	samples = (samples > 0).astype(float)
+	
+	bits = 2 ** np.arange(N-1, -1, -1)
+
+	counts = np.bincount(np.dot(samples, bits).astype(int), minlength=2**N)
+
+	params = counts / counts.sum()
+	
+	return params.reshape([2]*N)
+
+
+def test_gaussian_bernoulli():
 
 	gen = np.random.RandomState()
-
+	
 	N = 3
 
 	marginals = gen.uniform(0.1, 0.9, size=N)
@@ -76,24 +118,275 @@ def test_generate_joint():
 
 	correlations = prentice_bounds(marginals) * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
 	correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations[0] = 0.2
 	# correlations = np.asarray([0.635244, -0.70220, -0.4590])
+	
+	params = generate_gaussian_bernoulli(marginals, correlations, nsamples=100)
+	
+	D = JointDistribution(params=params)
+	
+	params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+	params /= params.sum()
+	
+	D = JointDistribution(params=params.reshape([2] * N))
+	
+	actual_corr = D.corr()
+	actual_marginals = D.marginals()
+	
+	print('actual_corr', actual_corr)
+	print('actual_marginals', actual_marginals)
+	
+	# assert isinstance(result, np.ndarray)
+	# assert len(result) == 3
+	
+	pass
 
-	p, rho = marginals, squareform(correlations)+np.eye(N)
+	
 
-	samples = np.stack([cBernMdepk_single(p, rho) for _ in range(1000)])
-	samples = samples.astype(float)
+def test_cdf():
+	
+	# x = np.linspace(-3, 3, 100)
+	#
+	# y = gaussian_cdf(x)
+	#
+	import matplotlib.pyplot as plt
+	# plt.plot(x, y)
+	# plt.show()
+	
+	# x = np.linspace(-3, 3, 100)
+	# y = np.linspace(-3, 3, 100)
+	# X, Y = np.meshgrid(x, y)
+	# points = np.column_stack([X.flatten(), Y.flatten()])
+	
+	points = np.zeros((100, 2))
+	
+	x = np.linspace(-0.2, 0.2, 100)
+	cdf = gaussian_2d_cdf(points, rho=x)
+	plt.plot(x, cdf)
+	
+	# CDF = cdf.reshape(X.shape)
+	
+	# # plot cdf as heatmap
+	# plt.imshow(CDF, extent=[-3, 3, -3, 3])
+	# plt.colorbar()
+	#
+	plt.show()
+	
 
-	bits = 2 ** np.arange(N-1, -1, -1)
-
-	counts = np.bincount(np.dot(samples, bits).astype(int), minlength=2**N)
-
-	params = counts / counts.sum()
 
 
 
 
+import numpy as np
+from math import sqrt
+from warnings import warn
 
-	print(f'failed {failed/1000:.1%} / 100')
+
+
+def cBernMdepk_single(m, p, rho, k):
+	p += [p[m - 1]] * k
+	for w in range(k):
+		rho[w][(m - w):m] = [0] * (m - w)
+	
+	Y = np.zeros((k, m))
+	b = np.zeros((k, m))
+	for w in range(k):
+		for j in range(m):
+			rwj = rho[w][j]
+			b[w, j] = p[j] * p[w + j] / (
+						rwj * sqrt(p[j] * p[w + j] * (1 - p[j]) * (1 - p[w + j])) + p[j] * p[w + j])
+			Y[w, j] = np.random.binomial(1, b[w, j])
+	
+	a = np.zeros(m)
+	U = np.zeros(m)
+	X = np.zeros(m)
+	for w in range(m):
+		prod1 = prod2 = 1
+		if w == 0:
+			for l in range(k):
+				prod1 *= b[l, w]
+				prod2 *= Y[l, w]
+		elif w < k:
+			for l in range(k):
+				prod1 *= b[l, w]
+				prod2 *= Y[l, w]
+			for l in range(w):
+				prod1 *= b[l, w - l]
+				prod2 *= Y[l, w - l]
+		else:
+			for l in range(k):
+				prod1 *= b[l, w] * b[l, w - l]
+				prod2 *= Y[l, w] * Y[l, w - l]
+		
+		a[w] = p[w] / prod1
+		U[w] = np.random.binomial(1, a[w])
+		X[w] = U[w] * prod2
+	
+	return X
+
+
+
+def cBernMdepk(n, p, rho, k):
+	m = len(p)
+	# X = cBernMdepk_single(m, p.copy(), [r.copy() for r in rho], k)
+	#
+	# if np.isnan(X).any():
+	# 	warn("Invalid Input: Please adjust the input parameters.")
+	# else:
+	simX = np.array([cBernMdepk_single(m, p.copy(), [r.copy() for r in rho], k) for _ in range(n)])
+	return simX
+
+
+
+def test_cBernMdepk_single():
+	# gen = np.random.RandomState()
+	#
+	N = 3
+	#
+	# marginals = gen.uniform(0.1, 0.9, size=N)
+	# marginals = np.ones(N) * 0.5
+	#
+	# correlations = prentice_bounds(marginals) * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+	# correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations[0] = 0.2
+	# # correlations = np.asarray([0.635244, -0.70220, -0.4590])
+	#
+	# p, rho = marginals, squareform(correlations)+0*np.eye(N)
+	# p = p.tolist()
+	# rho = rho.tolist()
+	#
+	# result = cBernMdepk(10000, p, rho, 2)
+	# samples = result.astype(float)
+	#
+	# bits = 2 ** np.arange(N-1, -1, -1)
+	#
+	# counts = np.bincount(np.dot(samples, bits).astype(int), minlength=2**N)
+	#
+	# params = counts / counts.sum()
+	#
+	# D = JointDistribution(params=params.reshape([2]*N))
+
+	params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+	params /= params.sum()
+	
+	D = JointDistribution(params=params.reshape([2]*N))
+
+	actual_corr = D.corr()
+	actual_marginals = D.marginals()
+
+	print('actual_corr', actual_corr)
+	print('actual_marginals', actual_marginals)
+	
+	# assert isinstance(result, np.ndarray)
+	# assert len(result) == 3
+
+
+
+# def test_cBernMdepk():
+# 	result = cBernMdepk(1000, [0.5, 0.7, 0.2], [[0, 0, 0], [0, 0, 0], [0, 0, 0]], 2)
+# 	total = result.sum(0)
+# 	assert isinstance(result, np.ndarray)
+
+
+
+
+# def test_cBernMdepk_nonzero_correlation():
+# 	np.random.seed(0)  # Set seed for reproducibility
+# 	# p = [0.5, 0.7, 0.2]
+# 	p = [0.5, 0.7, 0.2]
+# 	rho = np.zeros((3, 3))
+# 	rho[0,0] = 0.5
+# 	rho = rho.tolist()
+# 	# rho = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]
+# 	result = cBernMdepk(2, p, rho, 2)
+#
+# 	expected_result = np.array([[1., 0., 0.], [0., 0., 0.]])
+#
+# 	assert np.allclose(result, expected_result, atol=1e-6), f"Expected {expected_result} but got {result}"
+
+
+
+
+
+
+
+import numpy as np
+from scipy.stats import binom
+
+
+# def cBernMdepk_single(p, rho):
+# 	m = len(p)
+# 	k = len(p)
+#
+# 	p = np.pad(p, (0, k), 'constant', constant_values=0)
+# 	for w in range(k):
+# 		p[m + w] = p[m]
+# 		rho[w][(m-w):m] = 0
+#
+# 	Y = b = np.zeros((k, m))
+# 	for w in range(k):
+# 		for j in range(m):
+# 			b[w, j] = p[j]*p[w+j] / (rho[w][j]*np.sqrt(p[j]*p[w+j]*(1-p[j])*(1-p[w+j])) + p[j]*p[w+j])
+# 			Y[w, j] = np.random.uniform() < b[w, j]
+# 			# Y[w, j] = binom.rvs(1, b[w, j])
+#
+# 	a = U = X = np.zeros(m)
+# 	for w in range(m):
+# 		prod1 = prod2 = 1
+# 		if w == 0:
+# 			for l in range(k):
+# 				prod1 *= b[l, w]
+# 				prod2 *= Y[l, w]
+# 		elif w <= k:
+# 			for l in range(k):
+# 				prod1 *= b[l, w]
+# 				prod2 *= Y[l, w]
+# 			for l in range(w):
+# 				prod1 *= b[l, w-l]
+# 				prod2 *= Y[l, w-l]
+# 		else:
+# 			for l in range(k):
+# 				prod1 *= b[l, w]*b[l, w-l]
+# 				prod2 *= Y[l, w]*Y[l, w-l]
+#
+# 		a[w] = p[w] / prod1
+# 		U[w] = np.random.uniform() < a[w]
+# 		# U[w] = binom.rvs(1, a[w])
+# 		X[w] = U[w] * prod2
+#
+# 	return X
+
+
+
+# def test_generate_joint():
+#
+# 	gen = np.random.RandomState()
+#
+# 	N = 3
+#
+# 	marginals = gen.uniform(0.1, 0.9, size=N)
+# 	marginals = np.ones(N) * 0.5
+#
+# 	correlations = prentice_bounds(marginals) * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
+# 	correlations = np.ones(N * (N - 1) // 2) * 0.
+# 	# correlations = np.asarray([0.635244, -0.70220, -0.4590])
+#
+# 	p, rho = marginals, squareform(correlations)+np.eye(N)
+#
+# 	samples = np.stack([cBernMdepk_single(p, rho) for _ in range(1000)])
+# 	samples = samples.astype(float)
+#
+# 	bits = 2 ** np.arange(N-1, -1, -1)
+#
+# 	counts = np.bincount(np.dot(samples, bits).astype(int), minlength=2**N)
+#
+# 	params = counts / counts.sum()
+#
+#
+#
+#
+#
+# 	print(f'failed {failed/1000:.1%} / 100')
 
 
 
@@ -477,45 +770,45 @@ def generate_joint_numeric(N=None, *, marginals: Optional[Sequence[Optional[floa
 
 
 
-def test_sample_numeric_joint():
-	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
-	#
-	# print(generate_joint_numeric(correlations=[1]*3, marginals=[0.5]*3, seed=101))
-	# print(generate_joint_numeric(correlations=[-1, 0, 0], marginals=[0.5]*3, seed=101))
-	#
-	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+# def test_sample_numeric_joint():
+# 	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+# 	#
+# 	# print(generate_joint_numeric(correlations=[1]*3, marginals=[0.5]*3, seed=101))
+# 	# print(generate_joint_numeric(correlations=[-1, 0, 0], marginals=[0.5]*3, seed=101))
+# 	#
+# 	# print(generate_joint_numeric(correlations=[0]*3, marginals=[0.5]*3, seed=101))
+#
+# 	# print(generate_joint_numeric(correlations=[0, 0, 0], seed=101, range_marginal=0.5, range_correlation=0.5))
+# 	# print(generate_joint_numeric(marginals=[0.55, 0.5, 0.5], seed=101, range_marginal=0.5, range_correlation=0.5))
+#
+# 	print(generate_joint_numeric(4, seed=101))
+#
+# 	for _ in range(100):
+# 		print(generate_joint_numeric(3, seed=101))
 
-	# print(generate_joint_numeric(correlations=[0, 0, 0], seed=101, range_marginal=0.5, range_correlation=0.5))
-	# print(generate_joint_numeric(marginals=[0.55, 0.5, 0.5], seed=101, range_marginal=0.5, range_correlation=0.5))
-
-	print(generate_joint_numeric(4, seed=101))
-
-	for _ in range(100):
-		print(generate_joint_numeric(3, seed=101))
 
 
-
-def test_verify_numeric_joint():
-
-	# gen = np.random.RandomState(101)
-	gen = np.random.RandomState()
-
-	for _ in range(10):
-
-		corr = gen.uniform(-1, 1, size=(3,))
-		marginals = gen.uniform(0, 1, size=(3,))
-
-		params = generate_joint_numeric(correlations=corr, marginals=marginals, seed=101)
-
-		D = JointDistribution(params=params)
-
-		actual_corr = D.corr()
-		actual_marginals = D.marginals()
-
-		print(corr, actual_corr)
-
-		# assert np.allclose(actual_corr, corr), f'Expected {corr}, got {actual_corr}'
-		# assert np.allclose(actual_marginals, marginals), f'Expected {marginals}, got {actual_marginals}'
+# def test_verify_numeric_joint():
+#
+# 	# gen = np.random.RandomState(101)
+# 	gen = np.random.RandomState()
+#
+# 	for _ in range(10):
+#
+# 		corr = gen.uniform(-1, 1, size=(3,))
+# 		marginals = gen.uniform(0, 1, size=(3,))
+#
+# 		params = generate_joint_numeric(correlations=corr, marginals=marginals, seed=101)
+#
+# 		D = JointDistribution(params=params)
+#
+# 		actual_corr = D.corr()
+# 		actual_marginals = D.marginals()
+#
+# 		print(corr, actual_corr)
+#
+# 		# assert np.allclose(actual_corr, corr), f'Expected {corr}, got {actual_corr}'
+# 		# assert np.allclose(actual_marginals, marginals), f'Expected {marginals}, got {actual_marginals}'
 
 
 
