@@ -17,6 +17,54 @@ def prentice_bounds(marginals):
 	return lim
 
 
+import torch
+
+
+def bernoulli_losses():
+	pass
+
+
+def optimize_bernoulli_params(losses, x0, *, maxiter=1000, threshold=1e-3):
+	
+	x = x0.clone()
+	
+	optim = torch.optim.Adam([x], lr=1e-2)
+	
+	prev = float('inf')
+	i = 0
+	for i in range(1, maxiter+1):
+		optim.zero_grad()
+		loss = losses(x)
+		loss.backward()
+		optim.step()
+		
+		if torch.abs(loss - prev) < threshold:
+			break
+	
+	return i, x
+	
+	
+def optimize_joint_bernoulli(marginals, correlations, *, x0=None,
+                       seed=None, eps=1e-3, maxiter=1000):
+	# params : (2**N,)
+	# marginals : (N,)
+	# correlations : (N * (N - 1) // 2,)
+	
+	N = len(marginals)
+	
+	lim = prentice_bounds(marginals)
+	accept = np.all(np.abs(correlations) <= lim)
+	
+	if x0 is None:
+		x0 = torch.zeros(2 ** N)
+	
+
+
+
+
+
+
+
 def gaussian_cdf(x, *, mu=None, sigma=None):
 	if mu is None and sigma is None:
 		return stats.norm.cdf(x)
@@ -29,29 +77,23 @@ def gaussian_inv_cdf(p, *, mu=None, sigma=None):
 	return mu + sigma * np.sqrt(2) * special.erfinv(2 * p - 1)
 
 
-def gaussian_2d_cdf(x, *, rho=0, mu=None, sigma=None):
-	cov = np.asarray([[1, rho], [rho, 1]]) if sigma is None else sigma
-	# row = np.stack([np.ones_like(rho), rho], -1)
-	# cov = np.stack([row, np.stack([rho, np.ones_like(rho)], -1)], -1) if sigma is None else sigma
-	if mu is None:
-		mu = np.zeros((2,))
-	# check if cov is positive definite
-	assert np.all(np.linalg.eigvals(cov) > 0), f'cov = {cov} is not positive definite'
-	mvn = stats.multivariate_normal(mean=mu, cov=cov)
-	return mvn.cdf(x)
+def gaussian_2d_cdf(x, y, rho=0):
+	cov = np.asarray([[1, rho], [rho, 1]])
+	mvn = stats.multivariate_normal(mean=np.zeros((2,)), cov=cov)
+	return mvn.cdf([x, y])
 
 
-def gaussian_2d_inv_cdf(p, *, rho=0, mu=None, sigma=None):
-	cov = np.asarray([[1, rho], [rho, 1]]) if sigma is None else sigma
-	if mu is None:
-		mu = np.zeros((2,))
-	mvn = stats.multivariate_normal(mean=mu, cov=cov)
-	return mvn.ppf(p)
+# def gaussian_2d_inv_cdf(p, *, rho=0, mu=None, sigma=None):
+# 	cov = np.asarray([[1, rho], [rho, 1]]) if sigma is None else sigma
+# 	if mu is None:
+# 		mu = np.zeros((2,))
+# 	mvn = stats.multivariate_normal(mean=mu, cov=cov)
+# 	return mvn.ppf(p)
 
 
-def find_rho(target, loc, baseline, *, eps=1e-3):
+def find_rho(target, x, y, *, eps=1e-3):
 	# loc : (N, 2)
-	return opt.brentq(lambda rho: target - gaussian_2d_cdf(loc, rho=rho) + baseline, -1+eps, 1-eps)
+	return opt.brentq(lambda rho: gaussian_2d_cdf(x, y, rho=rho) - target, -1+eps, 1-eps)
 
 
 def generate_gaussian_bernoulli(marginals,
@@ -74,16 +116,26 @@ def generate_gaussian_bernoulli(marginals,
 	lim = prentice_bounds(marginals)
 	accept = np.all(np.abs(correlations) <= lim)
 
-	b_sigma = squareform(correlations) + np.eye(N)
+	b_corr = squareform(correlations) + np.eye(N)
 	
-	b_cov = b_sigma * np.outer(marginals, marginals)
+	b_cov = b_corr * np.outer(marginals, marginals)
 
 	i, j = np.triu_indices(N, k=1)
 	targets = b_cov[i, j]
+	baselines = marginals[i] * marginals[j]
 	
 	mu = gaussian_inv_cdf(marginals)
 	
-	rho = find_rho(targets, np.stack([mu[i], mu[j]], axis=-1), baseline=marginals[i] * marginals[j])
+	rhos = []
+	
+	for t, mui, muj, b in zip(targets, mu[i], mu[j], baselines):
+		# b2 = gaussian_cdf(mui) * gaussian_cdf(muj)
+		rho = find_rho(t+b, mui, muj)
+		rhos.append(rho)
+	
+	rho = np.asarray(rhos)
+	
+	# rho = find_rho(targets, np.stack([mu[i], mu[j]], axis=-1), baseline=marginals[i] * marginals[j])
 	
 	diag2 = gaussian_cdf(mu) * gaussian_cdf(-mu)
 	diag = marginals * (1 - marginals)
@@ -92,7 +144,7 @@ def generate_gaussian_bernoulli(marginals,
 	
 	# generate samples
 	
-	samples = gen.multivariate_normal(mean=np.zeros((N,)), cov=sigma, size=nsamples)
+	samples = gen.multivariate_normal(mean=mu, cov=sigma, size=nsamples)
 	
 	# convert to Bernoulli
 	
@@ -114,21 +166,22 @@ def test_gaussian_bernoulli():
 	N = 3
 
 	marginals = gen.uniform(0.1, 0.9, size=N)
-	marginals = np.ones(N) * 0.5
+	# marginals = np.ones(N) * 0.5
 
 	correlations = prentice_bounds(marginals) * (2 * gen.uniform(size=N * (N - 1) // 2) - 1)
-	correlations = np.ones(N * (N - 1) // 2) * 0.
+	# correlations = np.ones(N * (N - 1) // 2) * 0.
 	# correlations[0] = 0.2
+	correlations = np.abs(correlations)
 	# correlations = np.asarray([0.635244, -0.70220, -0.4590])
 	
-	params = generate_gaussian_bernoulli(marginals, correlations, nsamples=100)
+	params = generate_gaussian_bernoulli(marginals, correlations, nsamples=50000)
 	
 	D = JointDistribution(params=params)
 	
-	params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
-	params /= params.sum()
-	
-	D = JointDistribution(params=params.reshape([2] * N))
+	# params = np.asarray([0.055, 0.00249, 0.04, 0.0025, 0.1866, 0.055853, 0.218348, 0.439147])
+	# params /= params.sum()
+	#
+	# D = JointDistribution(params=params.reshape([2] * N))
 	
 	actual_corr = D.corr()
 	actual_marginals = D.marginals()
