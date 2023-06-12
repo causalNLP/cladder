@@ -230,6 +230,15 @@ def generate_joint_bernoulli(marginals, correlation):
 def optimize_joint_bernoulli(moments, *, x0=None, wts=None):
 	# moments : (2**N-1,)
 	
+	N = int(np.round(np.log2(len(moments)+1)))
+	
+	marginals = moments[:N]
+	correlations = moments[N:N+(N*(N-1)//2)]
+	assert np.all(marginals >= 0) and np.all(marginals <= 1), f'invalid first moments: {marginals}'
+	
+	lim = prentice_bounds(marginals)
+	assert np.all(np.abs(correlations) <= lim), f'invalid second moments: {marginals}'
+	
 	N = len(marginals)
 
 	lim = prentice_bounds(marginals)
