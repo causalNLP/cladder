@@ -54,28 +54,33 @@ class JointDistribution(Seeded):
 
 	def marginals(self, *conds: Optional[float], val: int = 1):
 		if not len(conds):
-			return np.asarray([self.marginal(i, val=val) for i in range(self.N)])
+			return np.asarray([self.marginal_index(i, val=val) for i in range(self.N)])
 		assert len(conds) == self.N, f'Expected {self.N} values, got {len(conds)}'
 		condition = self.prob(*conds)
-		return np.asarray([self.marginal(i, val=val) / condition if c is None else c for i, c in enumerate(conds)])
+		return np.asarray([self.marginal_index(i, val=val) / condition if c is None else c for i, c in enumerate(conds)])
 
 
-	def marginal(self, *indices: int, val: int = 1) -> float:
-		sel = [slice(None)] * self.N
-		for i in indices:
-			sel[i] = val
+	def marginal(self, *vals):
+		sel = [slice(None) if val is None else val for val in vals]
 		return self._params[tuple(sel)].sum()
 
 
+	def marginal_index(self, *indices: int, val: int = 1) -> float:
+		vals = [None] * self.N
+		for i in indices:
+			vals[i] = val
+		return self.marginal(*vals)
+
+
 	def variance(self, i: int) -> float:
-		marginal = self.marginal(i)
+		marginal = self.marginal_index(i)
 		return marginal * (1 - marginal)
 
 
 	def covariance(self, i: int, j: int) -> float:
-		marginal_i = self.marginal(i)
-		marginal_j = self.marginal(j)
-		joint = self.marginal(i, j)
+		marginal_i = self.marginal_index(i)
+		marginal_j = self.marginal_index(j)
+		joint = self.marginal_index(i, j)
 		return joint - marginal_i * marginal_j
 
 
@@ -299,8 +304,8 @@ def test_multivariate_bernoulli():
 
 	# samples = gen.choice(np.arange(2 ** N).astype(int), p=params.reshape(-1), size=50000)
 
-	assert np.allclose(mar, amr, atol=1e-1), f'marginals: {mar} != {amr}'
-	assert np.allclose(cor, acr, atol=1e-1), f'correlations: {cor} != {acr}'
+	assert np.allclose(mar, amr, atol=1e-2), f'marginals: {mar} != {amr}'
+	assert np.allclose(cor, acr, atol=1e-2), f'correlations: {cor} != {acr}'
 
 
 
