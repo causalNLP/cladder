@@ -1,0 +1,29 @@
+
+
+
+X1name: violin lessons
+X2name: cello lessons
+Zname: motivation
+Yname: good grades
+
+X1=1: take violin lessons
+X1=0: don't take violin lessons
+
+do(X1=1): taking violin lessons
+do(X1=0): not taking violin lessons
+
+X2=1: take cello lessons
+X2=0: don't take cello lessons
+
+do(X2=1): taking cello lessons
+do(X2=0): not taking cello lessons
+
+Z=1: motivated
+Z=0: not motivated
+
+Y=1: get good grades
+Y=0: don't get good grades
+
+
+
+
