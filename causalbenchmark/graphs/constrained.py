@@ -61,7 +61,6 @@ class ConstrainedSCM(CausalProcess, Seeded):
 		return {}
 
 
-
 	subject = None
 	def _create_subject(self):
 		if self.subject is None:
