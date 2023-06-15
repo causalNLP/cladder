@@ -1,0 +1,40 @@
+
+Wname: genetic predisposition
+X1name: smoking cigarettes
+X2name: smoking cigars
+Zname: tar in lungs
+Yname: lung cancer
+
+
+X1=1: smoke cigarettes
+X1=0: don't smoke cigarettes
+
+
+do(X1=1): smokes cigarettes
+do(X1=0): doesn't smoke cigarettes
+
+
+X2=1: smoke cigars
+X2=0: don't smoke cigars
+
+
+do(X2=1): smokes cigars
+do(X2=0): doesn't smoke cigars
+
+
+Z=1: tar in lungs
+Z=0: no tar in lungs
+
+
+Y=1: lung cancer
+Y=0: no lung cancer
+
+
+W=1: genetic predisposition to lung cancer
+W=0: no genetic predisposition to lung cancer
+
+
+
+
+
+

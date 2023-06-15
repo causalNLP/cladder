@@ -1,0 +1,34 @@
+
+X1name: taxes
+X2name: government debt
+Zname: government spending
+Yname: economic growth
+
+
+X1=1: taxes are high
+X1=0: taxes are low
+
+do(X1=1): increase taxes
+do(X1=0): decrease taxes
+
+
+X2=1: government debt is high
+X2=0: government debt is low
+
+do(X2=1): increase government debt
+do(X2=0): decrease government debt
+
+
+Z=1: government spending is high
+Z=0: government spending is low
+
+
+Y=1: economic growth is high
+Y=0: economic growth is low
+
+
+direct: profits of businesses increase
+mediator: government spending increases
+
+
+

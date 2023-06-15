@@ -186,9 +186,18 @@ def test_constrained_ate():
 		ub = ub.item()
 
 
+	# ranges = {
+	# 	'Z': ?,
+	# 	'X|Z=1': ?,
+	# 	'X|Z=0': ?,
+	# 	'Y|X=0,Z=0': ?,
+	# 	'Y|X=1,Z=0': ?,
+	# 	'Y|X=0,Z=1': ?,
+	# 	'Y|X=1,Z=1': ?,
+	# }
+
 	print(f'{lb:.3f} <= ATE <= {ub:.3f}')
 	assert -1 <= lb <= ub <= 1, 'ATE out of bounds'
-
 
 
 

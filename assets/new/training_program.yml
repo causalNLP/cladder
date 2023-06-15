@@ -1,0 +1,40 @@
+
+X1name: training program A
+X2name: training program B
+Zname: residency
+Yname: getting a job
+Wname: motivation
+
+
+X1=1: attending training program A
+X1=0: not attending training program A
+
+do(X1=1): attends training program A
+do(X1=0): doesn't attend training program A
+
+
+X2=1: attending training program B
+X2=0: not attending training program B
+
+do(X2=1): attends training program B
+do(X2=0): doesn't attend training program B
+
+
+Y=1: gets a job
+Y=0: doesn't get a job
+
+
+Z=1: is a resident
+Z=0: is not a resident
+
+
+W=1: is motivated
+W=0: is not motivated
+
+
+
+
+
+
+
+

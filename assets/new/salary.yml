@@ -1,0 +1,45 @@
+
+
+Wname: gender
+X1name: goes to a local college
+X2name: goes to a prestigious college
+Zname: skill
+Yname: salary
+
+
+X1=1: goes to a local college
+X1=0: doesn't go to a local college
+
+
+do(X1=1): goes to a local college
+do(X1=0): doesn't go to a local college
+
+
+X2=1: goes to a prestigious college
+X2=0: doesn't go to a prestigious college
+
+
+do(X2=1): goes to a prestigious college
+do(X2=0): doesn't go to a prestigious college
+
+
+Y=1: gets a high salary
+Y=0: doesn't get a high salary
+
+
+Z=1: has a high skill
+Z=0: doesn't have a high skill
+
+
+W=1: male
+W=0: non-male
+
+
+
+
+
+
+
+
+
+
