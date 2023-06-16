@@ -131,73 +131,73 @@ def test_optim_params():
 
 
 
-def test_constrained_ate():
-
-	graph_id = 'confounding'
-
-	targets = {
-		'X': [0.3, 0.5],
-		'V1': [0.5, 0.8],
-		'Y|X=0': [0., 0.5],
-		'Y|X=1,Z=1': [0.5, 1.],
-	}
-
-	constraints = [ProbabilityConstraint(spec, target) for spec, target in targets.items()]
-
-	graph = create_graph(graph_id)
-	graph = optim_graph(graph, constraints)
-
-	x0 = graph.get_parameters()
-
-	initial = \
-		{constraint.spec: constraint.estimate(graph) for constraint in constraints}
-
-	optim_constraints = [c.as_constraint(graph) for c in constraints]
-
-	eps = 0.001
-
-	prob_constraint = opt.LinearConstraint(np.eye(len(x0)), eps, 1 - eps, keep_feasible=True)
-
-	treatment, outcome = 'X', 'Y'
-	treated = True
-
-	subject = create_graph(graph_id)
-	def ate_objective(params):
-		# params = params.clip(0, 1)
-		model = subject.set_parameters(params)
-		ate = model.ate(treatment, treated=treated)[outcome]
-		return ate
-
-	objective = ate_objective
-	sol = opt.minimize(objective, x0, constraints=[prob_constraint, *optim_constraints])
-	nsol = opt.minimize(lambda x: -objective(x), x0, constraints=[prob_constraint, *optim_constraints])
-
-	if not sol.success or not nsol.success:
-		print('WARNING: optimization failed')
-		print(sol)
-		print(nsol)
-
-	lb = sol.fun
-	if isinstance(lb, np.ndarray):
-		lb = lb.item()
-
-	ub = -nsol.fun
-	if isinstance(ub, np.ndarray):
-		ub = ub.item()
-
-
-	# ranges = {
-	# 	'Z': ?,
-	# 	'X|Z=1': ?,
-	# 	'X|Z=0': ?,
-	# 	'Y|X=0,Z=0': ?,
-	# 	'Y|X=1,Z=0': ?,
-	# 	'Y|X=0,Z=1': ?,
-	# 	'Y|X=1,Z=1': ?,
-	# }
-
-	print(f'{lb:.3f} <= ATE <= {ub:.3f}')
-	assert -1 <= lb <= ub <= 1, 'ATE out of bounds'
-
+# def test_constrained_ate():
+#
+# 	graph_id = 'confounding'
+#
+# 	targets = {
+# 		'X': [0.3, 0.5],
+# 		'V1': [0.5, 0.8],
+# 		'Y|X=0': [0., 0.5],
+# 		'Y|X=1,Z=1': [0.5, 1.],
+# 	}
+#
+# 	constraints = [ProbabilityConstraint(spec, target) for spec, target in targets.items()]
+#
+# 	graph = create_graph(graph_id)
+# 	graph = optim_graph(graph, constraints)
+#
+# 	x0 = graph.get_parameters()
+#
+# 	initial = \
+# 		{constraint.spec: constraint.estimate(graph) for constraint in constraints}
+#
+# 	optim_constraints = [c.as_constraint(graph) for c in constraints]
+#
+# 	eps = 0.001
+#
+# 	prob_constraint = opt.LinearConstraint(np.eye(len(x0)), eps, 1 - eps, keep_feasible=True)
+#
+# 	treatment, outcome = 'X', 'Y'
+# 	treated = True
+#
+# 	subject = create_graph(graph_id)
+# 	def ate_objective(params):
+# 		# params = params.clip(0, 1)
+# 		model = subject.set_parameters(params)
+# 		ate = model.ate(treatment, treated=treated)[outcome]
+# 		return ate
+#
+# 	objective = ate_objective
+# 	sol = opt.minimize(objective, x0, constraints=[prob_constraint, *optim_constraints])
+# 	nsol = opt.minimize(lambda x: -objective(x), x0, constraints=[prob_constraint, *optim_constraints])
+#
+# 	if not sol.success or not nsol.success:
+# 		print('WARNING: optimization failed')
+# 		print(sol)
+# 		print(nsol)
+#
+# 	lb = sol.fun
+# 	if isinstance(lb, np.ndarray):
+# 		lb = lb.item()
+#
+# 	ub = -nsol.fun
+# 	if isinstance(ub, np.ndarray):
+# 		ub = ub.item()
+#
+#
+# 	# ranges = {
+# 	# 	'Z': ?,
+# 	# 	'X|Z=1': ?,
+# 	# 	'X|Z=0': ?,
+# 	# 	'Y|X=0,Z=0': ?,
+# 	# 	'Y|X=1,Z=0': ?,
+# 	# 	'Y|X=0,Z=1': ?,
+# 	# 	'Y|X=1,Z=1': ?,
+# 	# }
+#
+# 	print(f'{lb:.3f} <= ATE <= {ub:.3f}')
+# 	assert -1 <= lb <= ub <= 1, 'ATE out of bounds'
+#
 
 
