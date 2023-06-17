@@ -115,7 +115,7 @@ def param_prompts(config):
 	outpath = Path(outpath)
 	print(f'Writing prompts to {outpath}')
 	
-	skip_existing = config.pull('skip-existing', True)
+	skip_existing = config.pull('skip-existing', False)
 	
 	stories = config.pull('stories')
 	
