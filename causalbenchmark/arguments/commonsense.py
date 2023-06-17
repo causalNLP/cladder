@@ -68,7 +68,7 @@ class ATE_Prompter(Prompter):
 		keys = []
 		for dof in dofs:
 			v, *other = dof.split('|')
-			v = v + '=1'
+			# v = v + '=1'
 			if len(other):
 				v = v + '|' + '|'.join(other)
 			keys.append(v)
@@ -80,7 +80,7 @@ class ATE_Prompter(Prompter):
 class Mediation_Prompter(Prompter):
 	@staticmethod
 	def prompt_keys(system, story):
-		return list(set(system.nde_dofs) | set(system.nie_dofs))
+		return sorted(list(set(system.nde_dofs) | set(system.nie_dofs)))
 
 
 	
@@ -112,8 +112,9 @@ def prompt_builder(query, system, story):
 def param_prompts(config):
 	
 	outpath = config.pull('out', str(util.data_root() / 'prompts.json'))
-	outpath = Path(outpath)
-	print(f'Writing prompts to {outpath}')
+	if outpath is not None:
+		outpath = Path(outpath)
+		print(f'Writing prompts to {outpath}')
 	
 	skip_existing = config.pull('skip-existing', False)
 	
@@ -157,11 +158,15 @@ def param_prompts(config):
 			print('-'*60)
 		
 	# print('-' * 60)
-	print(f'Saving {len(prompts)} prompts')
+	if outpath is None:
+		print(f'Created {len(prompts)} prompts')
+	else:
+		print(f'Saving {len(prompts)} prompts')
+		
+		save_json(prompts, outpath)
+		
+		print(f'Saved {len(prompts)} prompts to {outpath}')
 	
-	save_json(prompts, outpath)
-	
-	print(f'Saved {len(prompts)} prompts to {outpath}')
-
+	return prompts
 
 
