@@ -1,10 +1,10 @@
 
 
-Zname: children playing in the street
+Uname: children playing in the street
 Yname: car accidents
 
-Z=1: children playing in the street
-Z=0: no children playing in the street
+U=1: children playing in the street
+U=0: no children playing in the street
 
 Y=1: there is a car accident
 Y=0: there is no car accident
@@ -14,6 +14,13 @@ Y=0: there is no car accident
 graph: confounding
 queries: [ate]
 roles: {treatment: X, outcome: Y, confounder: U}
+
+commonsense:
+    U1: [0.05, 0.20]
+    Y|X=0,U=0: [0.05, 0.15]
+    Y|X=1,U=0: [0.10, 0.25]
+    Y|X=0,U=1: [0.15, 0.40]
+    Y|X=1,U=1: [0.20, 0.50]
 
 scenarios:
     1:

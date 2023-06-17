@@ -30,6 +30,14 @@ scenarios:
         do(X=1): increase taxes
         do(X=0): decrease taxes
 
+        commonsense:
+            Y|X=1,M=0: [0.2, 0.8]
+            M|X=0: [0.3, 0.7]
+            Y|X=0,M=1: [0.6, 0.9]
+            Y|X=1,M=1: [0.7, 0.95]
+            Y|X=0,M=0: [0.1, 0.4]
+            M|X=1: [0.2, 0.6]
+
     2:
         Xname: government debt
 
@@ -39,3 +47,10 @@ scenarios:
         do(X=1): increase government debt
         do(X=0): decrease government debt
 
+        commonsense:
+            Y|X=1,M=0: [0.2, 0.8]
+            M|X=0: [0.1, 0.9]
+            Y|X=0,M=1: [0.3, 0.7]
+            Y|X=1,M=1: [0.4, 0.9]
+            Y|X=0,M=0: [0.1, 0.6]
+            M|X=1: [0.2, 0.8]

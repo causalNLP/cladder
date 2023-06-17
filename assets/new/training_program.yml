@@ -21,6 +21,13 @@ queries: [ate]
 roles: {treatment: X, outcome: Y, instrument: Z, confounder: U}
 
 
+commonsense:
+    Y|Z=1: [0.6, 0.9]
+    Y|Z=0: [0.2, 0.5]
+    X|Z=1: [0.4, 0.8]
+    X|Z=0: [0.1, 0.3]
+
+
 scenarios:
     1:
         Xname: training program A

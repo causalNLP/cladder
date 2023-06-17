@@ -31,6 +31,15 @@ scenarios:
         do(X=1): smokes cigarettes
         do(X=0): doesn't smoke cigarettes
 
+        commonsense:
+            X: [0.2, 0.4]
+            M|X=1: [0.8, 0.9]
+            M|X=0: [0.05, 0.15]
+            Y|X=0,M=0: [0.01, 0.05]
+            Y|X=1,M=0: [0.2, 0.3]
+            Y|X=0,M=1: [0.6, 0.7]
+            Y|X=1,M=1: [0.7, 0.8]
+
     2:
         Xname: smoking cigars
 
@@ -39,6 +48,15 @@ scenarios:
 
         do(X=1): smokes cigars
         do(X=0): doesn't smoke cigars
+
+        commonsense:
+            X: [0.1, 0.9]
+            M|X=1: [0.5, 0.9]
+            M|X=0: [0.05, 0.5]
+            Y|X=0,M=0: [0.01, 0.05]
+            Y|X=1,M=0: [0.02, 0.1]
+            Y|X=0,M=1: [0.5, 0.9]
+            Y|X=1,M=1: [0.6, 0.95]
 
 
 

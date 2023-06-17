@@ -31,6 +31,14 @@ scenarios:
         do(X=1): drinks coffee
         do(X=0): doesn't drink coffee
 
+        commonsense:
+            Y|X=1,M=0: [0.1, 0.3]
+            M|X=0: [0.4, 0.7]
+            Y|X=0,M=1: [0.2, 0.5]
+            Y|X=1,M=1: [0.3, 0.6]
+            Y|X=0,M=0: [0.1, 0.3]
+            M|X=1: [0.2, 0.5]
+
 
     2:
         Xname: drinking tea
@@ -41,8 +49,13 @@ scenarios:
         do(X=1): drinks tea
         do(X=0): doesn't drink tea
 
-
-
+        commonsense:
+            Y|X=1,M=0: [0.1, 0.9]
+            M|X=0: [0.1, 0.9]
+            Y|X=0,M=1: [0.1, 0.9]
+            Y|X=1,M=1: [0.1, 0.9]
+            Y|X=0,M=0: [0.1, 0.9]
+            M|X=1: [0.1, 0.9]
 
 
 
