@@ -1,19 +1,33 @@
 
 
 Zname: children playing in the street
-Xname: presence of a street sign at the intersection
 Yname: car accidents
 
 Z=1: children playing in the street
 Z=0: no children playing in the street
 
-X=1: there is a street sign at the intersection
-X=0: there is no street sign at the intersection
-
 Y=1: there is a car accident
 Y=0: there is no car accident
 
 #do(X=1):
+
+graph: confounding
+queries: [ate]
+roles: {treatment: X, outcome: Y, confounder: U}
+
+scenarios:
+    1:
+        Xname: presence of a street sign at the intersection A
+
+        X=1: there is a street sign at the intersection A
+        X=0: there is no street sign at the intersection A
+
+    2:
+        Xname: presence of a street sign at the intersection B
+
+        X=1: there is a street sign at the intersection B
+        X=0: there is no street sign at the intersection B
+
 
 
 

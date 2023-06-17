@@ -1,27 +1,11 @@
 
 
-X1name: drinking coffee
-X2name: drinking tea
-Zname: adding sugar
+Mname: adding sugar
 Yname: getting a headache
 
 
-X1=1: drink coffee
-X1=0: don't drink coffee
-
-do(X1=1): drinks coffee
-do(X1=0): doesn't drink coffee
-
-
-X2=1: drink tea
-X2=0: don't drink tea
-
-do(X2=1): drinks tea
-do(X2=0): doesn't drink tea
-
-
-Z=1: add sugar
-Z=0: don't add sugar
+M=1: add sugar
+M=0: don't add sugar
 
 
 Y=1: get a headache
@@ -30,6 +14,32 @@ Y=0: don't get a headache
 
 direct: consuming caffeine
 mediator: adding sugar
+
+
+graph: mediation
+queries: [med]
+roles: {treatment: X, outcome: Y, mediator: M}
+
+
+scenarios:
+    1:
+        Xname: drinking coffee
+
+        X=1: drink coffee
+        X=0: don't drink coffee
+
+        do(X=1): drinks coffee
+        do(X=0): doesn't drink coffee
+
+
+    2:
+        Xname: drinking tea
+
+        X=1: drink tea
+        X=0: don't drink tea
+
+        do(X=1): drinks tea
+        do(X=0): doesn't drink tea
 
 
 

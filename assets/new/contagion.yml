@@ -1,0 +1,68 @@
+
+intro:
+  | 
+  In an investigation of how to prevent the spread of contagious illnesses, we want to know whether wearing a face mask and washing hands frequently are effective.
+
+Uname: flu season
+Yname: contracting a contagious illness
+
+U=1: it's flu season
+U=0: it's not flu season
+
+#Z=1_partial: during flu season
+#Z=0_partial: not during flu season
+
+Y=1: contracting a contagious illness
+Y=0: not contracting a contagious illness
+
+#Y=1_end: contracted a contagious illness
+#Y=0_end: didn't contract a contagious illness
+
+graph: confounding
+queries: [ate]
+roles: {treatment: X, outcome: Y, confounder: U}
+
+scenarios:
+    1:
+        Xname: wearing a face mask
+
+        X=1: wearing a face mask
+        X=0: not wearing a face mask
+
+        #X1=1_sentence: people that wear a face mask
+        #X1=0_sentence: people that don't wear a face mask
+
+        do(X=1): putting on a face mask
+        do(X=0): not putting on a face mask
+
+        commonsense:
+            U=1: [0.2, 0.8]
+            Y=1|X=0,U=0: [0.1, 0.4]
+            Y=1|X=1,U=0: [0.05, 0.3]
+            Y=1|X=0,U=1: [0.3, 0.7]
+            Y=1|X=1,U=1: [0.2, 0.6]
+
+    2:
+        Xname: washing hands frequently
+
+        X=1: people wash their hands frequently
+        X=0: people don't wash their hands frequently
+
+        #X2=1_ant: people that wash their hands frequently
+        #X2=0_ant: people that don't wash their hands frequently
+        #X2=1_ant_end: that wash their hands frequently
+        #X2=0_ant_end: that don't wash their hands frequently
+
+        do(X=1): washing hands frequently
+        do(X=0): not washing hands frequently
+
+        commonsense:
+            U=1: [0.1, 0.9]
+            Y=1|X=0,U=0: [0.1, 0.4]
+            Y=1|X=1,U=0: [0.2, 0.7]
+            Y=1|X=0,U=1: [0.3, 0.8]
+            Y=1|X=1,U=1: [0.4, 0.9]
+
+
+
+

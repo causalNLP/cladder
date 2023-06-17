@@ -1,23 +1,7 @@
 
 Zname: doctor's recommendation
-X1name: taking a treatment A
-X2name: taking a treatment B
 Yname: recovery from illness
-Wname: patient's predisposition to illness
-
-
-X1=1: taking a treatment A
-X1=0: not taking a treatment A
-
-do(X1=1): takes the treatment A
-do(X1=0): doesn't take the treatment A
-
-
-X2=1: taking a treatment B
-X2=0: not taking a treatment B
-
-do(X2=1): takes the treatment B
-do(X2=0): doesn't take the treatment B
+Uname: patient's predisposition to illness
 
 
 Y=1: patient recovers from illness
@@ -28,9 +12,33 @@ Z=1: doctor recommends taking a drug
 Z=0: doctor doesn't recommend taking a drug
 
 
-W=1: patient is predisposed to illness
-W=0: patient is not predisposed to illness
+U=1: patient is predisposed to illness
+U=0: patient is not predisposed to illness
 
+
+graph: IV
+queries: [ate]
+roles: {treatment: X, outcome: Y, instrument: Z, confounder: U}
+
+
+scenarios:
+    1:
+        Xname: taking a treatment A
+
+        X=1: taking a treatment A
+        X=0: not taking a treatment A
+
+        do(X=1): takes the treatment A
+        do(X=0): doesn't take the treatment A
+
+    2:
+        Xname: taking a treatment B
+
+        X=1: taking a treatment B
+        X=0: not taking a treatment B
+
+        do(X=1): takes the treatment B
+        do(X=0): doesn't take the treatment B
 
 
 

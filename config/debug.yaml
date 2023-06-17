@@ -1,4 +1,12 @@
 
+_meta.script_name: param-prompts
+
+_base: [uncladder]
+
+
+
+###############################
+
 #_meta.script_name: plan
 #_meta.script_name: bern-generate
 #_meta.script_name: prop-generate
@@ -8,8 +16,8 @@
 
 ###############################
 
-_meta.script_name: summary
-path: data/backup/cladder-v1-q-commonsense.json
+#_meta.script_name: summary
+#path: data/backup/cladder-v1-q-commonsense.json
 #
 #key: graph
 
