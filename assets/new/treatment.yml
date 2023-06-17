@@ -21,6 +21,13 @@ queries: [ate]
 roles: {treatment: X, outcome: Y, instrument: Z, confounder: U}
 
 
+commonsense:
+    Y=1|Z=1: [0.7, 0.9]
+    Y=1|Z=0: [0.1, 0.3]
+    X=1|Z=1: [0.7, 0.9]
+    X=1|Z=0: [0.1, 0.3]
+
+
 scenarios:
     1:
         Xname: taking a treatment A

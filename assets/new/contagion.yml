@@ -36,11 +36,11 @@ scenarios:
         do(X=0): not putting on a face mask
 
         commonsense:
-            U=1: [0.2, 0.8]
-            Y=1|X=0,U=0: [0.1, 0.4]
-            Y=1|X=1,U=0: [0.05, 0.3]
-            Y=1|X=0,U=1: [0.3, 0.7]
-            Y=1|X=1,U=1: [0.2, 0.6]
+            U: [0.2, 0.8]
+            Y|X=0,U=0: [0.1, 0.4]
+            Y|X=1,U=0: [0.05, 0.3]
+            Y|X=0,U=1: [0.3, 0.7]
+            Y|X=1,U=1: [0.2, 0.6]
 
     2:
         Xname: washing hands frequently
@@ -57,11 +57,11 @@ scenarios:
         do(X=0): not washing hands frequently
 
         commonsense:
-            U=1: [0.1, 0.9]
-            Y=1|X=0,U=0: [0.1, 0.4]
-            Y=1|X=1,U=0: [0.2, 0.7]
-            Y=1|X=0,U=1: [0.3, 0.8]
-            Y=1|X=1,U=1: [0.4, 0.9]
+            U: [0.1, 0.9]
+            Y|X=0,U=0: [0.1, 0.4]
+            Y|X=1,U=0: [0.2, 0.7]
+            Y|X=0,U=1: [0.3, 0.8]
+            Y|X=1,U=1: [0.4, 0.9]
 
 
 
