@@ -1,0 +1,50 @@
+
+intro:
+    | 
+    Concerned parents are considering what extracurricular activities to enroll their children in. They want to know whether taking violin lessons or cello lessons will help their children get good grades.
+
+
+Uname: motivation
+Yname: good grades
+
+U=1: motivated
+U=0: not motivated
+
+Y=1: get good grades
+Y=0: don't get good grades
+
+
+commonsense:
+    U=1: [0.3, 0.8]
+    Y=1|X=0,U=0: [0.1, 0.4]
+    Y=1|X=1,U=0: [0.4, 0.8]
+    Y=1|X=0,U=1: [0.5, 0.9]
+    Y=1|X=1,U=1: [0.7, 0.95]
+
+
+graph: confounding
+queries: [ate]
+roles: {treatment: X, outcome: Y, confounder: U}
+
+
+scenarios:
+    1:
+        Xname: violin lessons
+
+        X=1: take violin lessons
+        X=0: don't take violin lessons
+
+        do(X=1): taking violin lessons
+        do(X=0): not taking violin lessons
+
+    2:
+        Xname: cello lessons
+
+        X=1: take cello lessons
+        X=0: don't take cello lessons
+
+        do(X=1): taking cello lessons
+        do(X=0): not taking cello lessons
+
+
+

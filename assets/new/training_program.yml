@@ -1,23 +1,7 @@
 
-X1name: training program A
-X2name: training program B
 Zname: residency
 Yname: getting a job
-Wname: motivation
-
-
-X1=1: attending training program A
-X1=0: not attending training program A
-
-do(X1=1): attends training program A
-do(X1=0): doesn't attend training program A
-
-
-X2=1: attending training program B
-X2=0: not attending training program B
-
-do(X2=1): attends training program B
-do(X2=0): doesn't attend training program B
+Uname: motivation
 
 
 Y=1: gets a job
@@ -28,9 +12,34 @@ Z=1: is a resident
 Z=0: is not a resident
 
 
-W=1: is motivated
-W=0: is not motivated
+U=1: is motivated
+U=0: is not motivated
 
+
+graph: IV
+queries: [ate]
+roles: {treatment: X, outcome: Y, instrument: Z, confounder: U}
+
+
+scenarios:
+    1:
+        Xname: training program A
+
+        X=1: attending training program A
+        X=0: not attending training program A
+
+        do(X=1): attends training program A
+        do(X=0): doesn't attend training program A
+
+
+    2:
+        Xname: training program B
+
+        X=1: attending training program B
+        X=0: not attending training program B
+
+        do(X=1): attends training program B
+        do(X=0): doesn't attend training program B
 
 
 

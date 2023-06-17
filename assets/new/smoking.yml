@@ -1,37 +1,44 @@
 
-Wname: genetic predisposition
-X1name: smoking cigarettes
-X2name: smoking cigars
-Zname: tar in lungs
+Uname: genetic predisposition
+Mname: tar in lungs
 Yname: lung cancer
 
 
-X1=1: smoke cigarettes
-X1=0: don't smoke cigarettes
-
-
-do(X1=1): smokes cigarettes
-do(X1=0): doesn't smoke cigarettes
-
-
-X2=1: smoke cigars
-X2=0: don't smoke cigars
-
-
-do(X2=1): smokes cigars
-do(X2=0): doesn't smoke cigars
-
-
-Z=1: tar in lungs
-Z=0: no tar in lungs
+M=1: tar in lungs
+M=0: no tar in lungs
 
 
 Y=1: lung cancer
 Y=0: no lung cancer
 
 
-W=1: genetic predisposition to lung cancer
-W=0: no genetic predisposition to lung cancer
+U=1: genetic predisposition to lung cancer
+U=0: no genetic predisposition to lung cancer
+
+
+graph: frontdoor
+queries: [ate]
+roles: {treatment: X, outcome: Y, mediator: M, confounder: U}
+
+
+scenarios:
+    1:
+        Xname: smoking cigarettes
+
+        X=1: smoke cigarettes
+        X=0: don't smoke cigarettes
+
+        do(X=1): smokes cigarettes
+        do(X=0): doesn't smoke cigarettes
+
+    2:
+        Xname: smoking cigars
+
+        X=1: smoke cigars
+        X=0: don't smoke cigars
+
+        do(X=1): smokes cigars
+        do(X=0): doesn't smoke cigars
 
 
 

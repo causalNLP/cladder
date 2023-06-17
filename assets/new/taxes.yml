@@ -1,26 +1,10 @@
 
-X1name: taxes
-X2name: government debt
-Zname: government spending
+Mname: government spending
 Yname: economic growth
 
 
-X1=1: taxes are high
-X1=0: taxes are low
-
-do(X1=1): increase taxes
-do(X1=0): decrease taxes
-
-
-X2=1: government debt is high
-X2=0: government debt is low
-
-do(X2=1): increase government debt
-do(X2=0): decrease government debt
-
-
-Z=1: government spending is high
-Z=0: government spending is low
+M=1: government spending is high
+M=0: government spending is low
 
 
 Y=1: economic growth is high
@@ -31,4 +15,27 @@ direct: profits of businesses increase
 mediator: government spending increases
 
 
+graph: mediation
+queries: [med]
+roles: {treatment: X, outcome: Y, mediator: M}
+
+
+scenarios:
+    1:
+        Xname: taxes
+
+        X=1: taxes are high
+        X=0: taxes are low
+
+        do(X=1): increase taxes
+        do(X=0): decrease taxes
+
+    2:
+        Xname: government debt
+
+        X=1: government debt is high
+        X=0: government debt is low
+
+        do(X=1): increase government debt
+        do(X=0): decrease government debt
 
