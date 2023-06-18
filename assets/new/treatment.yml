@@ -3,17 +3,34 @@ Zname: doctor's recommendation
 Yname: recovery from illness
 Uname: patient's predisposition to illness
 
+Xsubject: patients
+Zsubject: the doctor
+Ysubject: patients
+Usubject: patients
+
 
 Y=1: patient recovers from illness
 Y=0: patient doesn't recover from illness
+
+Y=1_verb: recover from illness
+Y=0_verb: don't recover from illness
+
+Y=1_end: recover from illness
+Y=0_end: don't recover from illness
 
 
 Z=1: doctor recommends taking a drug
 Z=0: doctor doesn't recommend taking a drug
 
+Z=1_verb: recommends taking a drug
+Z=0_verb: don't recommends taking a drug
+
 
 U=1: patient is predisposed to illness
 U=0: patient is not predisposed to illness
+
+U=1_verb: be predisposed to illness
+U=0_verb: not be predisposed to illness
 
 
 graph: IV
@@ -22,10 +39,10 @@ roles: {treatment: X, outcome: Y, instrument: Z, confounder: U}
 
 
 commonsense:
-    Y=1|Z=1: [0.7, 0.9]
-    Y=1|Z=0: [0.1, 0.3]
-    X=1|Z=1: [0.7, 0.9]
-    X=1|Z=0: [0.1, 0.3]
+    Y|Z=1: [0.7, 0.9]
+    Y|Z=0: [0.3, 0.6]
+    X|Z=1: [0.8, 0.95]
+    X|Z=0: [0.05, 0.2]
 
 
 scenarios:
@@ -35,6 +52,12 @@ scenarios:
         X=1: taking a treatment A
         X=0: not taking a treatment A
 
+        X=1_verb: take a treatment A
+        X=0_verb: not take a treatment A
+
+        X=1_end: take a treatment A
+        X=0_end: not take a treatment A
+
         do(X=1): takes the treatment A
         do(X=0): doesn't take the treatment A
 
@@ -43,6 +66,12 @@ scenarios:
 
         X=1: taking a treatment B
         X=0: not taking a treatment B
+
+        X=1_verb: take a treatment B
+        X=0_verb: not take a treatment B
+
+        X=1_end: take a treatment B
+        X=0_end: not take a treatment B
 
         do(X=1): takes the treatment B
         do(X=0): doesn't take the treatment B

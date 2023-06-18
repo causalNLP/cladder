@@ -5,16 +5,34 @@ Mname: skill
 Yname: salary
 
 
+Usubject: student
+Msubject: student
+Xsubject: student
+Ysubject: student
+
+
 Y=1: gets a high salary
 Y=0: doesn't get a high salary
+
+Y=1_end: will get a high salary
+Y=0_end: will not get a high salary
 
 
 M=1: has a high skill
 M=0: doesn't have a high skill
 
+M=1_verb: is highly-skilled
+M=0_verb: is not highly-skilled
+
+M=1_end: has a high skill
+M=0_end: doesn't have a high skill
+
 
 U=1: male
 U=0: non-male
+
+U=1_verb: is male
+U=0_verb: is not male
 
 
 graph: frontdoor
@@ -24,13 +42,16 @@ roles: {treatment: X, outcome: Y, mediator: M, confounder: U}
 
 scenarios:
     1:
-        Xname: goes to a local college
+        Xname: goes to a community college
 
-        X=1: goes to a local college
-        X=0: doesn't go to a local college
+        X=1: goes to a community college
+        X=0: doesn't go to a community college
 
-        do(X=1): goes to a local college
-        do(X=0): doesn't go to a local college
+        X=1_verb: goes to a community college
+        X=0_verb: doesn't go to a community college
+
+        do(X=1): goes to a community college
+        do(X=0): doesn't go to a community college
 
         commonsense:
             X: [0.1, 0.9]
@@ -46,6 +67,9 @@ scenarios:
 
         X=1: goes to a prestigious college
         X=0: doesn't go to a prestigious college
+
+        X=1_verb: goes to a prestigious college
+        X=0_verb: doesn't go to a prestigious college
 
         do(X=1): goes to a prestigious college
         do(X=0): doesn't go to a prestigious college

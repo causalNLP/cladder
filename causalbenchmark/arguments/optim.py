@@ -342,12 +342,12 @@ class PathGapOptimization(RobustGapOptimization):
 
 	@property
 	def _term1_dofs(self):
-		return self.system.nie_dofs
+		return self.system.nde_dofs if self.direct_is_higher else self.system.nie_fast
 
 
 	@property
 	def _term2_dofs(self):
-		return self.system.nde_dofs
+		return self.system.nie_dofs if self.direct_is_higher else self.system.nde_fast
 
 
 	@property

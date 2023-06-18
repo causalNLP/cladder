@@ -1,172 +1,116 @@
-from pathlib import Path
-from omnibelt import save_json, load_json, load_yaml
-import omnifig as fig
-
-from .. import util
-from .systems import create_system
+from .imports import *
+from .stories import iterate_scenarios, get_available_stories, get_story_system
+from .queries import create_query
 
 
-role_keys = {
-	'treatment': 'X',
-	'outcome': 'Y',
-	'confounder': 'U',
-	'instrument': 'Z',
-	'mediator': 'M',
-}
-
-
-
-def iterate_scenarios(base):
-	if isinstance(base, (Path, str)):
-		base = load_yaml(base)
-	for key, scenario in base.get('scenarios', {'base': base}).items():
-		story = base.copy()
-		story.update(scenario)
-		story['scenario'] = key
-		story['variables'] = {variable: role_keys[role] for role, variable in story.get('roles', {}).items()}
-		for query in story.get('queries', []):
-			yield {'query': query, **story}
-
-
-
-def prompt_variables(story):
-	vars = story.get('variables')
-	assert vars is not None
+def compute_beta_from_confidence_interval(conf_l, conf_u, conf_l_level=0.05, conf_u_level=0.95):
+	x0 = np.ones((2,)) * 10.
 	
-	lines = []
-	for v, r in vars.items():
-		lines.append(f'{r}=1: {story.get(v + "=1")}')
-		lines.append(f'{r}=0: {story.get(v + "=0")}')
+	def step(x):
+		alpha, beta = x
+		d = stats.beta(alpha, beta)
+		return (d.ppf(conf_l_level) - conf_l) ** 2 + (d.ppf(conf_u_level) - conf_u) ** 2
 	
-	return '\n'.join(lines)
+	res = opt.minimize(step, x0)
+	
+	alpha, beta = res.x.tolist()
+	return alpha, beta
 
 
+def iou(lb1, ub1, lb2, ub2):
+	'''intersection over union'''
+	
+	li = max(lb1, lb2)
+	ui = min(ub1, ub2)
+	
+	if li > ui:
+		return 0.
+	
+	lu = min(lb1, lb2)
+	uu = max(ub1, ub2)
+	
+	return (ui - li) / (uu - lu)
 
-class Prompter:
-	@staticmethod
-	def prompt_keys(system, story):
+
+def beta_agreement_score(lc, uc, start, end, *, eps=1e-5):
+	if (uc - lc) < eps:
+		lc, uc = lc - eps / 2, uc + eps / 2
+	
+	alpha, beta = compute_beta_from_confidence_interval(lc, uc)
+	prior = stats.beta(alpha, beta)
+	mode = (alpha - 1) / (alpha + beta - 2)
+	mx_val = prior.pdf(mode)
+	return (prior.cdf(end) - prior.cdf(start)) / (end - start) / mx_val
+
+
+def commonsense_score(commonsense, params, *, eps=1e-5):
+	if commonsense is None:
 		raise NotImplementedError
 	
+	scores = {}
 	
-	@classmethod
-	def prompt_params(cls, system, story):
-		keys = cls.prompt_keys(system, story)
-		
-		lines = []
-		for key in keys:
-			lines.append(f'p({key}) = ?')
-		
-		return '\n'.join(lines)
-
-
-
-class ATE_Prompter(Prompter):
-	@staticmethod
-	def prompt_keys(system, story):
-		dofs = system.ate_dofs
-		
-		keys = []
-		for dof in dofs:
-			v, *other = dof.split('|')
-			# v = v + '=1'
-			if len(other):
-				v = v + '|' + '|'.join(other)
-			keys.append(v)
-			
-		return keys
+	for key, lims in params.items():
+		if key in commonsense:
+			scores[key] = beta_agreement_score(*commonsense[key], *lims)
 	
+	return scores
 
 
-class Mediation_Prompter(Prompter):
-	@staticmethod
-	def prompt_keys(system, story):
-		return sorted(list(set(system.nde_dofs) | set(system.nie_dofs)))
-
-
+def test_ate_commonsense_score():
+	# random.seed(0)
 	
-prompt_template = '''We are conducting an investigation into how well Large Language Models do commonsense reasoning. Imagine a simple causal graph of three binary variables:
+	stories = list(get_available_stories())
+	full = [list(iterate_scenarios(story)) for story in stories]
+	full = [scens for scens in full if len(scens) > 0 and scens[0]['query'] == 'ate']
+	
+	scenarios = random.choice(full)
+	
+	assert len(scenarios) > 1
+	
+	picks = random.choice(scenarios, size=2, replace=False)
+	
+	init1 = picks[0]['commonsense']
+	init2 = picks[1]['commonsense']
+	
+	system = get_story_system(scenarios[0])
+	
+	optim = create_query('ate', system=system, bounds1=init1, bounds2=init2)
+	
+	bounds1, bounds2 = optim.solve()
+	
+	scores1 = commonsense_score(scenarios[0]['commonsense'], bounds1)
+	scores2 = commonsense_score(scenarios[1]['commonsense'], bounds2)
+	
+	assert len(scores1) == len(scores2)
 
-{variables}
 
-Propose some reasonable ranges (including an upper and lower bound for the 90% confidence interval) of marginal and conditional probabilities for the following quantities:
+def test_med_commonsense_score():
+	# random.seed(0)
+	
+	stories = list(get_available_stories())
+	full = [list(iterate_scenarios(story)) for story in stories]
+	full = [scens for scens in full if len(scens) > 0 and scens[0]['query'] == 'med']
+	
+	scenarios = random.choice(full)
+	
+	assert len(scenarios) > 1
+	
+	pick = random.choice(scenarios)
+	
+	system = get_story_system(pick)
+	
+	init = pick['commonsense']
+	
+	optim = create_query('med', system=system, bounds=init, direct_is_higher=True)
+	
+	bounds1, bounds2 = optim.solve()
+	
+	scores1 = commonsense_score(pick['commonsense'], bounds1)
+	scores2 = commonsense_score(pick['commonsense'], bounds2)
+	
+	assert len(scores1) == len(scores2)
 
-{params}
-
-Please respond only by replacing the "?" with the range.'''
 
 
-
-def prompt_builder(query, system, story):
-	
-	vars = prompt_variables(story)
-	
-	params = query.prompt_params(system, story)
-	
-	prompt = prompt_template.format(variables=vars, params=params)
-	
-	return prompt
-
-
-
-@fig.script('param-prompts')
-def param_prompts(config):
-	
-	outpath = config.pull('out', str(util.data_root() / 'prompts.json'))
-	if outpath is not None:
-		outpath = Path(outpath)
-		print(f'Writing prompts to {outpath}')
-	
-	skip_existing = config.pull('skip-existing', False)
-	
-	stories = config.pull('stories')
-	
-	queries = {'ate': ATE_Prompter(), 'med': Mediation_Prompter()}
-	
-	dirroot = config.pull('stories-root', str(util.assets_root()))
-	dirroot = Path(dirroot)
-	
-	prompts = []
-	
-	for name in stories:
-		story_path = dirroot / f'{name}.yml'
-		for story in iterate_scenarios(story_path):
-			if skip_existing and 'commonsense' in story:
-				print(f'Skipping {name}-{story["scenario"]}-{story["query"]}')
-				print('-'*60)
-				continue
-			
-			key = story['scenario']
-			query = story['query']
-			ID = f'{name}-{key}-{query}'
-			
-			system = create_system(story['graph'])
-			
-			prompts.append({
-				'ID': ID,
-				'story': name,
-				'scenario': key,
-				'query': query,
-				'graph': story['graph'],
-				'variables': story['variables'],
-				'keys': queries[query].prompt_keys(system, story),
-				'prompt': prompt_builder(queries[query], system, story),
-			})
-			
-			print(f'Created prompt {ID}')
-			print('-'*60)
-			print(prompts[-1]['prompt'])
-			print('-'*60)
-		
-	# print('-' * 60)
-	if outpath is None:
-		print(f'Created {len(prompts)} prompts')
-	else:
-		print(f'Saving {len(prompts)} prompts')
-		
-		save_json(prompts, outpath)
-		
-		print(f'Saved {len(prompts)} prompts to {outpath}')
-	
-	return prompts
 
 

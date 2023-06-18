@@ -2,13 +2,29 @@
 Mname: government spending
 Yname: economic growth
 
+Msubject: the government
+Ysubject: the economy
+Xsubject: the government
+
 
 M=1: government spending is high
 M=0: government spending is low
 
+M=1_verb: increases spending
+M=0_verb: decreases spending
+
+M=1_end: increases spending
+M=0_end: decreases spending
+
 
 Y=1: economic growth is high
 Y=0: economic growth is low
+
+Y=1_verb: grows
+Y=0_verb: shrinks
+
+Y=1_end: grows
+Y=0_end: shrinks
 
 
 direct: profits of businesses increase
@@ -27,6 +43,9 @@ scenarios:
         X=1: taxes are high
         X=0: taxes are low
 
+        X=1_verb: increases taxes
+        X=0_verb: decreases taxes
+
         do(X=1): increase taxes
         do(X=0): decrease taxes
 
@@ -43,6 +62,9 @@ scenarios:
 
         X=1: government debt is high
         X=0: government debt is low
+
+        X=1_verb: increases government debt
+        X=0_verb: decreases government debt
 
         do(X=1): increase government debt
         do(X=0): decrease government debt

@@ -3,13 +3,29 @@
 Mname: adding sugar
 Yname: getting a headache
 
+Xsubject: people
+Msubject: people
+Ysubject: people
+
 
 M=1: add sugar
 M=0: don't add sugar
 
+M=1_verb: add sugar
+M=0_verb: don't add sugar
+
+M=1_end: add sugar
+M=0_end: don't add sugar
+
 
 Y=1: get a headache
 Y=0: don't get a headache
+
+Y=1_verb: get a headache
+Y=0_verb: don't get a headache
+
+Y=1_end: get a headache
+Y=0_end: don't get a headache
 
 
 direct: consuming caffeine
@@ -28,6 +44,9 @@ scenarios:
         X=1: drink coffee
         X=0: don't drink coffee
 
+        X=1_verb: drink coffee
+        X=0_verb: don't drink coffee
+
         do(X=1): drinks coffee
         do(X=0): doesn't drink coffee
 
@@ -45,6 +64,9 @@ scenarios:
 
         X=1: drink tea
         X=0: don't drink tea
+
+        X=1_verb: drink tea
+        X=0_verb: don't drink tea
 
         do(X=1): drinks tea
         do(X=0): doesn't drink tea

@@ -3,11 +3,26 @@
 Uname: children playing in the street
 Yname: car accidents
 
+Xsubject: a street sign
+Ysubject: car accidents
+Usubject: children
+
+
 U=1: children playing in the street
 U=0: no children playing in the street
 
+U=1_verb: are playing in the street
+U=0_verb: aren't playing in the street
+
+
 Y=1: there is a car accident
 Y=0: there is no car accident
+
+Y=1_verb: occur
+Y=0_verb: don't occur
+
+Y=1_end: occur
+Y=0_end: don't occur
 
 #do(X=1):
 
@@ -29,11 +44,17 @@ scenarios:
         X=1: there is a street sign at the intersection A
         X=0: there is no street sign at the intersection A
 
+        X=1_verb: is put up at intersection A
+        X=0_verb: isn't put up at intersection A
+
     2:
         Xname: presence of a street sign at the intersection B
 
         X=1: there is a street sign at the intersection B
         X=0: there is no street sign at the intersection B
+
+        X=1_verb: is put up at intersection B
+        X=0_verb: isn't put up at intersection B
 
 
 

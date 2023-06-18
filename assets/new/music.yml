@@ -7,11 +7,23 @@ intro:
 Uname: motivation
 Yname: good grades
 
+Xsubject: students
+Usubject: students
+Ysubject: students
+
+
 U=1: motivated
 U=0: not motivated
 
+U=1_verb: are motivated
+U=0_verb: are not motivated
+
+
 Y=1: get good grades
 Y=0: don't get good grades
+
+Y=1_end: get good grades
+Y=0_end: don't get good grades
 
 
 commonsense:
@@ -34,6 +46,9 @@ scenarios:
         X=1: take violin lessons
         X=0: don't take violin lessons
 
+        X=1_verb: take violin lessons
+        X=0_verb: don't take violin lessons
+
         do(X=1): taking violin lessons
         do(X=0): not taking violin lessons
 
@@ -42,6 +57,9 @@ scenarios:
 
         X=1: take cello lessons
         X=0: don't take cello lessons
+
+        X=1_verb: take cello lessons
+        X=0_verb: don't take cello lessons
 
         do(X=1): taking cello lessons
         do(X=0): not taking cello lessons

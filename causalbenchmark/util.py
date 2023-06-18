@@ -108,11 +108,15 @@ class PowerFormatter(Formatter):
 	# TODO: partial formatting - only format fields that are specified, and leave others as is
 	def get_field(self, field_name, args, kwargs):
 		try:
-			return super().get_field(field_name, args, kwargs)
+			out = super().get_field(field_name, args, kwargs)
 		except: # TODO: find the right exception
-			return eval(self.vformat(field_name, args, kwargs), kwargs), field_name
+			exp = self.vformat(field_name, args, kwargs)
+			if exp in kwargs:
+				out = kwargs[exp], exp
+			else:
+				out = eval(exp, kwargs), field_name
 			# return f'{{{field_name}}}', field_name
-
+		return out
 
 	def parse(self, s):
 		start_idx = -1

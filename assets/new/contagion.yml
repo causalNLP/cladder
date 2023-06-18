@@ -6,17 +6,30 @@ intro:
 Uname: flu season
 Yname: contracting a contagious illness
 
+Ysubject: people
+Xsubject: people
+Usubject: it is
+#Xpronoun: they
+#Ypronoun: they
+
 U=1: it's flu season
 U=0: it's not flu season
+
+U=1_verb: flu season
+U=0_verb: not flu season
+
+U=1_head: during flu season
+U=0_head: when it's not flu season
 
 #Z=1_partial: during flu season
 #Z=0_partial: not during flu season
 
+
 Y=1: contracting a contagious illness
 Y=0: not contracting a contagious illness
 
-#Y=1_end: contracted a contagious illness
-#Y=0_end: didn't contract a contagious illness
+Y=1_end: contract contagious illnesses
+Y=0_end: don't contract contagious illnesses
 
 graph: confounding
 queries: [ate]
@@ -29,8 +42,8 @@ scenarios:
         X=1: wearing a face mask
         X=0: not wearing a face mask
 
-        #X1=1_sentence: people that wear a face mask
-        #X1=0_sentence: people that don't wear a face mask
+        X=1_verb: wear face masks
+        X=0_verb: don't wear face masks
 
         do(X=1): putting on a face mask
         do(X=0): not putting on a face mask
@@ -43,20 +56,18 @@ scenarios:
             Y|X=1,U=1: [0.2, 0.6]
 
     2:
-        Xname: washing hands frequently
+        Xname: using hand sanitizer
 
-        X=1: people wash their hands frequently
-        X=0: people don't wash their hands frequently
+        X=1: use hand sanitizer
+        X=0: don't use hand sanitizer
 
-        #X2=1_ant: people that wash their hands frequently
-        #X2=0_ant: people that don't wash their hands frequently
-        #X2=1_ant_end: that wash their hands frequently
-        #X2=0_ant_end: that don't wash their hands frequently
+        X=1_verb: use hand sanitizer
+        X=0_verb: don't use hand sanitizer
 
-        do(X=1): washing hands frequently
-        do(X=0): not washing hands frequently
+        do(X=1): using hand sanitizer
+        do(X=0): not using hand sanitizer
 
-        commonsense:
+        commonsense: # TODO: update
             U: [0.1, 0.9]
             Y|X=0,U=0: [0.1, 0.4]
             Y|X=1,U=0: [0.2, 0.7]

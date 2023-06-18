@@ -3,17 +3,34 @@ Zname: residency
 Yname: getting a job
 Uname: motivation
 
+Xsubject: a person
+Zsubject: a person
+Ysubject: a person
+Usubject: a person
+
 
 Y=1: gets a job
 Y=0: doesn't get a job
+
+Y=1_verb: get a job
+Y=0_verb: don't get a job
+
+Y=1_end: get a job
+Y=0_end: don't get a job
 
 
 Z=1: is a resident
 Z=0: is not a resident
 
+Z=1_verb: is a resident
+Z=0_verb: is not a resident
+
 
 U=1: is motivated
 U=0: is not motivated
+
+U=1_verb: is motivated
+U=0_verb: is not motivated
 
 
 graph: IV
@@ -35,6 +52,12 @@ scenarios:
         X=1: attending training program A
         X=0: not attending training program A
 
+        X=1_verb: attends training program A
+        X=0_verb: doesn't attend training program A
+
+        X=1_end: attends training program A
+        X=0_end: doesn't attend training program A
+
         do(X=1): attends training program A
         do(X=0): doesn't attend training program A
 
@@ -44,6 +67,12 @@ scenarios:
 
         X=1: attending training program B
         X=0: not attending training program B
+
+        X=1_verb: attends training program B
+        X=0_verb: doesn't attend training program B
+
+        X=1_end: attends training program B
+        X=0_end: doesn't attend training program B
 
         do(X=1): attends training program B
         do(X=0): doesn't attend training program B

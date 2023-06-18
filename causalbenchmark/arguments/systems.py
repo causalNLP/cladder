@@ -14,6 +14,10 @@ class CausalSystem:
 			_known_systems[name] = cls
 
 
+	def graph_edges(self):
+		raise NotImplementedError
+
+
 
 class ConfoundingSystem(CausalSystem):
 	name = 'confounding'
@@ -27,6 +31,14 @@ class ConfoundingSystem(CausalSystem):
 		return c * (y11 - y01) + (1 - c) * (y10 - y00)
 
 
+	def graph_edges(self):
+		return [
+			['U', 'X'],
+			['U', 'Y'],
+			['X', 'Y'],
+		]
+
+
 
 class IVSystem(CausalSystem):
 	name = 'IV'
@@ -37,6 +49,15 @@ class IVSystem(CausalSystem):
 	def ate_fast(x):
 		y1, y0, x1, x0 = x
 		return (y1 - y0) / (x1 - x0 + 1e-8)
+
+	
+	def graph_edges(self):
+		return [
+			['U', 'X'],
+			['U', 'Y'],
+			['Z', 'X'],
+			['X', 'Y'],
+		]
 
 
 
@@ -49,6 +70,15 @@ class FrontdoorSystem(CausalSystem):
 	def ate_fast(x):
 		x, v31, v30, y00, y10, y01, y11 = x
 		return (v31 - v30) * (x * (y11 - y10) + (1 - x) * (y01 - y00))
+
+
+	def graph_edges(self):
+		return [
+			['U', 'X'],
+			['U', 'Y'],
+			['X', 'M'],
+			['M', 'Y'],
+		]
 
 
 
@@ -81,6 +111,12 @@ class MediationSystem(CausalSystem):
 		return (y01 - y00) * (v21 - v20)
 
 
+	def graph_edges(self):
+		return [
+			['X', 'M'],
+			['M', 'Y'],
+			['X', 'Y'],
+		]
 
 
 

@@ -3,17 +3,37 @@ Uname: genetic predisposition
 Mname: tar in lungs
 Yname: lung cancer
 
+Usubject: people
+Msubject: people
+Ysubject: people
+Xsubject: people
+
 
 M=1: tar in lungs
 M=0: no tar in lungs
+
+M=1_verb: have tar in their lungs
+M=0_verb: don't have tar in their lungs
+
+M=1_end: have tar in their lungs
+M=0_end: don't have tar in their lungs
 
 
 Y=1: lung cancer
 Y=0: no lung cancer
 
+Y=1_verb: get lung cancer
+Y=0_verb: don't get lung cancer
+
+Y=1_end: get lung cancer
+Y=0_end: don't get lung cancer
+
 
 U=1: genetic predisposition to lung cancer
 U=0: no genetic predisposition to lung cancer
+
+U=1_verb: have a genetic predisposition to lung cancer
+U=0_verb: don't have a genetic predisposition to lung cancer
 
 
 graph: frontdoor
@@ -27,6 +47,9 @@ scenarios:
 
         X=1: smoke cigarettes
         X=0: don't smoke cigarettes
+
+        X=1_verb: smoke cigarettes
+        X=0_verb: don't smoke cigarettes
 
         do(X=1): smokes cigarettes
         do(X=0): doesn't smoke cigarettes
@@ -45,6 +68,9 @@ scenarios:
 
         X=1: smoke cigars
         X=0: don't smoke cigars
+
+        X=1_verb: smoke cigars
+        X=0_verb: don't smoke cigars
 
         do(X=1): smokes cigars
         do(X=0): doesn't smoke cigars
