@@ -1,3 +1,4 @@
+from .. import util
 
 
 def create_system(key, *args, **kwargs):
@@ -18,6 +19,13 @@ class CausalSystem:
 		raise NotImplementedError
 
 
+	_graph_templates = None
+	def verbalize_graph(self, story, key='dry'):
+		if self._graph_templates is None:
+			raise NotImplementedError
+		return util.pformat(self._graph_templates[key], **story)
+
+
 
 class ConfoundingSystem(CausalSystem):
 	name = 'confounding'
@@ -29,15 +37,18 @@ class ConfoundingSystem(CausalSystem):
 		c = x[0]
 		y00, y10, y01, y11 = x[1:]
 		return c * (y11 - y01) + (1 - c) * (y10 - y00)
-
-
+	
+	
+	_graph_template = {
+		'dry': '{X} leads to {Y} but is confounded by {U}.',
+	}
 	def graph_edges(self):
 		return [
 			['U', 'X'],
 			['U', 'Y'],
 			['X', 'Y'],
 		]
-
+	
 
 
 class IVSystem(CausalSystem):
@@ -50,7 +61,10 @@ class IVSystem(CausalSystem):
 		y1, y0, x1, x0 = x
 		return (y1 - y0) / (x1 - x0 + 1e-8)
 
-	
+
+	_graph_template = {
+		'dry': '{X} leads to {Y} with an instrumental variable {Z}.',
+	}
 	def graph_edges(self):
 		return [
 			['U', 'X'],
@@ -72,6 +86,9 @@ class FrontdoorSystem(CausalSystem):
 		return (v31 - v30) * (x * (y11 - y10) + (1 - x) * (y01 - y00))
 
 
+	_graph_template = {
+		'dry': '{X} leads to {Y} but is mediated by {M}.',
+	}
 	def graph_edges(self):
 		return [
 			['U', 'X'],
@@ -111,6 +128,9 @@ class MediationSystem(CausalSystem):
 		return (y01 - y00) * (v21 - v20)
 
 
+	_graph_template = {
+		'dry': '{X} directly causes {Y} and indirectly also through by {M}.',
+	}
 	def graph_edges(self):
 		return [
 			['X', 'M'],

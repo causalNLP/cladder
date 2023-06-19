@@ -8,8 +8,8 @@ stories:
   - salary
   - smoking
   - street_sign
-  - sugar
-  - taxes
+#  - sugar
+#  - taxes
   - training_program
   - treatment
 

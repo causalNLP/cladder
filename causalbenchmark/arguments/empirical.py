@@ -66,7 +66,7 @@ def param_prompts(config):
 			continue
 		
 		system = get_story_system(story)
-		operator = create_query(query)
+		operator = create_query(query, system=system)
 		
 		prompts.append({
 			'ID': ID,

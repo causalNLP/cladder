@@ -23,7 +23,7 @@ Z=1: doctor recommends taking a drug
 Z=0: doctor doesn't recommend taking a drug
 
 Z=1_verb: recommends taking a drug
-Z=0_verb: don't recommends taking a drug
+Z=0_verb: doesn't recommend taking a drug
 
 
 U=1: patient is predisposed to illness
@@ -47,31 +47,31 @@ commonsense:
 
 scenarios:
     1:
-        Xname: taking a treatment A
+        Xname: taking treatment A
 
-        X=1: taking a treatment A
-        X=0: not taking a treatment A
+        X=1: taking treatment A
+        X=0: not taking treatment A
 
-        X=1_verb: take a treatment A
-        X=0_verb: not take a treatment A
+        X=1_verb: take treatment A
+        X=0_verb: not take treatment A
 
-        X=1_end: take a treatment A
-        X=0_end: not take a treatment A
+        X=1_end: take treatment A
+        X=0_end: not take treatment A
 
         do(X=1): takes the treatment A
         do(X=0): doesn't take the treatment A
 
     2:
-        Xname: taking a treatment B
+        Xname: taking treatment B
 
-        X=1: taking a treatment B
-        X=0: not taking a treatment B
+        X=1: taking treatment B
+        X=0: not taking treatment B
 
-        X=1_verb: take a treatment B
-        X=0_verb: not take a treatment B
+        X=1_verb: take treatment B
+        X=0_verb: not take treatment B
 
-        X=1_end: take a treatment B
-        X=0_end: not take a treatment B
+        X=1_end: take treatment B
+        X=0_end: not take treatment B
 
         do(X=1): takes the treatment B
         do(X=0): doesn't take the treatment B

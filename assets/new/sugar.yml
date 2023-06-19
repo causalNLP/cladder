@@ -11,11 +11,11 @@ Ysubject: people
 M=1: add sugar
 M=0: don't add sugar
 
-M=1_verb: add sugar
-M=0_verb: don't add sugar
+M=1_verb: add sugar to their drink
+M=0_verb: don't add sugar to their drink
 
-M=1_end: add sugar
-M=0_end: don't add sugar
+M=1_end: add sugar to their drink
+M=0_end: don't add sugar to their drink
 
 
 Y=1: get a headache

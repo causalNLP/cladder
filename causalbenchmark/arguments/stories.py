@@ -53,6 +53,8 @@ def iterate_scenarios(path, root=None):
 			       'path': str(path),
 			       'name': path.stem,
 			       'scenario': key,
+			       # 'scenario_name': f'{path.stem}-{key}',
+			       'story_id': f'{path.stem}-{key}-{query}',
 			       'variables': {variable: role_keys[role] for role, variable in story.get('roles', {}).items()},
 			       **story}
 
@@ -62,3 +64,4 @@ def get_all_stories():
 	stories = sorted(get_available_stories())
 	full = [list(iterate_scenarios(story)) for story in stories]
 	return full
+
