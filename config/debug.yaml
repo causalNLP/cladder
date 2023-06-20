@@ -1,9 +1,10 @@
 
-_meta.script_name: gen
+#_meta.script_name: gen
+_meta.script_name: view
 
 _base: [uncladder]
 
-n: 5
+#n: 20
 
 
 ###############################

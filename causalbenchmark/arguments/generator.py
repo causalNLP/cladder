@@ -385,4 +385,48 @@ def generate_questions(config):
 
 
 
+@fig.script('view')
+def print_arguments(config):
+
+	path = config.pull('path', str(util.data_root() / 'questions.json'))
+	if path is not None:
+		path = Path(path)
+		print(f'Loading {path}')
+
+	questions = load_json(path)
+
+	seed = config.pull('seed', 11)
+	num_variants = config.pull('n', 2)
+
+	gen = np.random.RandomState(seed=seed)
+
+	border = '\n' + '-' * 80 + '\n'
+
+	for q in questions:
+		for i in range(num_variants):
+			print(border)
+			print(f'Question {q["ID"]} variant {i+1}')
+			if 'intro' in q:
+				print(f'Intro: {q["intro"]}')
+
+
+			for player in ['winner', 'loser']:
+				premises = sorted(q[player]['premises'], key=lambda p: p['commonsense'], reverse=True)
+
+				print(f'({player.capitalize()}) Premises:')
+				table = [[p['verb'], p['commonsense'], '[{0:.2f}, {1:.2f}]'.format(*p['implication'])] for p in premises]
+				print('\n'.join(tabulate(table, ).split('\n')[1:-1]))#headers=['Verb', 'Commonsense', 'Implication']))
+
+			questions = q['questions']
+
+			pick = gen.choice(len(questions))
+
+			print(f'Question: {questions[pick]["verb"]}')
+			print(f'Answer: {questions[pick]["verb_answer"]}')
+
+	print(border)
+
+
+
+
 
