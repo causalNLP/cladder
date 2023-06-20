@@ -17,6 +17,8 @@ Y=0: doesn't get a high salary
 Y=1_end: will get a high salary
 Y=0_end: will not get a high salary
 
+Y=1_verb: gets a high salary
+Y=0_verb: doesn't get a high salary
 
 M=1: has a high skill
 M=0: doesn't have a high skill

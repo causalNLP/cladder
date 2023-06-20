@@ -31,7 +31,7 @@ queries: [ate]
 roles: {treatment: X, outcome: Y, confounder: U}
 
 commonsense:
-    U1: [0.05, 0.20]
+    U: [0.05, 0.20]
     Y|X=0,U=0: [0.05, 0.15]
     Y|X=1,U=0: [0.10, 0.25]
     Y|X=0,U=1: [0.15, 0.40]
@@ -44,6 +44,9 @@ scenarios:
         X=1: there is a street sign at the intersection A
         X=0: there is no street sign at the intersection A
 
+        do(X=1): putting up a street sign at the intersection A
+        do(X=0): not putting up a street sign at the intersection A
+
         X=1_verb: is put up at intersection A
         X=0_verb: isn't put up at intersection A
 
@@ -52,6 +55,9 @@ scenarios:
 
         X=1: there is a street sign at the intersection B
         X=0: there is no street sign at the intersection B
+
+        do(X=1): putting up a street sign at the intersection B
+        do(X=0): not putting up a street sign at the intersection B
 
         X=1_verb: is put up at intersection B
         X=0_verb: isn't put up at intersection B

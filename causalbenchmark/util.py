@@ -73,6 +73,7 @@ def parse_mechanism_str(raw: str) -> Tuple[str, List[str]]:
 
 
 
+
 def generate_all_bit_strings(n, dtype=int):
 	"""
 	Generate all bit strings of length n as numpy bool arrays
@@ -103,20 +104,44 @@ def expression_format(s, **vars):
 	return s.format(**vals)
 
 
+def random_exhaust(*itrs, gen=None, seed=None, lag=1):
+	if gen is None:
+		gen = np.random.RandomState(seed)
+
+	itrs = [iter(itr) for itr in itrs]
+
+	while len(itrs):
+		i = gen.randint(len(itrs))
+		try:
+			for _ in range(lag):
+				yield next(itrs[i])
+		except StopIteration:
+			itrs.pop(i)
+
 
 class PowerFormatter(Formatter):
 	# TODO: partial formatting - only format fields that are specified, and leave others as is
 	def get_field(self, field_name, args, kwargs):
-		try:
-			out = super().get_field(field_name, args, kwargs)
-		except: # TODO: find the right exception
-			exp = self.vformat(field_name, args, kwargs)
-			if exp in kwargs:
-				out = kwargs[exp], exp
-			else:
-				out = eval(exp, kwargs), field_name
-			# return f'{{{field_name}}}', field_name
+		exp = self.vformat(field_name, args, kwargs) # recursively find field name
+		if exp in kwargs:
+			result = kwargs[exp]
+			if isinstance(result, str): # recursively format the (given) value (!)
+				result = self.vformat(result, args, kwargs)
+			out = result, exp
+		else:
+			out = eval(exp, kwargs), field_name
 		return out
+
+		# try:
+		# 	out = super().get_field(field_name, args, kwargs)
+		# except: # TODO: find the right exception
+		# 	exp = self.vformat(field_name, args, kwargs)
+		# 	if exp in kwargs:
+		# 		out = self.vformat(kwargs[exp], args, kwargs), exp # recursively format the (given) value (!)
+		# 	else:
+		# 		out = eval(exp, kwargs), field_name
+		# 	# return f'{{{field_name}}}', field_name
+		# return out
 
 	def parse(self, s):
 		start_idx = -1

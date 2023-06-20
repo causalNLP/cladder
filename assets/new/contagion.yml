@@ -31,6 +31,9 @@ Y=0: not contracting a contagious illness
 Y=1_end: contract contagious illnesses
 Y=0_end: don't contract contagious illnesses
 
+Y=1_verb: contract contagious illnesses
+Y=0_verb: don't contract contagious illnesses
+
 graph: confounding
 queries: [ate]
 roles: {treatment: X, outcome: Y, confounder: U}

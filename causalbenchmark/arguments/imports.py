@@ -4,7 +4,7 @@ from omnibelt import save_json, load_json, load_yaml
 import numpy as np
 from tqdm import tqdm
 from tabulate import tabulate
-from itertools import product
+from itertools import product, chain
 import random
 from scipy import stats, optimize as opt
 

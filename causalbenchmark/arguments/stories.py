@@ -54,7 +54,7 @@ def iterate_scenarios(path, root=None):
 			       'name': path.stem,
 			       'scenario': key,
 			       # 'scenario_name': f'{path.stem}-{key}',
-			       'story_id': f'{path.stem}-{key}-{query}',
+			       'ID': f'{path.stem}-{key}-{query}',
 			       'variables': {variable: role_keys[role] for role, variable in story.get('roles', {}).items()},
 			       **story}
 

@@ -1,5 +1,5 @@
 
-_meta.script_name: param-prompts
+_meta.script_name: gen
 
 _base: [uncladder]
 

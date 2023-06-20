@@ -25,6 +25,9 @@ Y=0: don't get good grades
 Y=1_end: get good grades
 Y=0_end: don't get good grades
 
+Y=1_verb: get good grades
+Y=0_verb: don't get good grades
+
 
 commonsense:
     U: [0.3, 0.8]

@@ -1,7 +1,7 @@
 from .imports import *
 
 from .stories import get_all_stories
-from .commonsense import commonsense_score, beta_agreement_score, iou
+from .commonsense import commonsense_score, beta_agreement_score, iou, simple_containment
 
 
 
@@ -130,11 +130,13 @@ ambiguous_conditional_templates = {
 	'some': '{head}, some {{var}subject} {{var}={value}_end}.',
 	'many': '{head}, many {{var}subject} {{var}={value}_end}.',
 	'very_many': '{head}, very many {{var}subject} {{var}={value}_end}.',
-	
+
+	'very_high': '{head}, the probability that {{var}subject} {{var}={value}_end} is very high.',
 	'high': '{head}, the probability that {{var}subject} {{var}={value}_end} is high.',
 	# 'moderate': '{head}, the probability that {{var}subject} {{var}={value}_end} is moderate.',
 	'significant': '{head}, the probability that {{var}subject} {{var}={value}_end} is significant.',
 	'low': '{head}, the probability that {{var}subject} {{var}={value}_end} is low.',
+	'very_low': '{head}, the probability that {{var}subject} {{var}={value}_end} is very low.',
 	
 	'almost_certain': '{head}, it is almost certain that {{var}subject} {{var}={value}_end}.',
 	'probable': '{head}, it is probable that {{var}subject} {{var}={value}_end}.',
@@ -146,7 +148,7 @@ ambiguous_conditional_templates = {
 default_conditional_heads = {
 	'when': 'when {{var}subject} {{var}={value}_verb}',
 	# 'for': 'for {{var}subject} that {{var}={value}_verb}',
-	# 'if': 'if {conditions}, ',
+	'if': 'if {{var}subject} {{var}={value}_verb}',
 }
 
 ambiguous_conditional_default_implications = {
@@ -169,12 +171,12 @@ ambiguous_conditional_default_implications = {
 	'many': [0.7, 0.9],
 	'very_many': [0.8, 1],
 	
-	# 'very_high': [0.8, 1],
+	'very_high': [0.8, 1],
 	'high': [0.6, 0.8],
 	# 'moderate': [0.4, 0.6],
 	'significant': [0.3, 0.9],
 	'low': [0.2, 0.4],
-	# 'very_low': [0, 0.2],
+	'very_low': [0, 0.2],
 
 	'almost_certain': [0.9, 1],
 	'probable': [0.6, 0.9],
@@ -186,7 +188,7 @@ ambiguous_conditional_default_implications = {
 default_sequence_template = '{{var}={value}_verb}'
 
 
-def verbalize_conditions(story, parents):
+def _verbalize_conditions(story, parents, *, gen=None):
 	conds = []
 	
 	parent_list = list(parents.items())
@@ -207,8 +209,11 @@ def verbalize_conditions(story, parents):
 				conds.append(None)  # placeholder for subject head
 			else:
 				conds.append(util.pformat(default_sequence_template, var=v, value=val, **story))
-	
-	for head_key in ([None] if subject_head_index is None else default_conditional_heads):
+
+	head_options = [None] if subject_head_index is None else list(default_conditional_heads.keys())
+	if gen is not None:
+		gen.shuffle(head_options)
+	for head_key in head_options:
 		if head_key is not None:
 			conds[subject_head_index] = util.pformat(default_conditional_heads[head_key],
 			                                         var=parent_list[subject_head_index][0],
@@ -221,7 +226,8 @@ def verbalize_conditions(story, parents):
 		yield head, head_key, parent_list
 
 
-def verbalize_ambiguous_evidence(story, term, evidence_table=None, avoid_double_negative=True):
+def verbalize_ambiguous_evidence(story, term, evidence_table=None, *, avoid_double_negative=True, prior=None,
+                                 prior_agreement=0.5, gen=None):
 	
 	var, value, parents = parse_term(term)
 	if value is None:
@@ -235,43 +241,44 @@ def verbalize_ambiguous_evidence(story, term, evidence_table=None, avoid_double_
 	if value == 0:
 		evidence_table = {tmpl: [1 - ub, 1 - lb] for tmpl, (lb, ub) in evidence_table.items()
 		         if not avoid_double_negative or ((lb+ub)/2 > 0.5)}
-	
-	if parents is None:
-		for tmpl, bounds in evidence_table.items():
-			if tmpl in ambiguous_marginal_templates:
+
+	evidence_order = list(evidence_table.keys())
+	if gen is not None:
+		gen.shuffle(evidence_order)
+
+	headers = [[None, None, None]] if parents is None else _verbalize_conditions(story, parents, gen=gen)
+	templates = ambiguous_marginal_templates if parents is None else ambiguous_conditional_templates
+
+	for head, head_key, parent_list in headers:
+		for tmpl in evidence_order:
+			if tmpl in templates:
+				bounds = evidence_table[tmpl]
 				lb, ub = bounds
+				if prior is not None and simple_containment(*prior, lb, ub) < prior_agreement:
+					continue
+
 				mean = (lb + ub) / 2
-				
-				template = ambiguous_marginal_templates[tmpl]
-				line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub, **story)
+				template = templates[tmpl]
+				line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
+				                    head=head, parents=parent_list,
+				                    **story)
 				line = line[0].upper() + line[1:]
-				yield {'key': tmpl, 'implication': bounds, 'verb': line}
-		
-	else:
-		for head, head_key, parent_list in verbalize_conditions(story, parents):
-			for tmpl, bounds in evidence_table.items():
-				if tmpl in ambiguous_conditional_templates:
-					lb, ub = bounds
-					mean = (lb + ub) / 2
-					template = ambiguous_conditional_templates[tmpl]
-					line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
-					                    head=head, parents=parent_list,
-					                    **story)
-					line = line[0].upper() + line[1:]
-					
-					out = {'key': tmpl, 'implication': bounds, 'verb': line}# 'given': parents}
-					if head_key is not None:
-						out['head'] = head_key
-					yield out
-	
+
+				out = {'key': tmpl, 'implication': bounds, 'verb': line, 'ID': tmpl, 'type': 'ambiguous'}# 'given': parents}
+				if head_key is not None:
+					out['head'] = head_key
+					out['ID'] += f'-{head_key}'
+				yield out
 
 
-def generate_ambiguous_evidence(story, term, *, evidence_table=None, avoid_double_negative=True,
-                                allow_flips=True, fill_missing=True):
+
+def generate_ambiguous_evidence(story, term, prior=None, *, evidence_table=None, avoid_double_negative=True,
+                                allow_flips=True, agreement_threshold=None, gen=None):
 	'''
 	
 	:param story:
 	:param term:
+	:param prior: not needed here because all ambiguous evidencee use predefined ranges
 	:param allow_flips: flip value of term (e.g. X=0 -> X=1)
 	:param fill_missing: supplement missing terms with default implications
 	:return:
@@ -280,18 +287,17 @@ def generate_ambiguous_evidence(story, term, *, evidence_table=None, avoid_doubl
 	var, value, parents = parse_term(term)
 	if value is None:
 		value = 1
-	
-	if evidence_table is not None and fill_missing:
-		evidence_table = evidence_table.copy()
-		evidence_table.update(ambiguous_marginal_default_implications if parents is None
-		                      else ambiguous_conditional_default_implications)
-	
-	yield from verbalize_ambiguous_evidence(story, term, evidence_table=evidence_table,
-	                                        avoid_double_negative=avoid_double_negative)
+
+	yield from verbalize_ambiguous_evidence(story, term, evidence_table=evidence_table, prior=prior,
+	                                        avoid_double_negative=avoid_double_negative, gen=gen)
 	
 	if allow_flips:
-		yield from verbalize_ambiguous_evidence(story, set_term_value(term, 1-value), evidence_table=evidence_table,
-		                                        avoid_double_negative=avoid_double_negative)
+		# if prior is not None:
+		# 	prior = [1 - prior[1], 1 - prior[0]]
+		for item in verbalize_ambiguous_evidence(story, set_term_value(term, 1-value), evidence_table=evidence_table,
+		                                        avoid_double_negative=avoid_double_negative, gen=gen, prior=prior):
+			item['ID'] += '-flip'
+			yield item
 	
 
 
@@ -314,16 +320,15 @@ def test_verbalize_ambiguous_evidence():
 	commonsense = story['commonsense']
 	
 	border = '-'*50
+
 	for term in terms:
-		possible = list(generate_ambiguous_evidence(story, term))
+		possible = list(generate_ambiguous_evidence(story, term, gen=gen))
 		
 		for item in possible:
 			# item['score'] = beta_agreement_score(*commonsense[term], *item['implication'])
 			item['score'] = iou(*commonsense[term], *item['implication'])
-		
-		picks = gen.choice(possible, size=10, replace=False) if len(possible) > 10 else possible
-		
-		picks = [{'verb': item['verb'], 'score': item['score']*100} for item in picks]
+
+		picks = [{'verb': item['verb'], 'score': item['score']*100} for item in possible[:10]]
 		
 		print(border)
 		print(term)
@@ -350,7 +355,11 @@ ambiguous_marginal_value_templates = {
 ambiguous_marginal_value_implications = {
 	'about': [-0.05, 0.05],
 	'around': [-0.1, 0.1],
-	
+
+	# 'close_to': [-0.02, 0.02],
+	# 'near': [-0.05, 0.05],
+	# 'nearly': [-0.1, 0.1],
+
 	'approximately': [-0.05, 0.05],
 	'roughly': [-0.1, 0.1],
 	
@@ -384,7 +393,8 @@ ambiguous_conditional_value_implications = {
 
 
 
-def verbalize_ambiguous_evidence_from_value(story, term, mean, *, evidence_table=None, avoid_double_negative=True):
+def verbalize_ambiguous_evidence_from_value(story, term, prob=None, *, evidence_table=None, avoid_double_negative=True,
+                                            gen=None, agreement_threshold=None, prior=None):
 	
 	var, value, parents = parse_term(term)
 	if value is None:
@@ -394,45 +404,71 @@ def verbalize_ambiguous_evidence_from_value(story, term, mean, *, evidence_table
 		evidence_table = ambiguous_marginal_value_implications.copy() if parents is None \
 			else ambiguous_conditional_value_implications.copy()
 	evidence_table.update(story.get('evidence_table', {}).get(set_term_value(term), {}))
-	
+
 	if value == 0:
 		evidence_table = {tmpl: [1 - ub, 1 - lb] for tmpl, (lb, ub) in evidence_table.items()
 		                  if not avoid_double_negative or ((lb + ub) / 2 > 0.5)}
-	
-	if parents is None:
-		
-		for tmpl, bounds in evidence_table.items():
-			if tmpl not in ambiguous_marginal_value_templates:
-				continue
-			lb, ub = bounds
-			lb = max(mean + lb, 0.)
-			ub = min(mean + ub, 1.)
-			
-			template = ambiguous_marginal_value_templates[tmpl]
-			
-			line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub, **story)
-			line = line[0].upper() + line[1:]
-			yield {'key': tmpl, 'implication': [lb, ub], 'verb': line}
-		
-	else:
-		
-		for head, head_key, parent_list in verbalize_conditions(story, parents):
-			for tmpl, bounds in evidence_table.items():
-				if tmpl in ambiguous_conditional_value_templates:
-					lb, ub = bounds
-					lb = max(mean + lb, 0.)
-					ub = min(mean + ub, 1.)
-					
-					template = ambiguous_conditional_value_templates[tmpl]
-					line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
-					                    head=head, parents=parent_list,
-					                    **story)
-					line = line[0].upper() + line[1:]
-					
-					out = {'key': tmpl, 'implication': bounds, 'verb': line}  # 'given': parents}
-					if head_key is not None:
-						out['head'] = head_key
-					yield out
+
+	evidence_order = list(evidence_table.keys())
+	if gen is not None:
+		gen.shuffle(evidence_order)
+
+	mean = prob
+
+	headers = [[None, None, None]] if parents is None else _verbalize_conditions(story, parents, gen=gen)
+	templates = ambiguous_marginal_value_templates if parents is None else ambiguous_conditional_value_templates
+
+	for head, head_key, parent_list in headers:
+		for tmpl in evidence_order:
+			if tmpl in templates:
+				bounds = evidence_table[tmpl]
+				lb, ub = bounds
+				if prob is None:
+					assert prior is not None, 'Must provide either prob or prior'
+					assert gen is not None, 'Must provide gen if prior is provided'
+					lp, up = prior
+					if agreement_threshold is not None:
+						lp -= agreement_threshold * lb
+						up -= agreement_threshold * ub
+					mean = gen.uniform(lp, up) if lp < up else (lp + up) / 2
+				lb = max(mean + lb, 0.)
+				ub = min(mean + ub, 1.)
+
+				template = templates[tmpl]
+				line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
+				                    head=head, parents=parent_list,
+				                    **story)
+				line = line[0].upper() + line[1:]
+
+				out = {'key': tmpl, 'implication': [lb, ub], 'verb': line, 'ID': tmpl, 'type': 'ambiguous'}
+				if head_key is not None:
+					out['head'] = head_key
+					out['ID'] += f'-{head_key}'
+				yield out
+
+
+
+def generate_ambiguous_evidence_from_value(story, term, prior=None, *, evidence_table=None, avoid_double_negative=True,
+                                allow_flips=True, agreement_threshold=None, gen=None):
+
+	var, value, parents = parse_term(term)
+	if value is None:
+		value = 1
+
+	yield from verbalize_ambiguous_evidence_from_value(story, term, evidence_table=evidence_table, prior=prior,
+	                                        avoid_double_negative=avoid_double_negative, gen=gen,
+	                                                   agreement_threshold=agreement_threshold)
+
+	if allow_flips:
+		if prior is not None:
+			prior = [1 - prior[1], 1 - prior[0]]
+		for item in verbalize_ambiguous_evidence_from_value(story, set_term_value(term, 1 - value),
+		                                                   evidence_table=evidence_table,
+		                                                   agreement_threshold=agreement_threshold,
+		                                        avoid_double_negative=avoid_double_negative, gen=gen, prior=prior):
+			item['ID'] += '-flip'
+			yield item
+
 
 
 def test_verbalize_ambiguous_value_evidence():
@@ -470,9 +506,14 @@ def test_verbalize_ambiguous_value_evidence():
 	print(border)
 
 
-precise_marginal_templates = {
+interval_marginal_templates = {
 	'at_least': 'There is at least a {lb:.0%} chance that {{var}subject} {{var}={value}_verb}.',
 	'at_most': 'There is at most a {ub:.0%} chance that {{var}subject} {{var}={value}_verb}.',
+
+	'up_to': 'Up to {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
+
+	'no_less_than': 'No less than {lb:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'no_more_than': 'No more than {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
 	
 	'least': 'At least {lb:.0%} of {{var}subject} {{var}={value}_verb}.',
 	'most': 'At most {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
@@ -480,13 +521,18 @@ precise_marginal_templates = {
 	'with': 'With a probability of {lb*100:.0f} to {ub:.0%}, {{var}subject} {{var}={value}_verb}.',
 	'range': 'There is a {lb*100:.0f}-{ub:.0%} chance that {{var}subject} {{var}={value}_verb}.',
 	'between': 'Between {lb*100:.0f} and {ub:.0%} of the time {{var}subject} {{var}={value}_verb}.',
-	'short': '{lb*100:.0f} to {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'short': '{lb*100:.0f}-{ub:.0%} of {{var}subject} {{var}={value}_verb}.',
 }
 
 
-precise_marginal_implications = {
+interval_marginal_implications = {
 	'at_least': [None, .99],
 	'at_most': [0.01, None],
+
+	'up_to': [0.01, None],
+
+	'no_less_than': [None, .99],
+	'no_more_than': [0.01, None],
 	
 	'least': [None, .99],
 	'most': [0.01, None],
@@ -498,9 +544,14 @@ precise_marginal_implications = {
 }
 
 
-precise_conditional_templates = {
+interval_conditional_templates = {
 	'at_least': '{head}, there is at least a {lb:.0%} chance that {{var}subject} {{var}={value}_verb}.',
 	'at_most': '{head}, there is at most a {ub:.0%} chance that {{var}subject} {{var}={value}_verb}.',
+
+	'up_to': '{head}, up to {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
+
+	'no_less_than': '{head}, no less than {lb:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'no_more_than': '{head}, no more than {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
 	
 	'least': '{head}, at least {lb:.0%} of {{var}subject} {{var}={value}_verb}.',
 	'most': '{head}, at most {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
@@ -508,13 +559,20 @@ precise_conditional_templates = {
 	'with': '{head}, with a probability of {lb*100:.0f}-{ub:.0%}, {{var}subject} {{var}={value}_verb}.',
 	'range': '{head}, there is a {lb*100:.0f}-{ub:.0%} chance that {{var}subject} {{var}={value}_verb}.',
 	'between': '{head}, between {lb:.0%} and {ub:.0%} of the time {{var}subject} {{var}={value}_verb}.',
-	'short': '{head}, {lb*100:.0f} to {ub:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'short': '{head}, {lb*100:.0f}-{ub:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'plus_minus': '{head}, {{var}subject} {{var}={value}_verb} {mean:.0%} of the time, '
+	              'plus or minus {(ub-lb)/2:.0%} points.',
 }
 
 
-precise_conditional_implications = {
+interval_conditional_implications = {
 	'at_least': [None, .99],
 	'at_most': [0.01, None],
+
+	'up_to': [0.01, None],
+
+	'no_less_than': [None, .99],
+	'no_more_than': [0.01, None],
 	
 	'least': [None, .99],
 	'most': [0.01, None],
@@ -523,52 +581,99 @@ precise_conditional_implications = {
 	'range': [None, None],
 	'between': [None, None],
 	'short': [None, None],
+	'plus_minus': [None, None],
 }
 
 
-def verbalize_precise_evidence(story, term, bounds, *, evidence_table=None):
-	lb, ub = bounds
-	mean = (lb + ub) / 2
+def verbalize_interval_evidence(story, term, bounds=None, *, evidence_table=None, gen=None,
+                               agreement_threshold=None, prior=None, min_width=0.1):
+	if bounds is not None:
+		lb, ub = bounds
+		mean = (lb + ub) / 2
 	
 	var, value, parents = parse_term(term)
 	if value is None:
 		value = 1
 	
 	if evidence_table is None:
-		evidence_table = precise_marginal_implications.copy() if parents is None \
-			else precise_conditional_implications.copy()
+		evidence_table = interval_marginal_implications.copy() if parents is None \
+			else interval_conditional_implications.copy()
 	evidence_table.update(story.get('evidence_table', {}).get(set_term_value(term), {}))
-	
-	if parents is None:
-		
-		for tmpl, lims in evidence_table.items():
+
+	evidence_order = list(evidence_table.keys())
+	if gen is not None:
+		gen.shuffle(evidence_order)
+
+	headers = [[None, None, None]] if parents is None else _verbalize_conditions(story, parents, gen=gen)
+	templates = interval_marginal_templates if parents is None else interval_conditional_templates
+
+	for head, head_key, parent_list in headers:
+		for tmpl in evidence_order:
+			lims = evidence_table[tmpl]
 			ll, ul = lims
-			if tmpl in precise_marginal_templates and (ll is None or ll >= lb) and (ul is None or ul <= ub):
-				template = precise_marginal_templates[tmpl]
-				line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub, **story)
+
+			if bounds is None:
+				assert prior is not None, 'Must provide either prob or prior'
+				assert gen is not None, 'Must provide gen if prior is provided'
+				lp, up = prior
+				mid1, mid2 = None, None
+				if agreement_threshold is None:
+					fuel = 10
+					while fuel > 0 and (mid1 is None or (up - lp) < min_width or (mid2 - mid1 < min_width)):
+						mid1, mid2 = sorted(gen.uniform(lp, up, size=(2,)))
+						fuel -= 1
+					if fuel == 0:
+						mid1 = lp
+						mid2 = up
+				else: # TODO: sample from all intervals s.t. IOU > agreement_threshold
+					mid1 = lp
+					mid2 = up
+					# w = up - lp
+					# mid1 = gen.uniform(lp, up)
+					# mid2 = mid1 + agreement_threshold
+				lb = mid1 if ll is None else gen.uniform(0., ll)
+				ub = mid2 if ul is None else gen.uniform(ul, 1.)
+				mean = (lb + ub) / 2
+
+			if tmpl in templates and (ll is None or ll >= lb) and (ul is None or ul <= ub):
+				template = templates[tmpl]
+				line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
+				                    head=head, parents=parent_list,
+				                    **story)
 				line = line[0].upper() + line[1:]
-				yield {'key': tmpl, 'implication': bounds, 'verb': line}
-	
-	else:
-		
-		for head, head_key, parent_list in verbalize_conditions(story, parents):
-			for tmpl, lims in evidence_table.items():
-				ll, ul = lims
-				if tmpl in precise_conditional_templates and (ll is None or ll >= lb) and (ul is None or ul <= ub):
-					template = precise_conditional_templates[tmpl]
-					line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
-					                    head=head, parents=parent_list,
-					                    **story)
-					line = line[0].upper() + line[1:]
-					
-					out = {'key': tmpl, 'implication': bounds, 'verb': line}
-					if head_key is not None:
-						out['head'] = head_key
-					yield out
+
+				out = {'key': tmpl, 'implication': [lb, ub], 'verb': line, 'ID': tmpl, 'type': 'interval'}
+				if head_key is not None:
+					out['head'] = head_key
+					out['ID'] += f'-{head_key}'
+				yield out
 	
 
 
-def test_verbalize_precise_evidence():
+def generate_interval_evidence(story, term, prior=None, *, evidence_table=None,
+                                allow_flips=True, agreement_threshold=None, gen=None):
+
+	var, value, parents = parse_term(term)
+	if value is None:
+		value = 1
+
+	yield from verbalize_interval_evidence(story, term, evidence_table=evidence_table, prior=prior,
+	                                      gen=gen,
+	                                                   agreement_threshold=agreement_threshold)
+
+	if allow_flips:
+		if prior is not None:
+			prior = [1 - prior[1], 1 - prior[0]]
+		for item in verbalize_interval_evidence(story, set_term_value(term, 1 - value),
+		                                                   evidence_table=evidence_table,
+		                                                   agreement_threshold=agreement_threshold,
+		                                      gen=gen, prior=prior):
+			item['ID'] += '-flip'
+			yield item
+
+
+
+def test_verbalize_interval_evidence():
 	gen = np.random.RandomState(1)
 	stories = get_all_stories()
 	story = random.choice(random.choice(stories))
@@ -584,7 +689,7 @@ def test_verbalize_precise_evidence():
 	
 	border = '-' * 50
 	for term in terms:
-		possible = list(verbalize_precise_evidence(story, term, sorted([gen.random(), gen.random()])))
+		possible = list(verbalize_interval_evidence(story, term, sorted([gen.random(), gen.random()])))
 		
 		for item in possible:
 			# item['score'] = beta_agreement_score(*commonsense[term], *item['implication'])
@@ -601,6 +706,87 @@ def test_verbalize_precise_evidence():
 	
 	print(border)
 
+
+
+precise_marginal_templates = {
+	'number': '{mean:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'chance': 'There is a {mean:.0%} chance that {{var}subject} {{var}={value}_verb}.',
+	'probability': 'The probability that {{var}subject} {{var}={value}_verb} is {mean:.0%}.',
+	'likelihood': 'The likelihood that {{var}subject} {{var}={value}_verb} is {mean:.0%}.',
+	'assume_prob': 'Assume that {{var}subject} {{var}={value}_verb} with probability {mean:.0%}.',
+	'given': 'Given that {mean:.0%} of {{var}subject} {{var}={value}_verb}.',
+	'known': 'It is known that {mean:.0%} of {{var}subject} {{var}={value}_verb}.',
+}
+
+precise_conditional_templates = {
+	'number': '{mean:.0%} of {{var}subject} {{var}={value}_verb} {head}.',
+	'chance': '{head}, there is a {mean:.0%} chance that {{var}subject} {{var}={value}_verb}.',
+	'probability': '{head}, the probability that {{var}subject} {{var}={value}_verb} is {mean:.0%}.',
+	'likelihood': '{head}, the likelihood that {{var}subject} {{var}={value}_verb} is {mean:.0%}.',
+	'assume_prob': 'Assume that {{var}subject} {{var}={value}_verb} with probability {mean:.0%} {head}.',
+	'given': 'Given that {mean:.0%} of {{var}subject} {{var}={value}_verb} {head}.',
+	'known': 'It is known that {mean:.0%} of {{var}subject} {{var}={value}_verb} {head}.',
+}
+
+
+def verbalize_precise_evidence(story, term, prob=None, *, templates=None, avoid_double_negative=True,
+                                            gen=None, agreement_threshold=None, prior=None, width=0.002):
+
+	var, value, parents = parse_term(term)
+	if value is None:
+		value = 1
+
+	mean = prob
+
+	headers = [[None, None, None]] if parents is None else _verbalize_conditions(story, parents, gen=gen)
+	if templates is None:
+		templates = precise_marginal_templates if parents is None else precise_conditional_templates
+	template_order = list(templates.keys())
+	if gen is not None:
+		gen.shuffle(template_order)
+
+	for head, head_key, parent_list in headers:
+		for tmpl in template_order:
+			if prob is None:
+				assert prior is not None, 'Must provide either prob or prior'
+				assert gen is not None, 'Must provide gen if prior is provided'
+				lp, up = prior
+				mean = gen.uniform(lp+width/2, up-width/2)
+			lb = max(mean + width/2, 0.)
+			ub = min(mean + width/2, 1.)
+
+			template = templates[tmpl]
+			line = util.pformat(template, var=var, value=value, mean=mean, lb=lb, ub=ub,
+			                    head=head, parents=parent_list,
+			                    **story)
+			line = line[0].upper() + line[1:]
+
+			out = {'key': tmpl, 'implication': [lb, ub], 'verb': line, 'ID': tmpl, 'type': 'precise'}
+			if head_key is not None:
+				out['head'] = head_key
+				out['ID'] += f'-{head_key}'
+			yield out
+
+
+
+def generate_precise_evidence(story, term, prior=None, *,
+                                allow_flips=True, agreement_threshold=None, gen=None):
+
+	var, value, parents = parse_term(term)
+	if value is None:
+		value = 1
+
+	yield from verbalize_precise_evidence(story, term, prior=prior,
+	                                        gen=gen, agreement_threshold=agreement_threshold)
+
+	if allow_flips:
+		if prior is not None:
+			prior = [1 - prior[1], 1 - prior[0]]
+		for item in verbalize_precise_evidence(story, set_term_value(term, 1 - value),
+		                                                   agreement_threshold=agreement_threshold,
+		                                        gen=gen, prior=prior):
+			item['ID'] += '-flip'
+			yield item
 
 
 

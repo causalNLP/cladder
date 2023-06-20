@@ -42,8 +42,9 @@ class ATE_Comparison(Query, ATE_Prompter):
 				line = line[0].upper() + line[1:]
 				ans = util.pformat(cls._answer_templates, answer=answer, polarity=int(polarity),
 				                   first=first, second=second)
+				ID = f'{tmpl}_{polarity}_{flip}'
 				yield {'template': tmpl, 'verb': line, 'verb_answer': ans,
-				       'polarity': polarity, 'flip': flip, 'answer': answer}
+				       'polarity': polarity, 'flip': flip, 'answer': answer, 'ID': ID}
 				
 			
 

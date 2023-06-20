@@ -22,8 +22,8 @@ Y=0_end: don't recover from illness
 Z=1: doctor recommends taking a drug
 Z=0: doctor doesn't recommend taking a drug
 
-Z=1_verb: recommends taking a drug
-Z=0_verb: doesn't recommend taking a drug
+Z=1_verb: recommends taking the treatment
+Z=0_verb: doesn't recommend taking the treatment
 
 
 U=1: patient is predisposed to illness
