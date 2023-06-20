@@ -63,11 +63,11 @@ scenarios:
         X=1: government debt is high
         X=0: government debt is low
 
-        X=1_verb: increases government debt
-        X=0_verb: decreases government debt
+        X=1_verb: incurs more debt
+        X=0_verb: pays off debt
 
-        do(X=1): increase government debt
-        do(X=0): decrease government debt
+        do(X=1): borrows more money
+        do(X=0): pays off more debt
 
         commonsense:
             Y|X=1,M=0: [0.2, 0.8]

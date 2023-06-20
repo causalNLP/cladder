@@ -1,12 +1,21 @@
 
+intro:
+    |
+    The city government is evaluating two training programs designed help people get jobs to identify which one is more effective.
+
 Zname: residency
 Yname: getting a job
 Uname: motivation
 
-Xsubject: a person
-Zsubject: a person
-Ysubject: a person
-Usubject: a person
+Xsubject: people
+Zsubject: people
+Ysubject: people
+Usubject: people
+
+Znode: residency
+Ynode: getting a job
+Unode: motivation
+Xnode: training program
 
 
 Y=1: gets a job
@@ -25,12 +34,21 @@ Z=0: is not a resident
 Z=1_verb: is a resident
 Z=0_verb: is not a resident
 
+Z=1_subject: residents
+Z=0_subject: non-residents
+
+#Z=1_head: For residents
+#Z=0_head: For non-residents
+
 
 U=1: is motivated
 U=0: is not motivated
 
 U=1_verb: is motivated
 U=0_verb: is not motivated
+
+U=1_subject: motivated people
+U=0_subject: unmotivated people
 
 
 graph: IV

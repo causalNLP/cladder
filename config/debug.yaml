@@ -1,8 +1,10 @@
 
-_meta.script_name: param-prompts
+#_meta.script_name: gen
+_meta.script_name: view
 
 _base: [uncladder]
 
+#n: 20
 
 
 ###############################

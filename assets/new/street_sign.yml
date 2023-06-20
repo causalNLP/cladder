@@ -1,11 +1,21 @@
 
+intro:
+    |
+    The city government is considering putting up a street sign at one of two intersections. They want to know whether which one will have the greatest effect on curbing the number of car accidents.
 
 Uname: children playing in the street
+#Uname: traffic level
 Yname: car accidents
 
 Xsubject: a street sign
 Ysubject: car accidents
 Usubject: children
+#Usubject: traffic
+
+Unode: children playing in the street
+#Unode: traffic level
+Xnode: presence of a street sign
+Ynode: prevalence of car accidents
 
 
 U=1: children playing in the street
@@ -13,6 +23,15 @@ U=0: no children playing in the street
 
 U=1_verb: are playing in the street
 U=0_verb: aren't playing in the street
+
+#U=1: high traffic level
+#U=0: low traffic level
+#
+#U=1_verb: is high
+#U=0_verb: is low
+
+#U=1_subject: high traffic
+#U=0_subject: low traffic
 
 
 Y=1: there is a car accident
@@ -31,7 +50,7 @@ queries: [ate]
 roles: {treatment: X, outcome: Y, confounder: U}
 
 commonsense:
-    U1: [0.05, 0.20]
+    U: [0.05, 0.20] # NOTE: this was for "children playing in the street"
     Y|X=0,U=0: [0.05, 0.15]
     Y|X=1,U=0: [0.10, 0.25]
     Y|X=0,U=1: [0.15, 0.40]
@@ -44,6 +63,9 @@ scenarios:
         X=1: there is a street sign at the intersection A
         X=0: there is no street sign at the intersection A
 
+        do(X=1): putting up a street sign at the intersection A
+        do(X=0): not putting up a street sign at the intersection A
+
         X=1_verb: is put up at intersection A
         X=0_verb: isn't put up at intersection A
 
@@ -52,6 +74,9 @@ scenarios:
 
         X=1: there is a street sign at the intersection B
         X=0: there is no street sign at the intersection B
+
+        do(X=1): putting up a street sign at the intersection B
+        do(X=0): not putting up a street sign at the intersection B
 
         X=1_verb: is put up at intersection B
         X=0_verb: isn't put up at intersection B

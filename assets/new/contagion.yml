@@ -1,10 +1,15 @@
 
 intro:
   | 
-  In an investigation of how to prevent the spread of contagious illnesses, we want to know whether wearing a face mask and washing hands frequently are effective.
+  In an investigation of how to decrease the spread of contagious illnesses, the national department of health wants to know whether it's better to recommend wearing a face mask or using hand sanitizer.
 
 Uname: flu season
 Yname: contracting a contagious illness
+
+Xnode: hygiene suggestion
+Ynode: contracting a contagious illness
+Unode: whether it's flu season
+
 
 Ysubject: people
 Xsubject: people
@@ -30,6 +35,9 @@ Y=0: not contracting a contagious illness
 
 Y=1_end: contract contagious illnesses
 Y=0_end: don't contract contagious illnesses
+
+Y=1_verb: contract contagious illnesses
+Y=0_verb: don't contract contagious illnesses
 
 graph: confounding
 queries: [ate]

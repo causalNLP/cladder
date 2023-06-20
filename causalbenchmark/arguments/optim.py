@@ -6,17 +6,17 @@ from .systems import *
 
 
 class RobustGapOptimization:
-	def __init__(self, system, *, bounds1=None, bounds2=None, fixed1=None, fixed2=None,
+	def __init__(self, system, *, #bounds1=None, bounds2=None, fixed1=None, fixed2=None,
 	             gap=0.05, width=0.1, seed=1, eps=1e-4):
 		self.gen = np.random.RandomState(seed)
 		self.gap = gap
 		self.width = width
 		self.eps = eps
 		self.system = system
-		self.bounds1 = bounds1
-		self.bounds2 = bounds2
-		self.fixed1 = fixed1
-		self.fixed2 = fixed2
+		# self.bounds1 = bounds1
+		# self.bounds2 = bounds2
+		# self.fixed1 = fixed1
+		# self.fixed2 = fixed2
 
 
 	def _toplevel_initial(self):
@@ -56,7 +56,7 @@ class RobustGapOptimization:
 
 		x0 = (ub - lb) / 2 + lb
 
-		bound_constraint = opt.LinearConstraint(A, lb, ub, keep_feasible=True)
+		bound_constraint = opt.LinearConstraint(A, lb, ub, )#keep_feasible=True)
 
 		if upper:
 			sol = opt.minimize(lambda x: -estimand(x), x0, constraints=[bound_constraint])
@@ -97,8 +97,8 @@ class RobustGapOptimization:
 
 	@staticmethod
 	def process_bounds(lims, dofs, *, eps=1e-4):
-		param = np.array([lims.get(k, [0., 1.]) for k in dofs]).T
-		eps = np.array([-eps, eps]).reshape(2, 1)
+		param = np.asarray([lims.get(k, [0., 1.]) for k in dofs]).T
+		eps = np.asarray([-eps, eps]).reshape(2, 1)
 		param = param + eps
 		param = np.clip(param, 0., 1.)
 		return param # 2 x n
@@ -161,7 +161,7 @@ class ATEGapOptimization(RobustGapOptimization):
 		A[N1:, -N2:] = np.eye(N2)
 
 		b_constraint = opt.LinearConstraint(A, self.width, np.inf)
-		lim_constraint = opt.LinearConstraint(np.eye(2*(N1+N2)), 0., 1., keep_feasible=True)
+		lim_constraint = opt.LinearConstraint(np.eye(2*(N1+N2)), 0., 1., )#keep_feasible=True)
 
 		return [b_constraint, lim_constraint]
 
@@ -297,7 +297,7 @@ class PathGapOptimization(RobustGapOptimization):
 		A[:N, -N:] = np.eye(N)
 
 		b_constraint = opt.LinearConstraint(A, self.width, np.inf)
-		lim_constraint = opt.LinearConstraint(np.eye(2*N), 0., 1., keep_feasible=True)
+		lim_constraint = opt.LinearConstraint(np.eye(2*N), 0., 1.,)# keep_feasible=True)
 
 		return [b_constraint, lim_constraint]
 

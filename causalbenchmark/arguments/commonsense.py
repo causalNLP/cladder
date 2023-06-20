@@ -3,15 +3,19 @@ from .stories import iterate_scenarios, get_available_stories, get_story_system
 from .queries import create_query
 
 
-def compute_beta_from_confidence_interval(conf_l, conf_u, conf_l_level=0.05, conf_u_level=0.95):
+def compute_beta_from_confidence_interval(conf_l, conf_u, conf_l_level=0.05, conf_u_level=0.95, *,
+                                          ensure_mode=True, threshold=1e-4):
 	x0 = np.ones((2,)) * 10.
 	
 	def step(x):
 		alpha, beta = x
 		d = stats.beta(alpha, beta)
-		return (d.ppf(conf_l_level) - conf_l) ** 2 + (d.ppf(conf_u_level) - conf_u) ** 2
-	
-	res = opt.minimize(step, x0)
+		error = (d.ppf(conf_l_level) - conf_l) ** 2 + (d.ppf(conf_u_level) - conf_u) ** 2
+		if error < threshold:
+			return 0.
+		return error
+
+	res = opt.minimize(step, x0, constraints=opt.LinearConstraint(np.eye(2), 1.1, np.inf))
 	
 	alpha, beta = res.x.tolist()
 	return alpha, beta
@@ -32,15 +36,28 @@ def iou(lb1, ub1, lb2, ub2):
 	return (ui - li) / (uu - lu)
 
 
-def beta_agreement_score(lc, uc, start, end, *, eps=1e-5):
+def beta_agreement_score(lc, uc, start, end, *, eps=1e-5, threshold=1e-4):
 	if (uc - lc) < eps:
 		lc, uc = lc - eps / 2, uc + eps / 2
-	
-	alpha, beta = compute_beta_from_confidence_interval(lc, uc)
+
+	alpha, beta = compute_beta_from_confidence_interval(lc, uc, threshold=threshold)
 	prior = stats.beta(alpha, beta)
 	mode = (alpha - 1) / (alpha + beta - 2)
 	mx_val = prior.pdf(mode)
-	return (prior.cdf(end) - prior.cdf(start)) / (end - start) / mx_val
+
+	start = max(start, 0.)
+	end = min(end, 1.)
+
+	if (end - start) < eps:
+		return prior.pdf(start) / mx_val
+	return ((1 if np.isclose(end, 1.) else prior.cdf(end)) - (0. if np.isclose(start, 0.) else prior.cdf(start))) \
+		/ (end - start) / mx_val
+
+
+
+def simple_containment(lc, uc, start, end):
+	return max(0., min((min(uc, end) - max(lc, start)) / (end - start), 1.))
+
 
 
 def commonsense_score(commonsense, params, *, eps=1e-5):
