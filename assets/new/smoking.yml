@@ -1,4 +1,8 @@
 
+intro:
+    |
+    In a research study on lung cancer, scientists want to compare the effects of smoking cigarettes to smoking cigars.
+
 Uname: genetic predisposition
 Mname: tar in lungs
 Yname: lung cancer
@@ -7,6 +11,12 @@ Usubject: people
 Msubject: people
 Ysubject: people
 Xsubject: people
+
+
+Xnode: smoking tabacco
+Mnode: tar in lungs
+Ynode: lung cancer
+Unode: genetic factors
 
 
 M=1: tar in lungs
@@ -45,14 +55,17 @@ scenarios:
     1:
         Xname: smoking cigarettes
 
+        X=1_subject: cigarette smokers
+        X=0_subject: non-smokers
+
         X=1: smoke cigarettes
         X=0: don't smoke cigarettes
 
         X=1_verb: smoke cigarettes
         X=0_verb: don't smoke cigarettes
 
-        do(X=1): smokes cigarettes
-        do(X=0): doesn't smoke cigarettes
+        do(X=1): smoking cigarettes
+        do(X=0): not smoking cigarettes
 
         commonsense:
             X: [0.2, 0.4]
@@ -66,14 +79,17 @@ scenarios:
     2:
         Xname: smoking cigars
 
+        X=1_subject: cigar smokers
+        X=0_subject: non-smokers
+
         X=1: smoke cigars
         X=0: don't smoke cigars
 
         X=1_verb: smoke cigars
         X=0_verb: don't smoke cigars
 
-        do(X=1): smokes cigars
-        do(X=0): doesn't smoke cigars
+        do(X=1): smoking cigars
+        do(X=0): not smoking cigars
 
         commonsense:
             X: [0.1, 0.9]

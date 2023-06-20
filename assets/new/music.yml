@@ -11,12 +11,19 @@ Xsubject: students
 Usubject: students
 Ysubject: students
 
+Xnode: taking music lessons
+Unode: student's motivation
+Ynode: getting good grades
+
 
 U=1: motivated
 U=0: not motivated
 
 U=1_verb: are motivated
 U=0_verb: are not motivated
+
+U=1_subject: motivated students
+U=0_subject: unmotivated students
 
 
 Y=1: get good grades

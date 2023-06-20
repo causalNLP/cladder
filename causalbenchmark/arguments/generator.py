@@ -11,7 +11,7 @@ from .verbalization import generate_ambiguous_evidence, \
 
 class Generator:
 	def __init__(self, stories=None, history=None, setups=None, seed=None, agreement_threshold=0.9,
-	             num_alternates=1, anticommonsense=False):
+	             num_alternates=1, anticommonsense=False, skip_commonsense_scores=False):
 		if history is None:
 			history = {}
 		if setups is None:
@@ -29,6 +29,7 @@ class Generator:
 		self.gen = np.random.RandomState(seed)
 		self.num_alternates = num_alternates
 		self.operator = create_query('ate')
+		self.skip_commonsense_scores = skip_commonsense_scores
 		self.agreement_threshold = agreement_threshold
 
 
@@ -297,29 +298,28 @@ class Generator:
 			loser_alternates = self.generate_alternate_premises(loser, loser_info['params'])
 			loser_info['alternates'] = loser_alternates
 
-			# compute commonsense
-			# winner_info['commonsense'] = winner_commonsense.copy()
-			# loser_info['commonsense'] = loser_commonsense.copy()
-
-			self.compute_commonsense(winner_premises.values(), winner_commonsense)
-			self.compute_commonsense(loser_premises.values(), loser_commonsense)
-			for group in winner_alternates.values():
-				for premises in group.values():
-					self.compute_commonsense(premises, winner_commonsense)
-			for group in loser_alternates.values():
-				for premises in group.values():
-					self.compute_commonsense(premises, loser_commonsense)
+			# compute commonsense # skipped -> too slow (do as needed)
+			if not self.skip_commonsense_scores:
+				self.compute_commonsense(winner_premises.values(), winner_commonsense)
+				self.compute_commonsense(loser_premises.values(), loser_commonsense)
+				for group in winner_alternates.values():
+					for premises in group.values():
+						self.compute_commonsense(premises, winner_commonsense)
+				for group in loser_alternates.values():
+					for premises in group.values():
+						self.compute_commonsense(premises, loser_commonsense)
 
 			winner_info['premises'] = list(winner_premises.values())
 			loser_info['premises'] = list(loser_premises.values())
 
 			# verbalize graph info
-			# winner_info['graph'] =
+			q['graph'] = list(winner['system'].verbalize_graph(winner))
 
+			if 'intro' in winner:
+				q['intro'] = winner['intro']
 
 			# verbalize question + answer
 			q['questions'] = list(self.generate_questions(winner, loser))
-
 
 			if itr is not None:
 				itr.update(1)
@@ -341,6 +341,7 @@ def test_generate():
 	print(qs)
 
 
+
 @fig.script('gen')
 def generate_questions(config):
 
@@ -350,13 +351,13 @@ def generate_questions(config):
 		print(f'Writing prompts to {outpath}')
 
 	seed = config.pull('seed', 11)
+	skip_commonsense_scores = config.pull('skip-scores', False)
 
-	G = Generator(seed=seed).prepare()
+	G = Generator(seed=seed, skip_commonsense_scores=skip_commonsense_scores).prepare()
 
 	N = config.pull('n', 10)
 	safe = config.pull('safe', False)
 	pbar = config.pull('pbar', True)
-
 
 	q_gen = G.generate(N, pbar=pbar and not safe)
 

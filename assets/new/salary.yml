@@ -1,14 +1,23 @@
 
+intro:
+    |
+    Some high-school students are considering what to do after they graduate. Specifically, they are wondering whether attending a more prestigious college actually pays off compared to a community college.
 
 Uname: gender
 Mname: skill
 Yname: salary
 
 
-Usubject: student
-Msubject: student
-Xsubject: student
-Ysubject: student
+Usubject: employees
+Msubject: employees
+Xsubject: employees
+Ysubject: employees
+
+
+Unode: gender
+Mnode: skill level
+Xnode: college choice
+Ynode: salary
 
 
 Y=1: gets a high salary
@@ -17,24 +26,30 @@ Y=0: doesn't get a high salary
 Y=1_end: will get a high salary
 Y=0_end: will not get a high salary
 
-Y=1_verb: gets a high salary
-Y=0_verb: doesn't get a high salary
+Y=1_verb: get a high salary
+Y=0_verb: don't get a high salary
 
 M=1: has a high skill
 M=0: doesn't have a high skill
 
-M=1_verb: is highly-skilled
-M=0_verb: is not highly-skilled
+M=1_verb: are highly-skilled
+M=0_verb: are not highly-skilled
 
-M=1_end: has a high skill
-M=0_end: doesn't have a high skill
+M=1_end: are highly-skilled
+M=0_end: are not highly-skilled
+
+M=1_subject: highly-skilled employees
+M=0_subject: unskilled employees
 
 
 U=1: male
 U=0: non-male
 
-U=1_verb: is male
-U=0_verb: is not male
+U=1_verb: are male
+U=0_verb: are not male
+
+U=1_subject: males
+U=0_subject: non-males
 
 
 graph: frontdoor
@@ -49,11 +64,11 @@ scenarios:
         X=1: goes to a community college
         X=0: doesn't go to a community college
 
-        X=1_verb: goes to a community college
-        X=0_verb: doesn't go to a community college
+        X=1_verb: went to a community college
+        X=0_verb: didn't go to a community college
 
-        do(X=1): goes to a community college
-        do(X=0): doesn't go to a community college
+        do(X=1): going to a community college
+        do(X=0): not going to a community college
 
         commonsense:
             X: [0.1, 0.9]
@@ -70,11 +85,11 @@ scenarios:
         X=1: goes to a prestigious college
         X=0: doesn't go to a prestigious college
 
-        X=1_verb: goes to a prestigious college
-        X=0_verb: doesn't go to a prestigious college
+        X=1_verb: went to a prestigious college
+        X=0_verb: didn't go to a prestigious college
 
-        do(X=1): goes to a prestigious college
-        do(X=0): doesn't go to a prestigious college
+        do(X=1): going to a prestigious college
+        do(X=0): not going go to a prestigious college
 
         commonsense:
             X: [0.1, 0.9]

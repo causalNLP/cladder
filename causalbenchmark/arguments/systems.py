@@ -20,10 +20,19 @@ class CausalSystem:
 
 
 	_graph_templates = None
-	def verbalize_graph(self, story, key='dry'):
+	def verbalize_graph(self, story, *, gen=None):
 		if self._graph_templates is None:
 			raise NotImplementedError
-		return util.pformat(self._graph_templates[key], **story)
+
+		template_order = list(self._graph_templates.keys())
+		if gen is not None:
+			gen.shuffle(template_order)
+
+		for key in template_order:
+			template = self._graph_templates[key]
+			line = util.pformat(template, **story)
+			line = line[0].upper() + line[1:]
+			yield {'template': key, 'verb': line, 'ID': key}
 
 
 
@@ -39,8 +48,12 @@ class ConfoundingSystem(CausalSystem):
 		return c * (y11 - y01) + (1 - c) * (y10 - y00)
 	
 	
-	_graph_template = {
-		'dry': '{X} leads to {Y} but is confounded by {U}.',
+	_graph_templates = {
+		'casual': '{Xnode} has an effect on {Ynode}.',
+		'natural': '{Xnode} leads to {Ynode}, but there are also other factors.',
+		'technical': '{Xnode} leads to {Ynode} with a confounder {Unode}.',
+		'formal': '{Xnode} is a direct cause of {Ynode} with a confounder of {Unode}. '
+		          'Treat all variables as binary and assume no other variables or causal relationships.',
 	}
 	def graph_edges(self):
 		return [
@@ -62,8 +75,12 @@ class IVSystem(CausalSystem):
 		return (y1 - y0) / (x1 - x0 + 1e-8)
 
 
-	_graph_template = {
-		'dry': '{X} leads to {Y} with an instrumental variable {Z}.',
+	_graph_templates = {
+		'casual': '{Znode} can be used to better understand the effect of {Xnode} on {Ynode}.',
+		'natural': '{Znode} leads to {Xnode} and {Xnode} leads to {Ynode}.',
+		'technical': '{Xnode} leads to {Ynode} with an instrumental variable {Znode} to deal with confounding.',
+		'formal': '{Xnode} is a direct cause of {Ynode} with a confounder {Unode} and an instrumental variable {Znode}. '
+		          'Treat all variables as binary and assume no other variables or causal relationships.',
 	}
 	def graph_edges(self):
 		return [
@@ -86,8 +103,12 @@ class FrontdoorSystem(CausalSystem):
 		return (v31 - v30) * (x * (y11 - y10) + (1 - x) * (y01 - y00))
 
 
-	_graph_template = {
-		'dry': '{X} leads to {Y} but is mediated by {M}.',
+	_graph_templates = {
+		'casual': '{Xnode} has an effect on {Ynode} by {Mnode}.',
+		'natural': '{Xnode} leads to {Mnode} and {Mnode} leads to {Ynode}, but there may be other factors as well.',
+		'technical': '{Xnode} leads to {Ynode} with a mediator {Mnode}, but {Xnode} and {Ynode} are also confounded.',
+		'formal': '{Xnode} is a cause of {Ynode} through the mediator {Mnode} and {Xnode} and {Ynode} are confounded by {Unode}. '
+		          'Treat all variables as binary and assume no other variables or causal relationships.',
 	}
 	def graph_edges(self):
 		return [
@@ -128,9 +149,9 @@ class MediationSystem(CausalSystem):
 		return (y01 - y00) * (v21 - v20)
 
 
-	_graph_template = {
-		'dry': '{X} directly causes {Y} and indirectly also through by {M}.',
-	}
+	# _graph_template = {
+	# 	'dry': '{X} directly causes {Y} and indirectly also through by {M}.',
+	# }
 	def graph_edges(self):
 		return [
 			['X', 'M'],

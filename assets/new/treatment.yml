@@ -1,7 +1,16 @@
 
+intro:
+    |
+    In a research study on the effectiveness of a new treatment, doctors want to know whether treatment A or treatment B will have the greatest effect on patients' recovery from a certain illness.
+
 Zname: doctor's recommendation
 Yname: recovery from illness
 Uname: patient's predisposition to illness
+
+Znode: doctor's recommendation
+Ynode: recovery from illness
+Unode: patient's predisposition to illness
+Xnode: treatment
 
 Xsubject: patients
 Zsubject: the doctor
