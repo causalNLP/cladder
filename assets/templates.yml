@@ -1,0 +1,270 @@
+
+
+prefix-flourishes:
+  noticed: 'have you noticed that'
+  note: 'note that'
+  consider: 'consider that'
+  as_it_happens: 'as it happens'
+  it_is_known: 'it is known that'
+  it_is_said: 'it is said that'
+  it_is_undeniable: 'it is undeniable that'
+  do_not_forget: 'do not forget that'
+  it_is_worth_noting: 'it is worth noting that'
+  it_is_worth_remembering: 'it is worth remembering that'
+
+transitions: # transition from one option to another
+  however: 'however'
+  but: 'but'
+  yet: 'yet'
+  still: 'still'
+  nevertheless: 'nevertheless'
+  meanwhile: 'meanwhile'
+  whereas: 'whereas'
+  while: 'while'
+
+
+conditional-structure:
+  prefix: '{head}, {tail}.'
+  suffix: '{tail} {head}.'
+
+
+conditional-heads:
+  when: 'when {phrase}'
+  if: 'if {phrase}'
+  for: 'for {population}'
+
+
+default-probability: [probability, likelihood, chance]
+
+default-structure:
+  phrase: ['{subject} {verb}', '{status}']
+  ratio: ['{subject} {verb}', 'the time {status}']
+  status: ['{being} {event}'] # "an ongoing event"
+  being: ['{pronoun} is']
+#  population: 'of the time {status}'
+
+default-chain:
+  noun: [subject, event, status]
+  verb: [verb, do]
+
+
+event-structure:
+  during: 'during {event}'
+  in: 'in {event}'
+  when: 'when {status}'
+  while: 'while {status}'
+  if: 'if {status}'
+
+
+frequency:
+  structure:
+    - '{subject} {freq_text} {verb}' # eg. "people often get the flu"
+    - '{being} {freq_text} {event}' # eg. "it is often flu season"
+    - '{status} {freq_text}' # eg. "it is flu season often"
+
+  options:
+    often: {text: often, implication: [0.7, 1.0]}
+    sometimes: {text: sometimes, implication: [0.3, 0.7]}
+    rarely: {text: rarely, implication: [0.1, 0.3]}
+    usually: {text: usually, implication: [0.7, 1.0]}
+    generally: {text: generally, implication: [0.4, 1.0]}
+
+    occasionally: {text: occasionally, implication: [0.3, 0.7]}
+    frequently: {text: frequently, implication: [0.7, 1.0]}
+    regularly: {text: regularly, implication: [0.6, 1.0]}
+
+
+population:
+  structure:
+    - '{population_text} {population}' # eg. "few people get the flu"
+
+  options:
+    very_few: {text: very few, implication: [0.0, 0.2]}
+    few: {text: few, implication: [0.1, 0.3]}
+    many: {text: many, implication: [0.7, 0.9]}
+    very_many: {text: very many, implication: [0.8, 1.0]}
+
+    some: {text: some, implication: [0.3, 0.7]}
+    most: {text: most, implication: [0.8, 1.0]}
+
+
+status:
+  structure:
+    - '{status_text} {status}' # eg. "most of the time it is flu season"
+
+  options:
+    sometimes: {text: sometimes, implication: [0.3, 0.7]}
+    some: { text: some of the time, implication: [ 0.3, 0.7 ] }
+    most: { text: most of the time, implication: [ 0.8, 1.0 ] }
+
+
+quantity:
+  structure:
+    - 'the {prob_text} that {phrase} is {quantity_text}'
+  prob_keys: [probability, likelihood, chance]
+
+  options:
+    very_low: {text: very low, implication: [0.0, 0.2]}
+    low: {text: low, implication: [0.2, 0.4]}
+    moderate: {text: moderate, implication: [0.4, 0.6]}
+    high: {text: high, implication: [0.6, 0.8]}
+    very_high: {text: very high, implication: [0.8, 1.0]}
+
+    extremely_small: {text: extremely small, implication: [0.0, 0.1]}
+    very_small: {text: very small, implication: [0.0, 0.2]}
+    small: {text: small, implication: [0.1, 0.3]}
+    large: {text: large, implication: [0.7, 0.9]}
+    very_large: {text: very large, implication: [0.8, 1.0]}
+    extremely_large: {text: extremely large, implication: [0.9, 1.0]}
+
+    significant: {text: significant, implication: [0.3, 0.9]}
+#    insignificant: {text: insignificant, implication: [0.0, 0.2]}
+    negligible: {text: negligible, implication: [0.0, 0.2]}
+    substantial: {text: substantial, implication: [0.6, 1.0]}
+    considerable: {text: considerable, implication: [0.6, 1.0]}
+
+    all_but_impossible: {text: all but impossible, implication: [0.0, 0.1]}
+    almost_impossible: {text: almost impossible, implication: [0.0, 0.1]}
+    improbable: {text: improbable, implication: [0.1, 0.3]}
+#    possible: {text: possible, implication: [0.2, 0.8]}
+    probable: {text: probable, implication: [0.7, 0.9]}
+    almost_certain: {text: almost certain, implication: [0.9, 1.0]}
+    all_but_certain: {text: all but certain, implication: [0.9, 1.0]}
+
+
+measure:
+  structure:
+    - 'with {quantity_text} {prob_text}, {phrase}'
+#    - 'the {prob_text} of {phrase_ongoing} is {quantity_text}'
+
+  options:
+    very_low: {text: very low, implication: [0.0, 0.2]}
+    low: {text: low, implication: [0.2, 0.4]}
+    moderate: {text: moderate, implication: [0.4, 0.6]}
+    high: {text: high, implication: [0.6, 0.8]}
+    very_high: {text: very high, implication: [0.8, 1.0]}
+
+
+likelihood:
+  structure:
+    - 'it is {likelihood_text} that {phrase}'
+#    - '{phrase_ongoing} is {likelihood_text}'
+
+  options:
+    very_unlikely: {text: very unlikely, implication: [0.0, 0.2]}
+    unlikely: {text: unlikely, implication: [0.1, 0.3]}
+    somewhat_likely: {text: somewhat likely, implication: [0.4, 0.7]}
+    likely: {text: likely, implication: [0.7, 0.9]}
+    very_likely: {text: very likely, implication: [0.8, 1.0]}
+
+    all_but_impossible: { text: is all but impossible, implication: [ 0.0, 0.1 ] }
+    almost_impossible: { text: almost impossible, implication: [ 0.0, 0.1 ] }
+    improbable: { text: improbable, implication: [ 0.1, 0.3 ] }
+    #    possible: {text: possible, implication: [0.2, 0.8]}
+    probable: { text: probable, implication: [ 0.7, 0.9 ] }
+    almost_certain: { text: almost certain, implication: [ 0.9, 1.0 ] }
+    all_but_certain: { text: is all but certain, implication: [ 0.9, 1.0 ] }
+
+
+estimation: # ambiguous value
+  structure:
+    - '{quantifier} {mean} of {ratio}'
+    - 'there is {quantifier} a {mean} {prob_text} that {phrase}'
+    - 'the {prob_text} that {phrase} is {quantifier} {mean}'
+
+  options:
+    about: {text: about, delta: [-0.05, 0.05]}
+    around: {text: around, delta: [-0.1, 0.1]}
+    approximately: {text: approximately, delta: [-0.1, 0.1]}
+    roughly: {text: roughly, delta: [-0.1, 0.1]}
+    give_or_take: {text: give or take, delta: [-0.1, 0.1]}
+    more_or_less: {text: more or less, delta: [-0.1, 0.1]}
+    close_to: {text: close to, delta: [-0.05, 0.05]}
+    just_about: {text: just about, delta: [-0.03, 0.03]}
+
+    almost: {text: almost, delta: [-0.05, 0.0]}
+    nearly: {text: nearly, delta: [-0.05, 0.0]}
+    just_under: { text: just under, delta: [ -0.05, 0.0 ] }
+    just_below: { text: just below, delta: [ -0.05, 0.0 ] }
+    just_less_than: { text: just less than, delta: [ -0.05, 0.0 ] }
+    just_short_of: { text: just short of, delta: [ -0.05, 0.0 ] }
+    just_shy_of: { text: just shy of, delta: [ -0.05, 0.0 ] }
+
+    just_over: {text: just over, delta: [0.0, 0.05]}
+    just_above: {text: just above, delta: [0.0, 0.05]}
+    just_more_than: {text: just more than, delta: [0.0, 0.05]}
+
+
+limits:
+  structure:
+    - 'there is {quantifier} {bound} a {prob_text} that {phrase}'
+    - '{quantifier} {bound} of {ratio}'
+    - '{phrase} is {quantifier} {bound}'
+
+    - '{quantifier} a {prob_text} of {range}, {phrase}'
+    - 'there is a {range} {prob_text} that {phrase}'
+    - '{range} of {ratio}'
+    - 'between {lower_bound} and {upper_bound} of {ratio}'
+
+  range_options:
+    to: '{lower_bound:.0%} to {upper_bound:.0%}'
+    dash: '{lb*100:.0f}-{ub:.0%}'
+
+  conditions:
+    upper: 0.01
+    lower: 0.99
+
+  options:
+    at_most: {text: at most, bound: upper_bound}
+    up_to: {text: up to, bound: upper_bound}
+    no_more_than: {text: no more than, bound: upper_bound}
+
+    at_least: {text: at least, bound: lower_bound}
+    no_less_than: {text: no less than, bound: lower_bound}
+
+    between: {text: between}
+
+
+precise:
+  structure:
+    - '{mean} of {ratio}'
+    - '{quantifier} {mean} of {ratio}'
+
+    - 'there is a {mean} {prob_text} that {phrase}'
+    - 'the {prob_text} that {phrase} is {mean}'
+    - '{quantifier} {phrase} with a {prob_text} of {mean}'
+
+  options:
+    assume_that: {text: assume that}
+    suppose_that: {text: suppose that}
+#    imagine_that: {text: imagine that}
+#    let_us_suppose_that: {text: let us suppose that}
+    it_is_known_that: {text: it is known that}
+
+
+
+fractions:
+  one_twentith: {text: one twentieth, value: 0.05, fraction: '1/20'}
+  one_twelfth: {text: one twelfth, value: 0.08, fraction: '1/12'}
+  one_tenth: {text: one tenth, value: 0.1, fraction: '1/10'}
+  one_eighth: {text: one eighth, value: 0.125, fraction: '1/8'}
+  one_sixth: {text: one sixth, value: 0.16, fraction: '1/6'}
+  one_fifth: {text: one fifth, value: 0.2, fraction: '1/5'}
+  one_fourth: {text: one fourth, value: 0.25, fraction: '1/4'}
+  three_tenths: {text: three tenths, value: 0.3, fraction: '3/10'}
+  one_third: {text: one third, value: 0.33, fraction: '1/3'}
+  two_fifths: {text: two fifths, value: 0.4, fraction: '2/5'}
+  one_half: {text: one half, value: 0.5, fraction: '1/2'}
+  three_fifths: {text: three fifths, value: 0.6, fraction: '3/5'}
+  two_thirds: {text: two thirds, value: 0.66, fraction: '2/3'}
+  seven_tenths: {text: seven tenths, value: 0.7, fraction: '7/10'}
+  three_fourths: {text: three fourths, value: 0.75, fraction: '3/4'}
+  four_fifths: {text: four fifths, value: 0.8, fraction: '4/5'}
+  five_sixths: {text: five sixths, value: 0.83, fraction: '5/6'}
+  seven_eighths: {text: seven eighths, value: 0.875, fraction: '7/8'}
+  nine_tenths: {text: nine tenths, value: 0.9, fraction: '9/10'}
+
+
+
+
+

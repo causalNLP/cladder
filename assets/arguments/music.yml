@@ -1,0 +1,78 @@
+
+graph: confounding
+roles: {treatment: X, outcome: Y, confounder: U}
+
+intro:
+  |
+  Concerned parents are considering what extracurricular activities to enroll their children in. They want to know whether taking violin lessons or cello lessons will help their children get good grades.
+
+
+commonsense:
+  U: [0.3, 0.8]
+
+  Y|U=0,X=0: [0.1, 0.4]
+  Y|U=0,X=1: [0.4, 0.8]
+  Y|U=0,X=2: [0.4, 0.8]
+
+  Y|U=1,X=0: [0.5, 0.9]
+  Y|U=1,X=1: [0.7, 0.95]
+  Y|U=1,X=2: [0.7, 0.95]
+
+
+variables:
+  X:
+    name: taking music lessons
+    subject: students
+    values:
+      0:
+        verb: don't take music lessons
+        do: not taking music lessons
+
+      1:
+        verb: take violin lessons
+        do: taking violin lessons
+
+      2:
+        verb: take cello lessons
+        do: taking cello lessons
+
+      ~1:
+        verb: don't take violin lessons
+        do: not taking violin lessons
+
+      ~2:
+        verb: don't take cello lessons
+        do: not taking cello lessons
+
+  Y:
+    name: getting good grades
+    subject: students
+    values:
+      0.verb: don't get good grades
+      1.verb: get good grades
+
+  U:
+    name: motivation
+    subject: students
+    values:
+      0:
+        verb: are not motivated
+        subject: unmotivated students
+
+      1:
+        verb: are motivated
+        subject: motivated students
+
+
+
+
+
+
+
+
+
+
+
+
+
+

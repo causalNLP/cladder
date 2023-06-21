@@ -1,0 +1,88 @@
+
+graph: confounding
+roles: {treatment: X, outcome: Y, confounder: U}
+
+intro:
+  | 
+  In an investigation of how to decrease the spread of the flu, the national department of health wants to know whether it's better to recommend wearing a face mask or using hand sanitizer.
+
+
+commonsense:
+  U: [0.2, 0.8]
+
+  Y|U=0,X=0: [0.1, 0.4]
+  Y|U=0,X=1: [0.05, 0.3]
+  Y|U=0,X=2: [0.2, 0.7]
+
+  Y|U=1,X=0: [0.3, 0.7] # alt [0.3, 0.8]
+  Y|U=1,X=1: [0.2, 0.6]
+  Y|U=1,X=2: [0.4, 0.9]
+
+
+variables:
+  X:
+    name: hygiene suggestion
+    subject: people
+    unit: population
+    values:
+      0:
+        verb: neither wear face masks nor use hand sanitizer
+        do: not putting on a face mask or using hand sanitizer
+
+      1:
+        verb: wear face masks
+        do: putting on a face mask
+
+      2:
+        verb: use hand sanitizer
+        do: using hand sanitizer
+
+      ~1:
+        verb: do not wear face masks
+        do: not putting on a face mask
+
+      ~2:
+        verb: do not use hand sanitizer
+        do: not using hand sanitizer
+
+  Y:
+    name: contracting a contagious illness
+    subject: people
+    pronoun: they
+    values:
+      0:
+        verb: don't get the flu
+#        end: not contracting a contagious illness
+
+      1:
+        verb: get the flu
+#        end: contracting a contagious illness
+
+
+  U:
+    name: flu season
+    pronoun: it
+#    unit: event
+    values:
+      0:
+        event: not flu season
+        head: when it's not flu season
+
+      1:
+        event: flu season
+#        status: flu season
+#        head: during flu season
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -414,7 +414,8 @@ def print_arguments(config):
 				premises = sorted(q[player]['premises'], key=lambda p: p['commonsense'], reverse=True)
 
 				print(f'({player.capitalize()}) Premises:')
-				table = [[p['verb'], p['commonsense'], '[{0:.2f}, {1:.2f}]'.format(*p['implication'])] for p in premises]
+				table = [[p['verb'], '{0:.2f}'.format(p['commonsense']), '[{0:.2f}, {1:.2f}]'.format(*p['implication'])]
+				         for p in premises]
 				print('\n'.join(tabulate(table, ).split('\n')[1:-1]))#headers=['Verb', 'Commonsense', 'Implication']))
 
 			questions = q['questions']

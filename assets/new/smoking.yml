@@ -29,14 +29,14 @@ M=1_end: have tar in their lungs
 M=0_end: don't have tar in their lungs
 
 
-Y=1: lung cancer
-Y=0: no lung cancer
+Y=0: lung cancer
+Y=1: no lung cancer
 
-Y=1_verb: get lung cancer
-Y=0_verb: don't get lung cancer
+Y=0_verb: get lung cancer
+Y=1_verb: don't get lung cancer
 
-Y=1_end: get lung cancer
-Y=0_end: don't get lung cancer
+Y=0_end: get lung cancer
+Y=1_end: don't get lung cancer
 
 
 U=1: genetic predisposition to lung cancer
@@ -71,10 +71,10 @@ scenarios:
             X: [0.2, 0.4]
             M|X=1: [0.8, 0.9]
             M|X=0: [0.05, 0.15]
-            Y|X=0,M=0: [0.01, 0.05]
-            Y|X=1,M=0: [0.2, 0.3]
-            Y|X=0,M=1: [0.6, 0.7]
-            Y|X=1,M=1: [0.7, 0.8]
+            Y|X=0,M=0: [0.95, 0.99]
+            Y|X=1,M=0: [0.7, 0.8]
+            Y|X=0,M=1: [0.3, 0.4]
+            Y|X=1,M=1: [0.2, 0.3]
 
     2:
         Xname: smoking cigars
@@ -95,10 +95,10 @@ scenarios:
             X: [0.1, 0.9]
             M|X=1: [0.5, 0.9]
             M|X=0: [0.05, 0.5]
-            Y|X=0,M=0: [0.01, 0.05]
-            Y|X=1,M=0: [0.02, 0.1]
-            Y|X=0,M=1: [0.5, 0.9]
-            Y|X=1,M=1: [0.6, 0.95]
+            Y|X=0,M=0: [0.95, 0.99]
+            Y|X=1,M=0: [0.9, 0.98]
+            Y|X=0,M=1: [0.1, 0.5]
+            Y|X=1,M=1: [0.05, 0.4]
 
 
 
