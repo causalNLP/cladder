@@ -151,6 +151,7 @@ default_conditional_heads = {
 	'if': 'if {{var}subject} {{var}={value}_verb}',
 }
 
+
 default_conditional_structure = {
 	'first': '{head}, {tail}.',
 	'last': '{tail} {head}.',

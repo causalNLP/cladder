@@ -1,3 +1,6 @@
+import opt_einsum.paths
+
+from .imports import *
 from .. import util
 
 
@@ -17,6 +20,10 @@ class CausalSystem:
 
 	def graph_edges(self):
 		raise NotImplementedError
+	
+	
+	def ate_constraints(self):
+		yield from ()
 
 
 	_graph_templates = None
@@ -40,6 +47,7 @@ class ConfoundingSystem(CausalSystem):
 	name = 'confounding'
 	ate_dofs = r'\sum_{U=v} P(U=v)*[P(Y=1|U=v,X=1) - P(Y=1|U=v, X=0)]'
 	ate_dofs = ['U', 'Y|X=0,U=0', 'Y|X=1,U=0', 'Y|X=0,U=1', 'Y|X=1,U=1']
+	# independent_dofs = ['Y|X=1,U=0', 'Y|X=1,U=1']
 
 	@staticmethod
 	def ate_fast(x):
@@ -68,12 +76,19 @@ class IVSystem(CausalSystem):
 	name = 'IV'
 	ate_str = '[P(Y=1|V2=1)-P(Y=1|V2=0)]/[P(X=1|V2=1)-P(X=1|V2=0)]'
 	ate_dofs = ['Y|Z=1', 'Y|Z=0', 'X|Z=1', 'X|Z=0']
+	# independent_dofs = ['Y|Z=1', 'Y|Z=0']
 
 	@staticmethod
 	def ate_fast(x):
 		y1, y0, x1, x0 = x
 		return (y1 - y0) / (x1 - x0 + 1e-8)
-
+	
+	
+	def ate_constraints(self):
+		A = np.asarray([[-1, 1, 1, -1]]).astype(float)
+		yield from super().ate_constraints()
+		yield opt.LinearConstraint(A, 0, np.inf)
+		
 
 	_graph_templates = {
 		'casual': '{Znode} can be used to better understand the effect of {Xnode} on {Ynode}.',
@@ -96,6 +111,7 @@ class FrontdoorSystem(CausalSystem):
 	name = 'frontdoor'
 	ate_str = r'\sum_{V3 = v} [P(V3 = v|X = 1) - P(V3 = v|X = 0)] * [\sum_{X = h} P(Y = 1|X = h,V3 = v)*P(X = h)]'
 	ate_dofs = ['X', 'M|X=1', 'M|X=0', 'Y|X=0,M=0', 'Y|X=1,M=0', 'Y|X=0,M=1', 'Y|X=1,M=1']
+	# independent_dofs = ['M|X=1', 'Y|X=1,M=0', 'Y|X=1,M=1']
 
 	@staticmethod
 	def ate_fast(x):
