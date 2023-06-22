@@ -3,6 +3,7 @@ from pathlib import Path
 from omnibelt import save_json, load_json, load_yaml
 import numpy as np
 from tqdm import tqdm
+import re
 from tabulate import tabulate
 from itertools import product, chain
 import random

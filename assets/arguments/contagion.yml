@@ -58,7 +58,6 @@ variables:
         verb: get the flu
 #        end: contracting a contagious illness
 
-
   U:
     name: flu season
     pronoun: it

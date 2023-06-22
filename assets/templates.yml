@@ -63,15 +63,15 @@ frequency:
     - '{status} {freq_text}' # eg. "it is flu season often"
 
   options:
-    often: {text: often, implication: [0.7, 1.0]}
-    sometimes: {text: sometimes, implication: [0.3, 0.7]}
-    rarely: {text: rarely, implication: [0.1, 0.3]}
-    usually: {text: usually, implication: [0.7, 1.0]}
-    generally: {text: generally, implication: [0.4, 1.0]}
+    often: {freq_text: often, implication: [0.7, 1.0]}
+    sometimes: {freq_text: sometimes, implication: [0.3, 0.7]}
+    rarely: {freq_text: rarely, implication: [0.1, 0.3]}
+    usually: {freq_text: usually, implication: [0.7, 1.0]}
+    generally: {freq_text: generally, implication: [0.4, 1.0]}
 
-    occasionally: {text: occasionally, implication: [0.3, 0.7]}
-    frequently: {text: frequently, implication: [0.7, 1.0]}
-    regularly: {text: regularly, implication: [0.6, 1.0]}
+    occasionally: {freq_text: occasionally, implication: [0.3, 0.7]}
+    frequently: {freq_text: frequently, implication: [0.7, 1.0]}
+    regularly: {freq_text: regularly, implication: [0.6, 1.0]}
 
 
 population:
