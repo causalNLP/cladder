@@ -3,12 +3,24 @@ from .imports import *
 
 
 class Verbalizer:
+	@staticmethod
+	def load_templates(path=None):
+		if path is None:
+			path = util.assets_root() / 'templates.yml'
+		assert path.exists(), f'path {path!r} does not exist'
+		return load_yaml(path)
+
+
 	@classmethod
 	def load_from_path(cls, path):
 		assert path.exists(), f'path {path!r} does not exist'
 		return cls(load_yaml(path))
 
 	_Selector = None
+
+
+	def __init__(self, data=None):
+		self.data = data
 
 
 
@@ -22,6 +34,7 @@ Verbalizer._Selector = _Selector
 
 class StoryVerbalizer(Verbalizer):
 	def __init__(self, data):
+		super().__init__(data)
 		self.vars = {key: VariableVerbalizer(value) for key, value in data.get('variables', {}).items()}
 
 
@@ -29,30 +42,37 @@ class StoryVerbalizer(Verbalizer):
 		return self.vars[vname].find(key, value=value)
 
 
-	def variable(self, vname):
-		return self.vars[vname]
+	def get_variable(self, var_name, value=None):
+		if value is None:
+			return self.vars[var_name]
+		return self.vars[var_name].with_value(value)
 
 
 	def get_term(self, term):
 		vname, value, parents = TermVerbalizer.parse_term(term)
-		var = self.variable(vname)
+		var = self.get_variable(vname)
 		if value is None:
 			assert var.N == 2, f'variable {vname!r} has {var.N} values, but no value was specified'
 			value = '1'
 		var = var.with_value(value)
-		conds = [self.variable(k).with_value(v) for k, v in parents.items()]
+		conds = [self.get_variable(k, value=v) for k, v in parents.items()]
 		return TermVerbalizer(var, conditions=conds)
 
 
 
 class VariableVerbalizer(Verbalizer):
-	def __init__(self, data):
+	def __init__(self, data, value=None):
 		self.data = data
-		self.categories = self.data.get('categories', [v for v in self.values.keys() if not v.startswith('~')])
-		self.values = {self._parse_variable_value(key): value for key, value in self.data.get('values', {}).items()}
+		self.value = value
+		self.categories = self.data.get('categories', [str(v) for v in self.data.get('values', {}).keys()
+		                                               if not str(v).startswith('~')])
+		# self.values = {self.parse_variable_value(key): value for key, value in self.data.get('values', {}).items()}
+
+		templates = self.load_templates()
+		self.default_structures = templates.get('default-structures', {})
 
 
-	def _parse_variable_value(self, value):
+	def parse_variable_value(self, value):
 		if isinstance(value, int):
 			value = str(value)
 		if value.startswith('~'):
@@ -65,36 +85,48 @@ class VariableVerbalizer(Verbalizer):
 		return len(self.categories)
 
 
-	def find(self, key, value=None):
+	def find(self, key):
 		'''
 		:param key: subject, verb, do, name, unit, pronoun, event, head, status, ...
 		:param value:
 		:return:
 		'''
-		if value is None:
-			base = self.values.get(self._parse_variable_value(key), {})
+		if value is not None:
+			base = self.values.get(self._parse_variable_value(value), {})
 			if key in base:
 				return base[key]
-		return self.data[key]
+		if key in self.data:
+			return self.data[key]
+		if key in self.default_structures:
+			return self.fill_in(self.default_structures[key])
+		raise KeyError(key)
 
 
-	class _ValueSelection(Verbalizer._Selector):
-		@property
-		def N(self):
-			return self.verbalizer.N
+
+	@staticmethod
+	def extract_sentence_keys(template):
+		for match in re.finditer(r'\{([^\}]+)\}', template):
+			yield match.group(1)
 
 
-		def find(self, key):
-			return self.verbalizer.find(key, self.value)
+	def fill_in(self, template):
+		reqs = list(self.extract_sentence_keys(template))
 
 
-	def with_value(self, value):
-		return self._ValueSelection(self, value)
+
+		pass
+
+
+
+class VariableValueVerbalizer(Verbalizer):
+
+
+
+	pass
 
 
 
 class TermVerbalizer(Verbalizer):
-
 	@staticmethod
 	def parse_term(term):
 		var, *given = term.split('|')
@@ -124,10 +156,14 @@ class TermVerbalizer(Verbalizer):
 		return head + tail
 
 
-
-	def __init__(self, v, conditions=None):
-		self.var = v
+	def __init__(self, var, value, conditions=None):
+		self.var = var
+		self.value = value
 		self.given = conditions or {}
+
+
+	def find(self, key):
+		return self.var.find(key)
 
 
 
@@ -158,18 +194,13 @@ class PremiseTemplate(Template):
 
 
 class FrequencyPremise(PremiseTemplate):
+	_template_key = 'frequency'
 	def __init__(self, data, **kwargs):
 		super().__init__(data, **kwargs)
 		self.sentences = self.info['structure']
 		self.options = self.info['options']
 		self.option_keys = list(self.options.keys())
 		self.unique = [(index, key) for index, key in product(range(len(self.sentences)), self.options.keys())]
-
-
-	@staticmethod
-	def extract_sentence_keys(template):
-		for match in re.finditer(r'\{([^\}]+)\}', template):
-			yield match.group(1)
 
 
 	@staticmethod
@@ -180,7 +211,8 @@ class FrequencyPremise(PremiseTemplate):
 	def generate(self, verbalizer):
 		# var, value, parents = self.parse_term(term)
 
-		for index, key in self.random_order(self.gen, self.option_keys):
+		for index, key in self.random_order(self.gen, self.unique):
+			index = int(index)
 			template = self.sentences[index]
 			reqs = list(self.extract_sentence_keys(template))
 
