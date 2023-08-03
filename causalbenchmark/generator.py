@@ -76,6 +76,7 @@ def dataset_summary(config, data_path=None, data=None):
 	print()
 	# summary by story
 	_summarize_key(rows, 'story')
+	# _summarize_key(rows, 'graph')
 
 	print()
 

@@ -19,7 +19,7 @@
 ###############################
 
 _meta.script_name: summary
-path: data/backup/cladder-v1-q-commonsense.json
+path: data/backup/cladder-v1-q-balanced.json
 #
 #key: graph
 
