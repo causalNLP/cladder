@@ -1,8 +1,8 @@
 
 #_meta.script_name: gen
-_meta.script_name: view
+#_meta.script_name: view
 
-_base: [uncladder]
+#_base: [uncladder]
 
 #n: 20
 
@@ -18,8 +18,8 @@ _base: [uncladder]
 
 ###############################
 
-#_meta.script_name: summary
-#path: data/backup/cladder-v1-q-commonsense.json
+_meta.script_name: summary
+path: data/backup/cladder-v1-q-commonsense.json
 #
 #key: graph
 
