@@ -42,6 +42,31 @@ def _extract_key(entry, models):
 	        )
 
 
+def _extract_sensicalness_key(entry, models):
+	meta = entry.get('meta', {})
+
+	model = models.get(entry.get('model_id', None), {})
+
+	story_id = meta.get('story_id', None)
+	graph_id = meta.get('graph_id', None)
+	query_type = meta.get('query_type', None)
+	answer = entry.get('answer', None)
+
+	if query_type == 'correlation' and graph_id == 'collision':
+		raise SkipItem
+
+	return (
+		'anti' if 'anticommonsense' in model else ('non' if model.get('nonsense', False) else 'common'),
+		# meta.get('story_id', None),
+		meta.get('graph_id', None),
+		meta.get('query_type', None),
+		entry.get('answer', None),
+		model.get('difficulty', None),
+		# 'not-anti' if model.get('anticommonsense', None) is None else 'anticommonsense',
+		# 'nonsense' if meta.get('story_id', '').startswith('nonsense') else 'not-nonsense',
+	)
+
+
 def find_gold(options, num, rng):
 
 	selected = []
@@ -102,12 +127,14 @@ def merge_and_balance(config):
 	model_table = {info['model_id']: info for info in models}
 	assert len(model_table) == len(models), 'duplicate model ids'
 
+	extract_fn = _extract_sensicalness_key if config.pull('sensicalness', False) else _extract_key
+
 	budget = config.pull('budget', 10000)
 
 	stats = {}
 	for entry in tqdm(full):
 		try:
-			stats.setdefault(_extract_key(entry, model_table), []).append(entry['_uid'])
+			stats.setdefault(extract_fn(entry, model_table), []).append(entry['_uid'])
 		except SkipItem:
 			pass
 
@@ -141,7 +168,6 @@ def merge_and_balance(config):
 		rounds += 1
 		if budget is None:
 			break
-
 
 	print(f'Balancing took {rounds} to get {len(selected)} entries')
 

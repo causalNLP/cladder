@@ -15,9 +15,13 @@
 
 ###############################
 
-#_meta.script_name: merge
+_meta.script_name: merge
 #
-#paths: [
+paths: [
+    data/backup/cladder-v1-q-commonsense.json,
+    data/backup/cladder-v1-q-anticommonsense.json,
+    data/backup/cladder-v1-q-noncommonsense.json,
+
 #  'data/data-common-easy.json',
 #  'data/data-common-hard.json',
 #
@@ -33,22 +37,26 @@
 #
 #  'data/data-det-non.json',
 #
-#]
+]
 #
-#path: data/cladder-v1-q-aggregate.json
+path: data/cladder-v1-q-balanced.json
 #
 #model-path: data/data-models.json
+model-path: data/cladder-v1-meta-models.json
 #
 #budget: 10000
+budget: 50
 #
 #seed: 101
+
+sensicalness: yes
 
 
 ###############################
 
-_base: [demo-mini]
-
-_meta.script_name: generate
+#_base: [demo-mini]
+#
+#_meta.script_name: generate
 #
 #model-meta: data/test-model-meta.json
 #
