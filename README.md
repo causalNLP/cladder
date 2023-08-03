@@ -13,7 +13,7 @@ This repo contains the full CLadder dataset (and code) for evaluating (formal) c
 
 
 
-Although there are several different variants, the main dataset (including questions from all variants) is `cladder-v1-aggregate.json`, so that is the recommended file to use for most purposes.
+Although there are several different variants, the main dataset (including questions from all variants) is `cladder-v1-balanced.json`, so that is the recommended file to use for most purposes.
 
 
 Developed by: Zhijing Jin, Yuen Chen, Felix Leeb, Luigi Gresele, Ojasv Kamal, Zhiheng LYU, Kevin Blin, Fernando Gonzalez Adauto, Max Kleiman-Weiner, Mrinmaya Sachan, Bernhard Schölkopf
@@ -51,7 +51,7 @@ When evaluating a language model, it is recommended that the prompt includes 3 c
 
 #### Example
 
-For example, the prompt corresponding to question 16825 (which asks about the average treatment effect for a simple instrumental variable setting) in `cladder-v1-aggregate.json` could be:
+For example, the prompt corresponding to question 16825 (which asks about the average treatment effect for a simple instrumental variable setting) in `cladder-v1-balanced.json` could be:
 
 
 > Imagine a self-contained, hypothetical world with only the following conditions, and without any unmentioned factors or causal relationships: Unobserved confounders has a direct effect on education level and salary. Proximity to a college has a direct effect on education level. Education level has a direct effect on salary. Unobserved confounders is unobserved.
@@ -81,53 +81,56 @@ Note that in addition to the `background` field, the model information found in 
 
 ### Dataset Statistics
 
-Here are some basic statistics for the main dataset (`cladder-v1-aggregate.json`).
+Here are some basic statistics for the main dataset (`cladder-v1-balanced.json`).
 
-Number of questions: 10,560
-Answers: {"yes": 5,280, "no": 5,280}
+Number of questions: 10,112
+Answers: {"yes": 5,056, "no": 5,056}
 
 Query Types:
 
-| Query Type                             | Rung | Code               | Number  | Percent |
-|----------------------------------------|------|--------------------|---------|---------|
-| Correlation                            | 1    | correlation        | 1476    | 14.0%   |
-| Marginal Distribution                  | 1    | marginal           | 1644    | 15.6%   |
-| Expaining Away Effect                  | 1    | exp_away           | 168     | 1.6%    |
-| Average Treatment Effect               | 2    | ate                | 1476    | 14.0%   |
-| Backdoor Adjustment Set                | 2    | backadj            | 1644    | 15.6%   |
-| Collider Bias                          | 2    | collider_bias      | 168     | 1.6%    |
-| Effect of the Treatment on the Treated | 3    | ett                | 1296    | 12.3%   |
-| Natural Direct Effect                  | 3    | nde                | 384     | 3.6%    |
-| Natural Indirect Effect                | 3    | nie                | 828     | 7.8%    |
-| Counterfactual (deterministic)         | 3    | det-counterfactual | 1476    | 14.0%   |
+| Query Type                             | Rung | Code               | Number | Percent |
+|----------------------------------------|------|--------------------|--------|---------|
+| Correlation                            | 1    | correlation        | 1422   | 14.1%   |
+| Marginal Distribution                  | 1    | marginal           | 1580   | 15.6%   |
+| Expaining Away Effect                  | 1    | exp_away           | 158    | 1.6%    |
+| Average Treatment Effect               | 2    | ate                | 1422   | 14.1%   |
+| Backdoor Adjustment Set                | 2    | backadj            | 1580   | 15.6%   |
+| Collider Bias                          | 2    | collider_bias      | 158    | 1.6%    |
+| Effect of the Treatment on the Treated | 3    | ett                | 1264   | 12.5%   |
+| Natural Direct Effect                  | 3    | nde                | 316    | 3.1%    |
+| Natural Indirect Effect                | 3    | nie                | 790    | 7.8%    |
+| Counterfactual (deterministic)         | 3    | det-counterfactual | 1422   | 14.1%   |
 
 
 Graph Types:
 
-| Graph Type   | Number  | Percent |
-|--------------|---------|---------|
-| IV           | 900     | 8.5%    |
-| arrowhead    | 1536    | 14.5%   |
-| chain        | 1092    | 10.3%   |
-| collision    | 672     | 6.4%    |
-| confounding  | 1008    | 9.5%    |
-| diamond      | 1092    | 10.3%   |
-| diamondcut   | 792     | 7.5%    |
-| fork         | 1008    | 9.5%    |
-| frontdoor    | 924     | 8.8%    |
-| mediation    | 1536    | 14.5%   |
+| Graph Type   | Number | Percent |
+|--------------|--------|---------|
+| IV           | 790    | 7.8%    |
+| arrowhead    | 1264   | 12.5%   |
+| chain        | 1106   | 10.9%   |
+| collision    | 632    | 6.2%    |
+| confounding  | 948    | 9.4%    |
+| diamond      | 1106   | 10.9%   |
+| diamondcut   | 948    | 9.4%    |
+| fork         | 948    | 9.4%    |
+| frontdoor    | 1106   | 10.9%   |
+| mediation    | 1264   | 12.5%   |
+
 
 
 
 ### Data Variants
 
-If you want to dig a little deeper into understanding how well language models perform causal reasoning, we also include a few variants of the dataset (each of which contains about 10k questions, and the aggregate dataset is made up of an even mix of these variants):
+If you want to dig a little deeper into understanding how well language models perform causal reasoning, we also include a few variants of the dataset (each of which contains about 10k questions, and the balanced dataset is made up of an even mix of these variants):
 
+- `cladder-v1-aggregate.json`: a combination of all the variants below but where each story has approximately the same number of questions (100-200).
 - `cladder-v1-q-easy.json`: questions that are easy to answer (i.e. the causal mechanisms generally conform to what you would expect)
 - `cladder-v1-q-hard.json`: the structure of the causal graph remains unchanged, but the strengths of causal mechanisms are generally counterintuitive
 - `cladder-v1-q-commonsense.json`: an even mix of easy and hard questions
 - `cladder-v1-q-anticommonsense.json`: for each causal graph we replace one of the variables (either treatment or outcome) with a randomly selected one that common sense would tell you is not related to the other variable at all.
 - `cladder-v1-q-nonsense.json`: here the graph structure remains unchanged, but all variables are replaced from semantically meaningful concepts to randomly generated 4-letter words.
+
 
 
 ## Code Setup
