@@ -1,5 +1,4 @@
-
-# CLadder: Evaluating Causal Reasoning in Language Models
+# CLadder: Assessing Causal Reasoning in Language Models
 
 
 ## 🚀 Get the dataset now! [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip)
@@ -11,12 +10,23 @@
 
 This repo contains the full CLadder dataset (and code) for evaluating (formal) causal reasoning in language models. The dataset asks yes/no questions in natural language that generally require statistical and causal inference to answer.
 
-
-
 Although there are several different variants, the main dataset (including questions from all variants) is `cladder-v1-balanced.json`, so that is the recommended file to use for most purposes.
 
+#### Our NeurIPS 2023 paper:
 
-Developed by: Zhijing Jin, Yuen Chen, Felix Leeb, Luigi Gresele, Ojasv Kamal, Zhiheng LYU, Kevin Blin, Fernando Gonzalez Adauto, Max Kleiman-Weiner, Mrinmaya Sachan, Bernhard Schölkopf
+"**[CLadder: Assessing Causal Reasoning in Language Models](http://arxiv.org/abs/2312.04350)**" by *Zhijing Jin\*, Yuen Chen\*, Felix Leeb\*, Luigi Gresele\*, Ojasv Kamal, Zhiheng Lyu, Kevin Blin, Fernando Gonzalez, Max Kleiman-Weiner, Mrinmaya Sachan, Bernhard Schölkopf*.
+
+**Citation:**
+
+```bibTeX
+@inproceedings{jin2023cladder,
+    author = {Zhijing Jin and Yuen Chen and Felix Leeb and Luigi Gresele and Ojasv Kamal and Zhiheng Lyu and Kevin Blin and Fernando Gonzalez and Max Kleiman-Weiner and Mrinmaya Sachan and Bernhard Sch{\"{o}}lkopf},
+    title = "{CL}adder: {A}ssessing Causal Reasoning in Language Models",
+    year = "2023",
+    booktitle = "NeurIPS",
+    url = "https://openreview.net/forum?id=e2wtjx0Yqu",
+}
+```
 
 
 
@@ -62,18 +72,19 @@ For example, the prompt corresponding to question 16825 (which asks about the av
 
 Here the correct answer is `no`. The associated reasoning steps found in the `reasoning` field are:
     
+
 > Step 0: Let V2 = proximity to a college; V1 = unobserved confounders; X = education level; Y = salary. 
-> 
+>
 > Step 1: V1->X,V2->X,V1->Y,X->Y 
-> 
+>
 > Step 2: E[Y | do(X = 1)] - E[Y | do(X = 0)]
-> 
+>
 > Step 3: [P(Y=1|V2=1)-P(Y=1|V2=0)]/[P(X=1|V2=1)-P(X=1|V2=0)]
-> 
+>
 > Step 4: P(Y=1 | V2=0) = 0.35; P(Y=1 | V2=1) = 0.53; P(X=1 | V2=0) = 0.40; P(X=1 | V2=1) = 0.73
-> 
+>
 > Step 5: (0.53 - 0.35) / (0.73 - 0.40) = 0.55
-> 
+>
 > Solution: 0.55 > 0
 
 
@@ -89,7 +100,7 @@ Answers: {"yes": 5,056, "no": 5,056}
 Query Types:
 
 | Query Type                             | Rung | Code               | Number | Percent |
-|----------------------------------------|------|--------------------|--------|---------|
+| -------------------------------------- | ---- | ------------------ | ------ | ------- |
 | Correlation                            | 1    | correlation        | 1422   | 14.1%   |
 | Marginal Distribution                  | 1    | marginal           | 1580   | 15.6%   |
 | Expaining Away Effect                  | 1    | exp_away           | 158    | 1.6%    |
@@ -104,18 +115,18 @@ Query Types:
 
 Graph Types:
 
-| Graph Type   | Number | Percent |
-|--------------|--------|---------|
-| IV           | 790    | 7.8%    |
-| arrowhead    | 1264   | 12.5%   |
-| chain        | 1106   | 10.9%   |
-| collision    | 632    | 6.2%    |
-| confounding  | 948    | 9.4%    |
-| diamond      | 1106   | 10.9%   |
-| diamondcut   | 948    | 9.4%    |
-| fork         | 948    | 9.4%    |
-| frontdoor    | 1106   | 10.9%   |
-| mediation    | 1264   | 12.5%   |
+| Graph Type  | Number | Percent |
+| ----------- | ------ | ------- |
+| IV          | 790    | 7.8%    |
+| arrowhead   | 1264   | 12.5%   |
+| chain       | 1106   | 10.9%   |
+| collision   | 632    | 6.2%    |
+| confounding | 948    | 9.4%    |
+| diamond     | 1106   | 10.9%   |
+| diamondcut  | 948    | 9.4%    |
+| fork        | 948    | 9.4%    |
+| frontdoor   | 1106   | 10.9%   |
+| mediation   | 1264   | 12.5%   |
 
 
 
@@ -138,11 +149,13 @@ If you want to dig a little deeper into understanding how well language models p
 
 To use the codes in this repo, first clone this repo:
     
+
     git clone https://github.com/causalNLP/causalbenchmark
     cd causalbenchmark
 
 Then, install the dependencies:
     
+
     pip install -r requirements.txt
 
 Finally, install the package:
@@ -167,5 +180,9 @@ And the script which is implemented in [generator.py](causalbenchmark/generator.
 Also, you can run the unit tests with
 
     pytest
+
+## Output Files
+
+We saved a copy of all model output files, which you can access [here](https://edmond.mpg.de/dataset.xhtml?persistentId=doi%3A10.17617%2F3.NVRRA9).
 
 [more info coming soon]
