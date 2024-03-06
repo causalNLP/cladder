@@ -1,0 +1,22 @@
+Step 1) Extract the causal graph: The causal graph expressed in the context is: "{graph}".
+
+Step 2) Identify the query type: The query type of the above question is "{query_type}".
+
+Step 3) Translate the query to an estimand: Based on the type of the causal query, the question can be translated to a formal estimand as: "{step1}".
+
+Step 4) Collect all the available data: The available data are: "{'; '.join(given_info_formal)}".
+
+Step 5) Solve for the estimand: To solve for the estimand, we need to compute {step1.replace(' - ', ' and ')}.
+
+Using the causal graph, we can simplify the estimand to
+{step1}
+= {step2}
+
+Using the available data, we can calculate:
+{step2}
+= {step3}
+≈ {step4}
+
+Since the estimate for the estimand is {step4}, the overall answer to the question is {answer}
+
+
