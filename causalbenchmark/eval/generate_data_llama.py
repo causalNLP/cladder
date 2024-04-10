@@ -1,7 +1,7 @@
 """
 Script that generates prompts for the run_llama.py script. The prompts are generated from a JSON file containing the data. The script reads the data from the JSON file, formats the prompts, and saves the prompts to a CSV file.
 How to run this script:
-python generate_data_llama.py ../../data/test-generate-easy.json
+python generate_data_llama.py ../../data/cladder-v1-q-balanced.json ../../data/cladder-v1-meta-models.json
 The json file should contain the following keys:
 - background: str
 - given_info: str
@@ -16,7 +16,8 @@ SYSTEM_PROMPT='''You are an expert in causal inference. The following question i
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate data script')
-    parser.add_argument('input_file', type=str, help='Input JSON file')
+    parser.add_argument('cladder_file', type=str, help='cladder-v1-q-balanced.json JSON file')
+    parser.add_argument('meta_file', type=str, help='cladder-v1-meta-models JSON file')
     return parser.parse_args()
 
 def read_data(input_file):
@@ -96,6 +97,35 @@ def create_dataframe(prompts):
     df = df.drop_duplicates()
     return df
 
+def join_data(data, meta_data):
+    """
+    Join the data with the meta data
+
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the data with keys 'given_info', 'question' and 'meta' (meta is a json with model_id)
+    meta_data : dict
+        Dictionary containing the meta data with keys 'model_id', 'background'
+
+    Returns
+    -------
+    dict
+        Dictionary containing the data with the meta data
+    """
+    data_df = pd.DataFrame(data)
+    meta_df = pd.DataFrame(meta_data)
+
+    data_df=data_df.loc[:,['given_info','question','meta']]
+    data_df['model_id']=data_df['meta'].apply(lambda x: x['model_id'])
+
+    meta_df=meta_df.loc[:,['model_id','background']]
+
+    all_data_df=pd.merge(data_df,meta_df,on='model_id',how='left')
+    all_data=all_data_df.to_dict(orient='records')
+
+    return all_data
+
 def save_to_csv(df, filename):
     """
     Save the DataFrame to a CSV file
@@ -104,8 +134,10 @@ def save_to_csv(df, filename):
 
 def main():
     args = parse_arguments()
-    data = read_data(args.input_file)
-    prompts = generate_prompts(data, SYSTEM_PROMPT)
+    data = read_data(args.cladder_file)
+    meta_data = read_data(args.meta_file)
+    all_data = join_data(data, meta_data)
+    prompts = generate_prompts(all_data, SYSTEM_PROMPT)
     df = create_dataframe(prompts)
     save_to_csv(df, "causal_benchmark_data.csv")
 
