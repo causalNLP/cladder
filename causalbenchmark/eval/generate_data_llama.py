@@ -1,12 +1,8 @@
 """
-Script that generates prompts for the run_llama.py script. The prompts are generated from a JSON file containing the data. The script reads the data from the JSON file, formats the prompts, and saves the prompts to a CSV file.
+Script that generates prompts for the run_llama.py script. The prompts are generated from the cladder-v1-q-balanced.json and cladder-v1-meta-models.json files. The script reads the data, formats the prompts, and saves them to a CSV file.
 How to run this script:
 python generate_data_llama.py ../../data/cladder-v1-q-balanced.json ../../data/cladder-v1-meta-models.json
-The json file should contain the following keys:
-- background: str
-- given_info: str
-- question: str
-The data files are in the /data folder.
+The data files are in the zip data folder.
 """
 import pandas as pd
 import argparse
