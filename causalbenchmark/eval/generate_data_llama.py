@@ -63,7 +63,7 @@ def generate_prompts(data, system_prompt):
     Parameters
     ----------
     data : dict
-        Dictionary containing the data with keys 'background', 'given_info', and 'question'
+        Dictionary containing the data with keys 'background', 'given_info', 'question', 'question_id', 'answer', and 'rung'
     system_prompt : str
         System prompt to be added at the beginning of the prompt
         
@@ -72,7 +72,7 @@ def generate_prompts(data, system_prompt):
     list
         List of formatted prompts
     """
-    prompts = [format_prompt(d, system_prompt) for d in data]
+    prompts = [(d['question_id'],d['answer'],d['rung'],format_prompt(d, system_prompt)) for d in data]
     return prompts
 
 def create_dataframe(prompts):
@@ -89,8 +89,10 @@ def create_dataframe(prompts):
     pandas.DataFrame
         DataFrame containing the prompts
     """
-    df = pd.DataFrame(prompts, columns=['prompt'])
+    df = pd.DataFrame(prompts, columns=['question_id','truth','rung','prompt'])
     df = df.drop_duplicates()
+    ## create the truth norm column mapping the truth column values yes=1, no =0 ignore case
+    df['truth_norm'] = df['truth'].str.lower().map({'yes':1,'no':0})
     return df
 
 def join_data(data, meta_data):
@@ -100,7 +102,7 @@ def join_data(data, meta_data):
     Parameters
     ----------
     data : dict
-        Dictionary containing the data with keys 'given_info', 'question' and 'meta' (meta is a json with model_id)
+        Dictionary containing the data with keys 'question_id', 'answer', 'given_info', 'question' and 'meta' (meta is a json with model_id and rung)
     meta_data : dict
         Dictionary containing the meta data with keys 'model_id', 'background'
 
@@ -112,8 +114,9 @@ def join_data(data, meta_data):
     data_df = pd.DataFrame(data)
     meta_df = pd.DataFrame(meta_data)
 
-    data_df=data_df.loc[:,['given_info','question','meta']]
+    data_df=data_df.loc[:,['question_id','answer','given_info','question','meta']]
     data_df['model_id']=data_df['meta'].apply(lambda x: x['model_id'])
+    data_df['rung']=data_df['meta'].apply(lambda x: x['rung'])
 
     meta_df=meta_df.loc[:,['model_id','background']]
 
@@ -135,7 +138,7 @@ def main():
     all_data = join_data(data, meta_data)
     prompts = generate_prompts(all_data, SYSTEM_PROMPT)
     df = create_dataframe(prompts)
-    save_to_csv(df, "causal_benchmark_data.csv")
+    save_to_csv(df, "causal_benchmark_data_llama.csv")
 
 if __name__ == "__main__":
     main()
