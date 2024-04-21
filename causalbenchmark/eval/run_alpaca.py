@@ -48,7 +48,7 @@ def main(locationLlamaHF,outputFileName,inputFileName):
 
     with open(outputFileName, 'w', newline='') as csvoutput:
         writer = csv.writer(csvoutput, lineterminator='\n')
-        writer.writerow(['question_id', 'rung', 'prompt', 'truth', 'truth_norm', 'pred', 'pred_norm'])  # Include 'question_id' column in the header
+        writer.writerow(['question_id', 'rung', 'prompt', 'truth', 'truth_norm', 'pred', 'pred_norm','model_version'])  # Include 'question_id' column in the header
 
     with torch.no_grad():
         for i in range(df.shape[0]):
@@ -71,7 +71,7 @@ def main(locationLlamaHF,outputFileName,inputFileName):
             pred_norm = convert_to_norm(outputs)
             with open(outputFileName, 'a', newline='') as csvoutput:
                 writer = csv.writer(csvoutput)
-                writer.writerow([question_id] + [rung] + [prompt] + [truth] + [truth_norm] + [outputs] + [pred_norm])
+                writer.writerow([question_id] + [rung] + [prompt] + [truth] + [truth_norm] + [outputs] + [pred_norm] + ['alpaca007'])
 
 if __name__ == '__main__':
     ## model location HuggingFace format
