@@ -4,6 +4,19 @@ from transformers import  LlamaForCausalLM, LlamaTokenizer
 import csv
 import pandas as pd
 
+def convert_to_norm(value):
+    prefix2norm = {
+        'Yes': 1,
+        'No': 0,
+    }
+    invalid = -1
+    value = str(value).lower().strip().strip('"')
+
+    for prefix, norm in prefix2norm.items():
+        if value.startswith(prefix.lower()):
+            return norm
+    return invalid
+
 def main(locationLlamaHF,outputFileName,inputFileName):
     tokenizer = LlamaTokenizer.from_pretrained(locationLlamaHF,cache_dir="~/cache/")
     model = LlamaForCausalLM.from_pretrained(locationLlamaHF,device_map="auto",cache_dir="~/cache/")
@@ -13,32 +26,37 @@ def main(locationLlamaHF,outputFileName,inputFileName):
     tokenizer.padding_side = "left" 
     tokenizer.pad_token = tokenizer.eos_token
 
-    with open(outputFileName, 'w') as csvoutput:
+    with open(outputFileName, 'w', newline='') as csvoutput:
         writer = csv.writer(csvoutput, lineterminator='\n')
-        row=['pred']
-        writer.writerow(row)
+        writer.writerow(['question_id', 'rung', 'prompt', 'truth', 'truth_norm', 'pred', 'pred_norm'])  # Include 'question_id' column in the header
 
     with torch.no_grad():
-        for i in range(0,df.shape[0],1):
-            prompts=list(df['prompt'].values)[i:i+1]
-            prompts=prompts[0]+"\nAnswer:"
-            inputs = tokenizer([prompts], return_tensors='pt').to(device)
+        for i in range(df.shape[0]):
+            prompt = df.at[i, 'prompt'] + "\nAnswer:"  # Fetch prompt from 'prompt' column
+            question_id = df.at[i, 'question_id']  # Fetch question_id from 'question_id' column
+            truth = df.at[i, 'truth']
+            rung = df.at[i, 'rung']
+            truth_norm = df.at[i, 'truth_norm']
+            inputs = tokenizer(prompt, return_tensors='pt').to(device)
 
             output_sequences = model.generate(
                 input_ids=inputs['input_ids'],
                 attention_mask=inputs['attention_mask'],
                 do_sample=False,
-                max_new_tokens=10,temperature=0
+                max_new_tokens=10,
+                temperature=0
             )
-            outputs=tokenizer.batch_decode(output_sequences, skip_special_tokens=True)
-            outputs=[[el] for el in outputs]
-            with open(outputFileName, 'a') as csvoutput:
-                writer = csv.writer(csvoutput, lineterminator='\n')
-                writer.writerows(outputs)
+            outputs = tokenizer.decode(output_sequences[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True)
+            pred_norm = convert_to_norm(outputs)
+            with open(outputFileName, 'a', newline='') as csvoutput:
+                writer = csv.writer(csvoutput)
+                writer.writerow([question_id] + [rung] + [prompt] + [truth] + [truth_norm] + [outputs] + [pred_norm])
+
+
 
 if __name__ == '__main__':
     ## model location HuggingFace format
     locationLlamaHF="./llama-7b"
     outputFileName="./llama007_causal_benchmark.csv"
-    inputFileName="./causal_benchmark_data.csv"
+    inputFileName="./causal_benchmark_data_llama.csv"
     main(locationLlamaHF,outputFileName,inputFileName)
