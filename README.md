@@ -6,6 +6,7 @@
 - zip file size: 6.5MB
 - Version: v1
 - Date: 2023-05-25
+- Huggingface dataset: https://huggingface.co/datasets/causalnlp/CLadder
 
 
 This repo contains the full CLadder dataset (and code) for evaluating (formal) causal reasoning in language models. The dataset asks yes/no questions in natural language that generally require statistical and causal inference to answer.
@@ -34,7 +35,9 @@ Although there are several different variants, the main dataset (including quest
 
 ### Data Usage
 
-The data is stored in JSON format, with each element representing a single question. Each question has the following fields:
+You can download our data either from huggingface (https://huggingface.co/datasets/causalnlp/CLadder), or [cladder-v1.zip](https://github.com/causalNLP/cladder/raw/main/data/cladder-v1.zip) in our repo. 
+
+In our data, each sample represents a single question. Each question has the following fields:
 
 - `question_id`: a unique (for the file) identifier for the question
 - `desc_id`: a more descriptive identifier for the question (generally not needed)
@@ -167,7 +170,7 @@ Check to make sure everything is setup correctly by running the unit tests:
     pytest
 
 
-## Code Usage
+## Code Usage: Data Generation
 
 Generate demo data using
 
@@ -181,8 +184,14 @@ Also, you can run the unit tests with
 
     pytest
 
-## Output Files
+## Code Usage: Data Generation
+
+Check the [eval/](eval/) folder for all the `run_*.py` code files in to see how to run different LLMs in inference mode on our data.
+
+#### Output Files
 
 We saved a copy of all model output files, which you can access [here](https://edmond.mpg.de/dataset.xhtml?persistentId=doi%3A10.17617%2F3.NVRRA9).
 
-[more info coming soon]
+
+
+Thanks again for your interest in our work! Feel free to post a github issue if you have any questions.
